@@ -1,13 +1,22 @@
 from setuptools import setup
 
+VERSION = '0.0.1' 
+DESCRIPTION = 'a pip-installable package with function for Arenz Group'
+LONG_DESCRIPTION = 'My first Python package with a slightly longer description'
+
+#Setting up
 setup(
     name='Arenz_Group_Python',
-    version='0.0.1',
-    description='a pip-installable package with function for Arenz',
+    version=VERSION,
+    description=DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
     license='MIT',
-    packages=['ArenzGroupPython'],
-    author='Gustav Wiber',
+    #packages=['ArenzGroupPython'],
+    packages=find_packages(),
+    author='Gustav Wiberg',
     author_email='gustav.wiberg@unibe.ch',
-    keywords=['example'],
+    keywords=['python', 'arenz group', 'tdms'],
     url='https://github.com/guswib/arenz_group_python'
+    install_requires=[],
+
 )
