@@ -12,7 +12,7 @@ setup(
     long_description=LONG_DESCRIPTION,
     license='MIT',
     #packages=['ArenzGroupPython'],
-    packages=['arenz_group_python'],
+    packages=['ArenzGroupPython'],
     author='Gustav Wiberg',
     author_email='gustav.wiberg@unibe.ch',
     keywords=['python', 'arenz group', 'tdms'],
