@@ -16,7 +16,6 @@ setup(
     author='Gustav Wiberg',
     author_email='gustav.wiberg@unibe.ch',
     keywords=['python', 'arenz group', 'tdms'],
-    url='https://github.com/guswib/arenz_group_python'
-    install_requires=[],
-
+    url='https://github.com/guswib/arenz_group_python',
+    install_requires=[]
 )
