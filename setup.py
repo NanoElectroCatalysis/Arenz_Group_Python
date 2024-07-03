@@ -12,10 +12,10 @@ setup(
     long_description=LONG_DESCRIPTION,
     license='MIT',
     #packages=['ArenzGroupPython'],
-    packages=find_packages(),
+    packages=['arenz_group_python'],
     author='Gustav Wiberg',
     author_email='gustav.wiberg@unibe.ch',
     keywords=['python', 'arenz group', 'tdms'],
     url='https://github.com/guswib/arenz_group_python',
-    install_requires=[]
+    install_requires=['nptdms','matplotlib', 'pathlib']
 )
