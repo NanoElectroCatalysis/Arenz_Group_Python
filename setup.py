@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 VERSION = '0.0.1' 
 DESCRIPTION = 'a pip-installable package with function for Arenz Group'
@@ -11,7 +11,7 @@ setup(
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     license='MIT',
-    #packages=['ArenzGroupPython'],
+    #packages=find_package(),
     packages=['ArenzGroupPython'],
     author='Gustav Wiberg',
     author_email='gustav.wiberg@unibe.ch',
