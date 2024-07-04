@@ -106,11 +106,12 @@ class EC_Data:
             cosValue[i] = math.cos(self.Phase_E[i])
         return cosValue
 
-    def plot(self, x_channel,y_channel):
+    def plot(self, x_channel,y_channel,**kwargs):
         xlable ="wrong channel name"
         xunit = "wrong channel name"
         ylable ="wrong channel name"
         yunit = "wrong channel name"
+        
         try:
             xdata,xlable,xunit = self.get_channel(x_channel)
         except NameError as e:
@@ -123,10 +124,13 @@ class EC_Data:
         #except :
            
         #finally:
-             
-            fig = plt.figure()
-            plt.suptitle(self.name)
-            ax = fig.subplots()
+            try:
+                ax = kwargs['ax']     
+            except:
+                fig = plt.figure()
+                plt.suptitle(self.name)
+                ax = fig.subplots()
+                
             try:
                 ax.plot(xdata,ydata)
             except:
