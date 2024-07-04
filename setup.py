@@ -11,6 +11,7 @@ setup(
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     license='MIT',
+    package_dir={"arenz_group_python": "src\arenz_group_python"},
     packages=find_packages("src"),
     #packages=['ArenzGroupPython'],
     author='Gustav Wiberg',
