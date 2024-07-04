@@ -11,7 +11,7 @@ setup(
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     license='MIT',
-    packages=find_packages(),
+    packages=find_packages("src"),
     #packages=['ArenzGroupPython'],
     author='Gustav Wiberg',
     author_email='gustav.wiberg@unibe.ch',
