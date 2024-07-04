@@ -60,10 +60,11 @@ class EC_Data:
     def __str__(self):
         return f"{self.name}"
 
-    """
-    Get the channel of the EC4 DAQ file.
-    """
-    def get_channel(self,datachannel):
+
+    def get_channel(self,datachannel:str):
+        """
+        Get the channel of the EC4 DAQ file.
+        """
         match datachannel:
             case "Time":
                 return self.Time,"t","s"
@@ -106,7 +107,14 @@ class EC_Data:
             cosValue[i] = math.cos(self.Phase_E[i])
         return cosValue
 
-    def plot(self, x_channel,y_channel,**kwargs):
+    
+    def plot(self, x_channel:str,y_channel:str,**kwargs):
+        '''
+        plots y_channel vs x_channel.
+        to add to a existing plot, add the argument: 
+        "ax=subplot"
+        
+        '''
         xlable ="wrong channel name"
         xunit = "wrong channel name"
         ylable ="wrong channel name"
@@ -130,7 +138,7 @@ class EC_Data:
                 fig = plt.figure()
                 plt.suptitle(self.name)
                 ax = fig.subplots()
-                
+
             try:
                 ax.plot(xdata,ydata)
             except:
