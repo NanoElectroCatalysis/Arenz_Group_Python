@@ -5,6 +5,7 @@
 from nptdms import TdmsFile
 import math
 import matplotlib.pyplot as plt
+from scipy.signal import savitzky_golay_filter
 
 class EC_Data:
     """ Reads and stores data from a TDMS file in the format of EC4 DAQ.
@@ -119,7 +120,12 @@ class EC_Data:
         xunit = "wrong channel name"
         ylable ="wrong channel name"
         yunit = "wrong channel name"
-        
+        options = {
+            'x_smooth' : 0,
+            'y_smooth' : 0,
+            'plot' : 'newplot', }
+        options.update(kwargs)
+
         try:
             xdata,xlable,xunit = self.get_channel(x_channel)
         except NameError as e:
@@ -132,12 +138,19 @@ class EC_Data:
         #except :
            
         #finally:
+            '''add a the data to an existing plot ro create a new'''
             try:
-                ax = kwargs['ax']     
+                ax = kwargs['plot']     
             except:
                 fig = plt.figure()
                 plt.suptitle(self.name)
                 ax = fig.subplots()
+            try:
+                y_smooth = int(options['y_smooth'])
+                if(y_smooth > 0):
+                    ydata = savitzky_golay_filter(ydata, y_smooth, 1)
+            except:
+                pass
 
             try:
                 ax.plot(xdata,ydata)
