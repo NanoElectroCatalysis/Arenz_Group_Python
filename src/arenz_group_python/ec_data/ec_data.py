@@ -5,7 +5,7 @@
 from nptdms import TdmsFile
 import math
 import matplotlib.pyplot as plt
-from scipy.signal import savitzky_golay_filter
+from scipy.signal import savgol_filter
 
 class EC_Data:
     """ Reads and stores data from a TDMS file in the format of EC4 DAQ.
@@ -148,7 +148,13 @@ class EC_Data:
             try:
                 y_smooth = int(options['y_smooth'])
                 if(y_smooth > 0):
-                    ydata = savitzky_golay_filter(ydata, y_smooth, 1)
+                    ydata = savgol_filter(ydata, y_smooth, 1)
+            except:
+                pass
+            try:
+                x_smooth = int(options['x_smooth'])
+                if(x_smooth > 0):
+                    xdata = savgol_filter(xdata, x_smooth, 1)
             except:
                 pass
 
