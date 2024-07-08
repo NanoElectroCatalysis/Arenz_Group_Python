@@ -11,3 +11,5 @@ __path__ = [os.path.join(os.path.dirname(os.path.abspath(__file__)), 'contents')
 
 print("loading arenz_group_python")
 print(__path__)
+
+__version__ = "0.0.100"
