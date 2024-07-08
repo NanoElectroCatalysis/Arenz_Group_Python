@@ -26,7 +26,9 @@ class EC_Data:
         self.Phase_U=[]
         self.path=""
         
-        if path != "":
+        if path == "":
+            return
+        else:
             try:
                 tdms_file = TdmsFile.read(path)
                 tdms_file.close()
