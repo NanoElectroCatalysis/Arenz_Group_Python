@@ -13,7 +13,7 @@ class EC_Data:
     When creating an opject the file path must be given.
      
     """
-    def __init__(self, path: str = ""):
+    def __init__(self, path : str = ""):
         self._area=1
         self._area_unit="cm^2"
         self.Time=[]
@@ -27,6 +27,7 @@ class EC_Data:
         self.path=""
         
         if path == "":
+            print("no path")
             return
         else:
             try:
