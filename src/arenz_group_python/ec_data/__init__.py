@@ -2,11 +2,14 @@
 # No need to add anything here. Feel free to delete this line when you make your own package.
 
 #from anyt import EC_Data
-
 import os
+__path__ = [os.path.join(os.path.dirname(os.path.abspath(__file__)), 'contents')]
+__all__ = ["ec_data"]
+
 
 from .ec_data import * 
 
-__path__ = [os.path.join(os.path.dirname(os.path.abspath(__file__)), 'contents')]
 
-__all__ = ["ec_data"]
+
+#Import the submodules
+from . import ec_data

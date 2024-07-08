@@ -5,6 +5,7 @@
 from nptdms import TdmsFile
 import math
 import matplotlib.pyplot as plt
+from scipy.signal import savgol_filter
 
 class EC_Data:
     """ Reads and stores data from a TDMS file in the format of EC4 DAQ.
@@ -12,7 +13,7 @@ class EC_Data:
     When creating an opject the file path must be given.
      
     """
-    def __init__(self, path):
+    def __init__(self, path = ""):
         self._area=1
         self._area_unit="cm^2"
         self.Time=[]
@@ -25,32 +26,36 @@ class EC_Data:
         self.Phase_U=[]
         self.path=""
         
-        try:
-            tdms_file = TdmsFile.read(path)
-            tdms_file.close()
-            self.path = str(path)
-            self.Time = tdms_file['EC']['Time'].data
-            self.i = tdms_file['EC']['i'].data
-            self.E = tdms_file['EC']['E'].data
-            self.name = tdms_file.properties['name']
+        if path == "":
+            print("no path")
+            return
+        else:
             try:
-                self.Z_E = tdms_file['EC']['Z_E'].data #not all data file contains U channel
-                self.Phase_E = tdms_file['EC']['Phase_E'].data #not all data file contains U channel
-            except KeyError:
-                pass
-            try:
-                self.U = tdms_file['EC']['Ucell'].data #not all data file contains U channel
-            except KeyError:
-                pass
-            try:
-                self.Z_U = tdms_file['EC']['Z_cell'].data #not all data file contains U channel
-                self.Phase_U = tdms_file['EC']['Phase_cell'].data #not all data file contains U channel
-            except KeyError:
-                pass
-        except FileNotFoundError :
-            print(f"TDMS file was not found: {path}")
-        except KeyError as e: 
-            print(f"TDMS error: {e}") 
+                tdms_file = TdmsFile.read(path)
+                tdms_file.close()
+                self.path = str(path)
+                self.Time = tdms_file['EC']['Time'].data
+                self.i = tdms_file['EC']['i'].data
+                self.E = tdms_file['EC']['E'].data
+                self.name = tdms_file.properties['name']
+                try:
+                    self.Z_E = tdms_file['EC']['Z_E'].data #not all data file contains U channel
+                    self.Phase_E = tdms_file['EC']['Phase_E'].data #not all data file contains U channel
+                except KeyError:
+                    pass
+                try:
+                    self.U = tdms_file['EC']['Ucell'].data #not all data file contains U channel
+                except KeyError:
+                    pass
+                try:
+                    self.Z_U = tdms_file['EC']['Z_cell'].data #not all data file contains U channel
+                    self.Phase_U = tdms_file['EC']['Phase_cell'].data #not all data file contains U channel
+                except KeyError:
+                    pass
+            except FileNotFoundError :
+                print(f"TDMS file was not found: {path}")
+            except KeyError as e: 
+                print(f"TDMS error: {e}") 
         
     
     def set_area(self,value,unit):
@@ -60,10 +65,11 @@ class EC_Data:
     def __str__(self):
         return f"{self.name}"
 
-    """
-    Get the channel of the EC4 DAQ file.
-    """
-    def get_channel(self,datachannel):
+
+    def get_channel(self,datachannel:str):
+        """
+        Get the channel of the EC4 DAQ file.
+        """
         match datachannel:
             case "Time":
                 return self.Time,"t","s"
@@ -99,18 +105,33 @@ class EC_Data:
                 raise NameError("The channel name is not supported")
                 #return np.array([2]), "No channel", "No channel"
 
-    def cosVal(self,phase):
+    def cosVal(self,phase: float):
         cosValue=phase/phase
         max_index=len(phase)
         for i in range(max_index):
             cosValue[i] = math.cos(self.Phase_E[i])
         return cosValue
 
-    def plot(self, x_channel,y_channel):
+    
+    def plot(self, x_channel:str,y_channel:str,**kwargs):
+        '''
+        plots y_channel vs x_channel.\n
+        to add to a existing plot, add the argument: \n
+        "plot=subplot"\n
+        "x_smooth= number" - smoothing of the x-axis. \n
+        "y_smooth= number" - smoothing of the y-axis. \n
+        
+        '''
         xlable ="wrong channel name"
         xunit = "wrong channel name"
         ylable ="wrong channel name"
         yunit = "wrong channel name"
+        options = {
+            'x_smooth' : 0,
+            'y_smooth' : 0,
+            'plot' : 'newplot', }
+        options.update(kwargs)
+
         try:
             xdata,xlable,xunit = self.get_channel(x_channel)
         except NameError as e:
@@ -123,10 +144,26 @@ class EC_Data:
         #except :
            
         #finally:
-             
-            fig = plt.figure()
-            plt.suptitle(self.name)
-            ax = fig.subplots()
+            '''add a the data to an existing plot or create a new'''
+            try:
+                ax = kwargs['plot']     
+            except:
+                fig = plt.figure()
+                plt.suptitle(self.name)
+                ax = fig.subplots()
+            try:
+                y_smooth = int(options['y_smooth'])
+                if(y_smooth > 0):
+                    ydata = savgol_filter(ydata, y_smooth, 1)
+            except:
+                pass
+            try:
+                x_smooth = int(options['x_smooth'])
+                if(x_smooth > 0):
+                    xdata = savgol_filter(xdata, x_smooth, 1)
+            except:
+                pass
+
             try:
                 ax.plot(xdata,ydata)
             except:
