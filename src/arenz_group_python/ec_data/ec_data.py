@@ -13,7 +13,7 @@ class EC_Data:
     When creating an opject the file path must be given.
      
     """
-    def __init__(self, path: str):
+    def __init__(self, path: str = ""):
         self._area=1
         self._area_unit="cm^2"
         self.Time=[]
@@ -26,32 +26,33 @@ class EC_Data:
         self.Phase_U=[]
         self.path=""
         
-        try:
-            tdms_file = TdmsFile.read(path)
-            tdms_file.close()
-            self.path = str(path)
-            self.Time = tdms_file['EC']['Time'].data
-            self.i = tdms_file['EC']['i'].data
-            self.E = tdms_file['EC']['E'].data
-            self.name = tdms_file.properties['name']
+        if path != "":
             try:
-                self.Z_E = tdms_file['EC']['Z_E'].data #not all data file contains U channel
-                self.Phase_E = tdms_file['EC']['Phase_E'].data #not all data file contains U channel
-            except KeyError:
-                pass
-            try:
-                self.U = tdms_file['EC']['Ucell'].data #not all data file contains U channel
-            except KeyError:
-                pass
-            try:
-                self.Z_U = tdms_file['EC']['Z_cell'].data #not all data file contains U channel
-                self.Phase_U = tdms_file['EC']['Phase_cell'].data #not all data file contains U channel
-            except KeyError:
-                pass
-        except FileNotFoundError :
-            print(f"TDMS file was not found: {path}")
-        except KeyError as e: 
-            print(f"TDMS error: {e}") 
+                tdms_file = TdmsFile.read(path)
+                tdms_file.close()
+                self.path = str(path)
+                self.Time = tdms_file['EC']['Time'].data
+                self.i = tdms_file['EC']['i'].data
+                self.E = tdms_file['EC']['E'].data
+                self.name = tdms_file.properties['name']
+                try:
+                    self.Z_E = tdms_file['EC']['Z_E'].data #not all data file contains U channel
+                    self.Phase_E = tdms_file['EC']['Phase_E'].data #not all data file contains U channel
+                except KeyError:
+                    pass
+                try:
+                    self.U = tdms_file['EC']['Ucell'].data #not all data file contains U channel
+                except KeyError:
+                    pass
+                try:
+                    self.Z_U = tdms_file['EC']['Z_cell'].data #not all data file contains U channel
+                    self.Phase_U = tdms_file['EC']['Phase_cell'].data #not all data file contains U channel
+                except KeyError:
+                    pass
+            except FileNotFoundError :
+                print(f"TDMS file was not found: {path}")
+            except KeyError as e: 
+                print(f"TDMS error: {e}") 
         
     
     def set_area(self,value,unit):
