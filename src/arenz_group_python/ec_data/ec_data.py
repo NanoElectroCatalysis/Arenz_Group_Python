@@ -13,7 +13,7 @@ class EC_Data:
     When creating an opject the file path must be given.
      
     """
-    def __init__(self, path):
+    def __init__(self, path: str):
         self._area=1
         self._area_unit="cm^2"
         self.Time=[]
@@ -101,7 +101,7 @@ class EC_Data:
                 raise NameError("The channel name is not supported")
                 #return np.array([2]), "No channel", "No channel"
 
-    def cosVal(self,phase):
+    def cosVal(self,phase: float):
         cosValue=phase/phase
         max_index=len(phase)
         for i in range(max_index):
@@ -111,9 +111,11 @@ class EC_Data:
     
     def plot(self, x_channel:str,y_channel:str,**kwargs):
         '''
-        plots y_channel vs x_channel.
-        to add to a existing plot, add the argument: 
-        "ax=subplot"
+        plots y_channel vs x_channel.\n
+        to add to a existing plot, add the argument: \n
+        "plot=subplot"\n
+        "x_smooth= number" - smoothing of the x-axis. \n
+        "y_smooth= number" - smoothing of the y-axis. \n
         
         '''
         xlable ="wrong channel name"

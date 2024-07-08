@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.5' 
+VERSION = '0.0.6' 
 DESCRIPTION = 'a pip-installable package with function for Arenz Group'
 LONG_DESCRIPTION = 'My first Python package with a slightly longer description'
 
