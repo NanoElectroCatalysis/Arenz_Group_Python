@@ -78,13 +78,13 @@ class CV_Data(EC_Setup):
         self._area = value
         self._area_unit = unit
     
-    def conv(self, data: EC_Data):
+    def conv(self, data: EC_Data, ** kwargs):
         """Converts EC_Data to a CV
 
         Args:
             data (EC_Data): the data that should be converted.
         """
-        self.convert(data.Time,data.E,data.i)
+        self.convert(data.Time,data.E,data.i,**kwargs)
         self.setup = data.setup
         self.set_area(data._area, data._area_unit)
         self.set_rotation(data.rotation, data.rotation_unit)
@@ -278,6 +278,15 @@ class CV_Data(EC_Setup):
         ax.set_xlabel(options.get_x_txt())
         return ax
     
+    def get_index_of_E(self, E:float):
+        index = 0
+        for x in self.E:
+            if x > E:
+                break
+            else:
+                index = index + 1
+        return index
+    
     def get_i_at_E(self, E:float, dir:str = "all"):
         """Get the current at a specific voltage.
 
@@ -287,12 +296,7 @@ class CV_Data(EC_Setup):
         Returns:
             _type_: _description_
         """
-        index = 0
-        for x in self.E:
-            if x > E:
-                break
-            else:
-                index = index + 1
+        index = self.get_index_of_E(E)
                 
         if dir == "pos":
             return self.i_p[index]
