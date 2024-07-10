@@ -170,6 +170,8 @@ class CV_Datas:
                 if arg == "area":
                     cv.norm(arg)
             cv.plot(plot = CV_plot, legend = cv._rotation)
+            #.get_color()
+            #color = line.get_color()
             i_dl_p,i_dl_n = cv.get_i_at_E(Epot)
             y.append(cv.get_i_at_E(Epot))
             xmin = cv.get_index_of_E(lims[0])
@@ -201,8 +203,8 @@ class CV_Datas:
 
         #analyse_plot.plot(rot,y_inv,'o')
 
-        #analyse_plot.set_xlabel("rotation$^{0.5}$")
-        #analyse_plot.set_ylabel(y_axis_title)
+        analyse_plot.set_xlabel("E / V")
+        analyse_plot.set_ylabel(f"log( {y_axis_title} / {y_axis_title})" )
         #m_pos, b = np.polyfit(rot, y_inv[:,0], 1)
         #y_pos= m_pos*rot+b
         #line,=analyse_plot.plot(rot,y_pos,'-' )
