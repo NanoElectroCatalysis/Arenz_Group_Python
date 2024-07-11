@@ -23,11 +23,16 @@ class EC_Setup:
     
     @property 
     def setup(self):
-        return self.setup_data.setup
+        """setup meta data
+
+        Returns:
+            dict[]: list of key words
+        """
+        return self.setup_data._setup
         
     @setup.setter
     def setup(self, value:float):
-        self.setup_data.setup = value
+        self.setup_data._setup = value
 
     @property 
     def area(self):

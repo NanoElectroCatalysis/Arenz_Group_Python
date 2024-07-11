@@ -9,14 +9,17 @@ import matplotlib.pyplot as plt
 from scipy.signal import savgol_filter
 from . import util
 from .util import plot_options
+from .ec_setup import EC_Setup
 
-class EC_Data:
+
+class EC_Data(EC_Setup):
     """ Reads and stores data from a TDMS file in the format of EC4 DAQ.
 
     When creating an opject the file path must be given.
      
     """
     def __init__(self, path = ""):
+        super().__init__()
         self._area=1
         self._area_unit="cm^2"
         self.rotation =0
@@ -30,7 +33,7 @@ class EC_Data:
         self.Z_U=np.array([],dtype=np.float64)
         self.Phase_U=np.array([],dtype=np.float64)
         self.path=""
-        self.setup = {}
+        #self.setup = {}
         """All setup information given in the file.
         """
         
@@ -185,7 +188,7 @@ class EC_Data:
             #        xdata = savgol_filter(xdata, x_smooth, 1)
             #except:
             #    pass
-
+            line =None
             try:
                 line, = ax.plot(xdata,ydata)
                 line.set_label(options.get_legend())
@@ -193,6 +196,6 @@ class EC_Data:
                 pass
             ax.set_xlabel(f'{xlable} / {xunit}')
             ax.set_ylabel(f'{ylable} / {yunit}')
-            return ax, line     
+            return line, ax     
 
  

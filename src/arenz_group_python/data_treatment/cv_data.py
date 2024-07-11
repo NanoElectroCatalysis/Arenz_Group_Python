@@ -89,10 +89,12 @@ class CV_Data(EC_Setup):
         Args:
             data (EC_Data): the data that should be converted.
         """
+        #print("Convert:",kwargs)
         self.convert(data.Time,data.E,data.i,**kwargs)
-        self.setup = data.setup
-        self.set_area(data._area, data._area_unit)
-        self.set_rotation(data.rotation, data.rotation_unit)
+        self.setup_data = data.setup_data
+        #self.setup = data.setup
+        #self.set_area(data._area, data._area_unit)
+        #self.set_rotation(data.rotation, data.rotation_unit)
         self.name = data.name
         return
         
@@ -272,6 +274,7 @@ class CV_Data(EC_Setup):
         #except:
         #    pass
         ydata = options.smooth_y(ydata) 
+        line = None
         try:
             line, = ax.plot(xdata,ydata)
             line.set_label(options.get_legend())
@@ -281,7 +284,7 @@ class CV_Data(EC_Setup):
         #ax.set_ylabel(f'{ylable} / {yunit}')
         ax.set_ylabel(options.get_y_txt())
         ax.set_xlabel(options.get_x_txt())
-        return ax
+        return line, ax
     
     def get_index_of_E(self, E:float):
         index = 0
