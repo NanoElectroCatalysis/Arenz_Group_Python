@@ -4,8 +4,11 @@
 """
 from nptdms import TdmsFile
 import math
+import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import savgol_filter
+from . import util
+from .util import plot_options
 
 class EC_Data:
     """ Reads and stores data from a TDMS file in the format of EC4 DAQ.
@@ -16,18 +19,23 @@ class EC_Data:
     def __init__(self, path = ""):
         self._area=1
         self._area_unit="cm^2"
-        self.Time=[]
-        self.E=[]
-        self.i=[]
-        self.U=[]
-        self.Z_E=[]
-        self.Phase_E=[]
-        self.Z_U=[]
-        self.Phase_U=[]
+        self.rotation =0
+        self.rotation_unit ="/min"
+        self.Time=np.array([],dtype=np.float64) 
+        self.E=np.array([],dtype=np.float64)
+        self.i=np.array([],dtype=np.float64)
+        self.U=np.array([],dtype=np.float64)
+        self.Z_E=np.array([],dtype=np.float64)
+        self.Phase_E=np.array([],dtype=np.float64)
+        self.Z_U=np.array([],dtype=np.float64)
+        self.Phase_U=np.array([],dtype=np.float64)
         self.path=""
+        self.setup = {}
+        """All setup information given in the file.
+        """
         
         if path == "":
-            print("no path")
+            #print("no path")
             return
         else:
             try:
@@ -52,6 +60,16 @@ class EC_Data:
                     self.Phase_U = tdms_file['EC']['Phase_cell'].data #not all data file contains U channel
                 except KeyError:
                     pass
+                try:
+                    Items = tdms_file['Setup']['Item']
+                    Value = tdms_file['Setup']['Value']
+                    for x in range(len(Items)):
+                        self.setup[Items[x]] = Value[x]
+                except KeyError:
+                    pass
+                [self._area, self._area_unit] = util.extract_value_unit(self.setup["Electrode.Area"])
+                [self.rotation, self.rotation_unit] = util.extract_value_unit(self.setup["Inst.Convection.Speed"])
+                
             except FileNotFoundError :
                 print(f"TDMS file was not found: {path}")
             except KeyError as e: 
@@ -112,12 +130,15 @@ class EC_Data:
             cosValue[i] = math.cos(self.Phase_E[i])
         return cosValue
 
+
+
+            
     
-    def plot(self, x_channel:str,y_channel:str,**kwargs):
+    def plot(self, x_channel:str, y_channel:str, **kwargs):
         '''
         plots y_channel vs x_channel.\n
         to add to a existing plot, add the argument: \n
-        "plot=subplot"\n
+        "plot = subplot"\n
         "x_smooth= number" - smoothing of the x-axis. \n
         "y_smooth= number" - smoothing of the y-axis. \n
         
@@ -126,12 +147,9 @@ class EC_Data:
         xunit = "wrong channel name"
         ylable ="wrong channel name"
         yunit = "wrong channel name"
-        options = {
-            'x_smooth' : 0,
-            'y_smooth' : 0,
-            'plot' : 'newplot', }
-        options.update(kwargs)
-
+        
+        options = plot_options(kwargs)
+       
         try:
             xdata,xlable,xunit = self.get_channel(x_channel)
         except NameError as e:
@@ -151,25 +169,30 @@ class EC_Data:
                 fig = plt.figure()
                 plt.suptitle(self.name)
                 ax = fig.subplots()
-            try:
-                y_smooth = int(options['y_smooth'])
-                if(y_smooth > 0):
-                    ydata = savgol_filter(ydata, y_smooth, 1)
-            except:
-                pass
-            try:
-                x_smooth = int(options['x_smooth'])
-                if(x_smooth > 0):
-                    xdata = savgol_filter(xdata, x_smooth, 1)
-            except:
-                pass
+            
+            ydata = options.smooth_y(ydata)
+            #try:
+            #    y_smooth = options.get_y_smooth()
+            #    if(y_smooth > 0):
+            #        ydata = savgol_filter(ydata, y_smooth, 1)
+            #except:
+            #    pass
+            xdata = options.smooth_x(xdata)
+            
+            #try:
+            #    x_smooth = options.get_x_smooth()
+            #    if(x_smooth > 0):
+            #        xdata = savgol_filter(xdata, x_smooth, 1)
+            #except:
+            #    pass
 
             try:
-                ax.plot(xdata,ydata)
+                line, = ax.plot(xdata,ydata)
+                line.set_label(options.get_legend())
             except:
                 pass
             ax.set_xlabel(f'{xlable} / {xunit}')
             ax.set_ylabel(f'{ylable} / {yunit}')
-            return ax     
+            return ax, line     
 
  
