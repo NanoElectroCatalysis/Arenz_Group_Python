@@ -17,7 +17,7 @@ from pathlib import Path
 
 
 class CV_Data(EC_Setup):
-    def __init__(self):
+    def __init__(self,*args, **kwargs):
         super().__init__()
         #self._area=2
         #self._area_unit="cm^2"
@@ -37,6 +37,11 @@ class CV_Data(EC_Setup):
         self.xmin = -2.5
         self.xmax = 2.5
         self.setup = {}
+        if not args:
+            return
+        else:
+            #print(kwargs)
+            self.conv(EC_Data(args[0]),**kwargs)
         
     def sub(self, subData):
         try:

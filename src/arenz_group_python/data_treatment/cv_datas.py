@@ -30,9 +30,14 @@ class CV_Datas:
         return
     
     def bg_corr(self, bg_cv:CV_Data):
+        """Background correct the data by subtracting the bg_cv. 
+
+        Args:
+            bg_cv (CV_Data): _description_
+        """
         for cv in self.datas:
             cv.sub(bg_cv)
-        return
+        return copy.deepcopy(self)
     
     
     def _make_plot(self, Title:str):
@@ -44,6 +49,14 @@ class CV_Datas:
         return CV_plot, analyse_plot
     
     def Levich(self, Epot, *args):
+        """Levich analysis. Creates plot of the data and a Levich plot.
+
+        Args:
+            Epot (_type_): Potential at which the current will be used.
+
+        Returns:
+            _type_: _description_
+        """
   
         CV_plot, analyse_plot = self._make_plot("Levich Analysis")
         #CV_plot, analyse_plot = fig.subplots(1,2)
@@ -59,10 +72,10 @@ class CV_Datas:
         CVs = copy.deepcopy(self.datas)
         #CVs = [CV_Data() for i in range(len(paths))]
         for cv in CVs:
-            rot.append(math.sqrt(cv._rotation))
+            rot.append(math.sqrt(cv.rotation))
             for arg in args:
                 cv.norm(arg)
-            cv.plot(plot = CV_plot, legend = cv._rotation)
+            cv.plot(plot = CV_plot, legend = cv.rotation)
             y.append(cv.get_i_at_E(Epot))
             E.append([Epot, Epot])
             y_axis_title= cv.i_label
@@ -111,10 +124,10 @@ class CV_Datas:
         y_axis_unit =""
         CVs = copy.deepcopy(self.datas)
         for cv in CVs:
-            rot.append( math.sqrt(cv._rotation))
+            rot.append( math.sqrt(cv.rotation))
             for arg in args:
                 cv.norm(arg)
-            cv.plot(plot = CV_plot, legend = cv._rotation)
+            cv.plot(plot = CV_plot, legend = cv.rotation)
             y.append(cv.get_i_at_E(Epot))
             E.append([Epot, Epot])
             y_axis_title= cv.i_label
@@ -150,8 +163,13 @@ class CV_Datas:
         print("KouLev", B_pos,B_neg)
         return m_pos,m_neg
     
-    def Tafel(self, Epot, lims=[0,0], *args):
-        
+    def Tafel(self, E_for_idl:float, lims=[0,0], *args):
+        """_summary_
+
+        Args:
+            E_for_idl (float): potential that used to determin the diffusion limited current.
+            lims (list, optional): _description_. Defaults to [0,0].
+        """
         CV_plot, analyse_plot = self._make_plot("Tafel Analysis")
         CV_plot.title.set_text('CVs')
 
@@ -164,24 +182,24 @@ class CV_Datas:
         y_axis_title =""
         CVs = copy.deepcopy(self.datas)
         for cv in CVs:
-            rot.append( math.sqrt(cv._rotation))
+            rot.append( math.sqrt(cv.rotation))
         
             for arg in args:
                 if arg == "area":
                     cv.norm(arg)
-            cv.plot(plot = CV_plot, legend = cv._rotation)
+            cv.plot(plot = CV_plot, legend = cv.rotation)
             #.get_color()
             #color = line.get_color()
-            i_dl_p,i_dl_n = cv.get_i_at_E(Epot)
-            y.append(cv.get_i_at_E(Epot))
-            xmin = cv.get_index_of_E(lims[0])
-            xmax = cv.get_index_of_E(lims[1])
+            i_dl_p,i_dl_n = cv.get_i_at_E(E_for_idl)
+            y.append(cv.get_i_at_E(E_for_idl))
+            xmin = cv.get_index_of_E(min(lims))
+            xmax = cv.get_index_of_E(max(lims))
             #y_data = cv.i_p[xmin:xmax]
             y_data = [math.log10(abs(1/(1/i-1/i_dl_p))) for i in cv.i_p]
             m_pos, b = np.polyfit(cv.E[xmin:xmax], y_data[xmin:xmax], 1)
             y_pos= m_pos*cv.E[xmin:xmax]+b
             print("Tafel", 1./ m_pos , "V/dec")
-            E.append([Epot, Epot])
+            E.append([E_for_idl, E_for_idl])
             y_axis_title= cv.i_label
             analyse_plot.plot(cv.E, y_data)
             line, = analyse_plot.plot(cv.E[xmin:xmax], y_pos)
