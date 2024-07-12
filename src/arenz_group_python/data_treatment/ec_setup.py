@@ -41,6 +41,15 @@ class EC_Setup:
     @area.setter
     def area(self, value:float):
         self.setup_data._area = value
+        
+    @property 
+    def area_unit(self):
+        return self.setup_data._area_unit
+        
+    @area_unit.setter
+    def area(self, value:str):
+        self.setup_data._area_unit = value
+
 
     @property
     def rotation(self):
@@ -48,7 +57,26 @@ class EC_Setup:
 
     @rotation.setter
     def rotation(self, value:float):
-        return self.setup_data._rotation 
+        """set the rotation rate
+
+        Args:
+            value (float): rotation rate
+        """
+        self.setup_data._rotation = value
+
+    @property
+    def rotation_unit(self):
+        return self.setup_data._rotation_unit
+
+    @rotation_unit.setter
+    def rotation_unit(self, value:str):
+        """set the rotation rate
+
+        Args:
+            value (str): rotation unit
+        """
+        self.setup_data._rotation_unit = value
+
 
     def set_area(self,value:float,unit:str = ""):
         self.setup_data._area = value

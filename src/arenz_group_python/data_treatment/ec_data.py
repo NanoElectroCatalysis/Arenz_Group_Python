@@ -70,8 +70,8 @@ class EC_Data(EC_Setup):
                         self.setup[Items[x]] = Value[x]
                 except KeyError:
                     pass
-                [self._area, self._area_unit] = util.extract_value_unit(self.setup["Electrode.Area"])
-                [self.rotation, self.rotation_unit] = util.extract_value_unit(self.setup["Inst.Convection.Speed"])
+                [self.area, self.setup_data._area_unit] = util.extract_value_unit(self.setup["Electrode.Area"])
+                [self.rotation, self.setup_data.rotation_unit] = util.extract_value_unit(self.setup["Inst.Convection.Speed"])
                 
             except FileNotFoundError :
                 print(f"TDMS file was not found: {path}")
