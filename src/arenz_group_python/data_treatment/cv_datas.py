@@ -29,6 +29,12 @@ class CV_Datas:
         #print(index)
         return
     
+    def __getitem__(self, item_index:int): 
+        return self.datas[item_index]
+    
+    def __setitem__(self, item_index:int, new_CV:CV_Data):
+        self.datas[item_index].new_CV
+    
     def bg_corr(self, bg_cv:CV_Data):
         """Background correct the data by subtracting the bg_cv. 
 
