@@ -33,6 +33,7 @@ class EC_Data(EC_Setup):
         self.Z_U=np.array([],dtype=np.float64)
         self.Phase_U=np.array([],dtype=np.float64)
         self.path=""
+        self.rawdata = None
         #self.setup = {}
         """All setup information given in the file.
         """
@@ -45,6 +46,7 @@ class EC_Data(EC_Setup):
                 tdms_file = TdmsFile.read(path)
                 tdms_file.close()
                 self.path = str(path)
+                self.rawdata = tdms_file['EC']
                 self.Time = tdms_file['EC']['Time'].data
                 self.i = tdms_file['EC']['i'].data
                 self.E = tdms_file['EC']['E'].data
@@ -78,6 +80,7 @@ class EC_Data(EC_Setup):
             except KeyError as e: 
                 print(f"TDMS error: {e}") 
         
+    
     
     def set_area(self,value,unit):
         self._area = value
@@ -131,11 +134,7 @@ class EC_Data(EC_Setup):
         max_index=len(phase)
         for i in range(max_index):
             cosValue[i] = math.cos(self.Phase_E[i])
-        return cosValue
-
-
-
-            
+        return cosValue          
     
     def plot(self, x_channel:str, y_channel:str, **kwargs):
         '''
@@ -198,4 +197,23 @@ class EC_Data(EC_Setup):
             ax.set_ylabel(f'{ylable} / {yunit}')
             return line, ax     
 
- 
+    def plot_rawdata(self):
+            fig = plt.figure()
+            
+            plt.suptitle(self.name)
+            nr_data = len(self.rawdata)
+            print(self.name, ": EC data sets: ", nr_data)
+            plot = fig.subplots(nr_data,1)
+            #ax = fig.subplots()
+            index=0
+            for x in self.rawdata:
+                try:
+                     plot[index].plot(self.rawdata['Time'].data,x.data)
+                finally:
+                    index +=1
+            
+            return
+                
+            
+            
+    
