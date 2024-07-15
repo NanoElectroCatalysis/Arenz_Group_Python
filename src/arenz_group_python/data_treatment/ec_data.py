@@ -201,14 +201,15 @@ class EC_Data(EC_Setup):
             fig = plt.figure()
             
             plt.suptitle(self.name)
-            nr_data = len(self.rawdata)
+            nr_data = len(self.rawdata) -1 # The time channel should not be counted.
             print(self.name, ": EC data sets: ", nr_data)
             plot = fig.subplots(nr_data,1)
             #ax = fig.subplots()
             index=0
-            for x in self.rawdata:
+            for ch_name in self.rawdata:
                 try:
-                     plot[index].plot(self.rawdata['Time'].data,x.data)
+                    if( ch_name != 'Time'):
+                        plot[index].plot(self.rawdata['Time'].data,self.rawdata[ch_name].data)
                 finally:
                     index +=1
             
