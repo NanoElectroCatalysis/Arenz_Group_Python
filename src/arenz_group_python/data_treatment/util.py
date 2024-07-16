@@ -5,6 +5,8 @@ Utility module.
 
 import math
 from scipy.signal import savgol_filter
+import matplotlib.pyplot as plt
+
 
 def extract_value_unit(s:str):
     """_summary_
@@ -72,6 +74,8 @@ class plot_options:
         return str(self.options['dir'])
     
     def get_plot(self):
+        
+        
         return self.options['plot']
     
     def smooth_y(self, ydata):
@@ -92,4 +96,11 @@ class plot_options:
             pass
         return xdata
     
-    
+    def fig(name, **kwargs):
+        try:
+            ax = kwargs['plot']
+        except:
+            fig = plt.figure()
+            plt.subtitle(name)
+            ax = fig.subplots()
+            
