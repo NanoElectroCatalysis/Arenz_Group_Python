@@ -1,7 +1,0 @@
-
-
-
-class AutoClaveSynthesis:
-    
-    def __init__(self) -> None:
-        self.Time = []
