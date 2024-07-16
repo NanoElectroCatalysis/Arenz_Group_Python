@@ -14,7 +14,7 @@ print(__path__)
 
 __version__ = "0.0.100"
 
-__all__ = ["ec_data","EC_Data","CV_Data","CV_Datas","save_key_values"]
+__all__ = ["ec_data","EC_Data","CV_Data","CV_Datas","save_key_values","Project_Paths"]
 
 
 from .data_treatment import *

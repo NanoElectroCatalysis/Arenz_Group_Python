@@ -1,6 +1,7 @@
 
 import csv
 from pathlib import Path
+from .util_paths import Project_Paths
 
 
 DELIMETER = '\t'
