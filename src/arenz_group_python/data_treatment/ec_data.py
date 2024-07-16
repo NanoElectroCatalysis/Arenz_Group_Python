@@ -207,11 +207,15 @@ class EC_Data(EC_Setup):
             #ax = fig.subplots()
             index=0
             for ch_name in self.rawdata:
-                try:
-                    if( ch_name != 'Time'):
-                        plot[index].plot(self.rawdata['Time'].data,self.rawdata[ch_name].data)
-                finally:
-                    index +=1
+                if( ch_name != 'Time'):
+                    try:
+                        #time = channel.time_track()
+                        plot[index].plot(self.rawdata[ch_name].time_track(),self.rawdata[ch_name].data)
+                        yunit = self.rawdata[ch_name].properties["unit_string"]
+                        plot[index].set_ylabel(f'{ch_name} / {yunit}')
+                        plot[index].set_xlabel(f'Time / s')
+                    finally:
+                        index +=1                    
             
             return
                 
