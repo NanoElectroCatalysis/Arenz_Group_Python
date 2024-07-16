@@ -173,7 +173,7 @@ def make_project_files( main_dir: Path):
         "from arenz_group_python import CV_Data",
         "",
         "#if there is a file in the rawdata folder:",
-        "PATH_TO_FILE = Project_Paths().rawdata_path / \'FILE_NAME\' "
+        "PATH_TO_FILE = Project_Paths().rawdata_path / \'FILE_NAME\' ",
         "#file1 = EC_Data(\'PATH_TO_FILE\')",
         "#file1.plot(\'E\',\'i\') # for a i vs E plot "
     ]
