@@ -135,12 +135,12 @@ def make_project_files( main_dir: Path):
         with open(path,"x") as f:
             f.write("# Leave it empty. This is just a special file that tells pip that your main module is in this folder.\n# No need to add anything here. Feel free to delete this line when you make your own package.")
             f.close()
-        print("+\"__init__.py\" was created")
+        print(f"+\"{path.name}\" was created")
     except FileExistsError :
-        print("-\"__init__.py\" already exists")
+        print(f"-\"{path.name}\" already exists")
 
 
-    path = main_dir / "notebooks_exploration_cleaning" / "extractData2.ipynb"
+    path = main_dir / "notebooks_exploration_cleaning" / "extractData.ipynb"
     try:
         with open(path,"x") as f:
             f.write('''{
@@ -168,12 +168,12 @@ def make_project_files( main_dir: Path):
     "metadata": {},
     "outputs": [],
     "source": [
-        "from arenz_group_python import EC_Data",
-        "from arenz_group_python import Project_Paths",
-        "from arenz_group_python import CV_Data",
+        "#from arenz_group_python import EC_Data",
+        "#from arenz_group_python import Project_Paths",
+        "#from arenz_group_python import CV_Data",
         "",
         "#if there is a file in the rawdata folder:",
-        "PATH_TO_FILE = Project_Paths().rawdata_path / \'FILE_NAME\' ",
+        "#PATH_TO_FILE = Project_Paths().rawdata_path / \'FILE_NAME\' ",
         "#file1 = EC_Data(\'PATH_TO_FILE\')",
         "#file1.plot(\'E\',\'i\') # for a i vs E plot "
     ]
@@ -194,8 +194,9 @@ def make_project_files( main_dir: Path):
     "nbformat_minor": 2
     }''')
             f.close()
+        print(f"+\"{path.name}\" was created")
     except FileExistsError:
-        print("-\"extractData.ipynb\" already exists")                
+        print(f"-\"{path.name}\" already exists")                
                 
 def make_project_files_data( main_dir: Path):               
  
@@ -205,9 +206,9 @@ def make_project_files_data( main_dir: Path):
         with open(path,"x") as f:
             f.write("# Use the rawdata folder to store all experimental data. ONLY!!!!.")
             f.close()
-        print("+\"README.md\" was created")
+        print(f"+\"{path.name}\" was created")
     except FileExistsError :
-        print("-\"README.md\" already exists")
+        print(f"-\"{path.name}\" already exists")
         
         
     ##### PATH to data file    
@@ -216,16 +217,16 @@ def make_project_files_data( main_dir: Path):
         with open(path,"x") as f:
             f.write("# Use the data folder to store all extracted values from data manipulation. NO RAW DATA!!!!.")
             f.close()
-        print("+\"README.md\" was created")
+        print(f"+\"{path.name}\" was created")
     except FileExistsError :
-        print("-\"README.md\" already exists")
+        print(f"-\"{path.name}\" already exists")
         
     path = main_dir / "data" / "extracted_values.csv"
     try:
         with open(path,"x") as f:
             f.write("")
             f.close()
-        print("+\"extracted_values.csv\" was created")
+        print(f"+\"{path.name}\" was created")
     except FileExistsError :
-        print("-\"extracted_values.csv\" already exists")
+        print(f"-\"{path.name}\" already exists")
 
