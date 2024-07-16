@@ -153,13 +153,16 @@ def make_project_files( main_dir: Path):
         "use this notebook and others to extract data.",
         "",
         "To use with electrochemistry data, use the following import:",
-        "from arenz_group_python import EC_Data",
+        "from arenz_group_python import EC_Data #to load in a single tdms file",
         "",
-        "from arenz_group_python import Project_Paths",
+        "from arenz_group_python import CV_Data # to import a single CV.",
         "",
-        "from arenz_group_python import CV_Data",
+        "from arenz_group_python import CV_Datas # to import a multiple CVs at once form a list of paths",
+        "",
+        "from arenz_group_python import Project_Paths # to load in path constants.",
+        "",
+        "from arenz_group_python import save_key_values # to save key values.",
         ""
-        
         ]
     },
     {
@@ -176,6 +179,18 @@ def make_project_files( main_dir: Path):
         "#PATH_TO_FILE = Project_Paths().rawdata_path / \'FILE_NAME\' ",
         "#file1 = EC_Data(\'PATH_TO_FILE\')",
         "#file1.plot(\'E\',\'i\') # for a i vs E plot "
+    ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+        "from arenz_group_python import save_key_values",
+        "",
+        "# The target file is assumed to be in the data folder",
+        "save_key_values(\'extracted_values.csv\',\'sample 7\', [4,2,5,4,5]) "
     ]
     }
     ],

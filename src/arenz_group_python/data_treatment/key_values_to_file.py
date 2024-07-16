@@ -7,15 +7,37 @@ from .util_paths import Project_Paths
 DELIMETER = '\t'
 
 def save_key_values(file_path:Path, sample_name:str, properties:list):
+    """Saves key values into a csv. The function add a row, or replace an existing row based on the 
+    sample name. The first column will always sample name. The following columns will be the list values.
 
-    all_data =[]
-    new_row = [sample_name] + properties
-    sample_already_in_dataset= False
+    Args:
+        file_path (Path): Path to data file or relative path
+        sample_name (str): Name of sample, will be the first column of the row.
+        properties (list): List of values to be stored on the same row
+
+    Returns:
+        _type_: _description_
+    """
     if file_path == "":
         print( "empty path ")
         return False
-    elif file_path.exists:    
-        with open(file_path, 'r', newline='') as csvfile:
+    p = file_path
+    if isinstance(file_path,str):
+        p = Path(file_path)
+    if not p.is_absolute():
+        pa = Project_Paths()._treated_data_path()
+        pa = Path(str(Project_Paths()._treated_data_path()))
+        #print(pa)
+        p= pa.joinpath(p)
+
+    
+    all_data =[]
+    sample = "\"" + sample_name + "\""
+    new_row = [sample] + properties
+    sample_already_in_dataset= False
+    #print(p)
+    if p.exists:    
+        with open(p, 'r', newline='') as csvfile:
             #reads the file
             spamreader = csv.reader(csvfile, delimiter=DELIMETER, quotechar='|')
 
@@ -32,17 +54,18 @@ def save_key_values(file_path:Path, sample_name:str, properties:list):
             if not sample_already_in_dataset:
                 print("sample not found -  adding row")
                 all_data.append(new_row)
-                
+            csvfile.close()   
     else:
         print("new file.")
         all_data.append(new_row)
 
     #print(all_data) 
-    with open(file_path, 'w', newline='') as csvfile:
+    with open(p, 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=DELIMETER,
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         for row in all_data:
             spamwriter.writerow(row) #row
-    
-    return True
+        csvfile.close()
+    print(p)
+    return
                 
