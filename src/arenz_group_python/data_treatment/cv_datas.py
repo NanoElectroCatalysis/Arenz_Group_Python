@@ -54,7 +54,7 @@ class CV_Datas:
         CV_plot, analyse_plot = fig.subplots(1,2)
         return CV_plot, analyse_plot
     
-    def Levich(self, Epot, *args):
+    def Levich(self, Epot, *args, **kwargs):
         """Levich analysis. Creates plot of the data and a Levich plot.
 
         Args:
@@ -77,11 +77,14 @@ class CV_Datas:
         y_axis_title =""
         CVs = copy.deepcopy(self.datas)
         #CVs = [CV_Data() for i in range(len(paths))]
+        cv_kwargs = kwargs
         for cv in CVs:
             rot.append(math.sqrt(cv.rotation))
             for arg in args:
                 cv.norm(arg)
-            cv.plot(plot = CV_plot, legend = cv.rotation)
+            cv_kwargs["legend"] = cv.rotation
+            cv_kwargs["plot"] = CV_plot
+            cv.plot(**cv_kwargs)
             y.append(cv.get_i_at_E(Epot))
             E.append([Epot, Epot])
             y_axis_title= cv.i_label
@@ -110,7 +113,7 @@ class CV_Datas:
         print("Levich", m_pos,m_neg)
         return m_pos,m_neg
 
-    def KouLev(self, Epot, *args):
+    def KouLev(self, Epot, *args,**kwargs):
         #fig = plt.figure()
         #fig.set_figheight(5)
         #fig.set_figwidth(12)
@@ -129,11 +132,13 @@ class CV_Datas:
         y_axis_title =""
         y_axis_unit =""
         CVs = copy.deepcopy(self.datas)
+        cv_kwargs = kwargs
         for cv in CVs:
             rot.append( math.sqrt(cv.rotation))
             for arg in args:
                 cv.norm(arg)
-            cv.plot(plot = CV_plot, legend = cv.rotation)
+            cv_kwargs["legend"] = cv.rotation
+            cv.plot(plot = CV_plot, **cv_kwargs)
             y.append(cv.get_i_at_E(Epot))
             E.append([Epot, Epot])
             y_axis_title= cv.i_label
@@ -169,7 +174,7 @@ class CV_Datas:
         print("KouLev", B_pos,B_neg)
         return m_pos,m_neg
     
-    def Tafel(self, E_for_idl:float, lims=[0,0], *args):
+    def Tafel(self, E_for_idl:float, lims=[0,0], *args, **kwargs):
         """_summary_
 
         Args:
@@ -187,13 +192,16 @@ class CV_Datas:
         #Epot=-0.5
         y_axis_title =""
         CVs = copy.deepcopy(self.datas)
+        cv_kwargs = kwargs
         for cv in CVs:
             rot.append( math.sqrt(cv.rotation))
         
             for arg in args:
                 if arg == "area":
                     cv.norm(arg)
-            cv.plot(plot = CV_plot, legend = cv.rotation)
+            cv_kwargs["legend"] = cv.rotation
+            cv_kwargs["plot"] = CV_plot
+            cv.plot(**cv_kwargs)
             #.get_color()
             #color = line.get_color()
             i_dl_p,i_dl_n = cv.get_i_at_E(E_for_idl)

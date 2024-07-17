@@ -145,79 +145,45 @@ class EC_Data(EC_Setup):
         "y_smooth= number" - smoothing of the y-axis. \n
         
         '''
-        xlable ="wrong channel name"
-        xunit = "wrong channel name"
-        ylable ="wrong channel name"
-        yunit = "wrong channel name"
+        #xlable ="wrong channel name"
+        #xunit = "wrong channel name"
+        #ylable ="wrong channel name"
+        #yunit = "wrong channel name"
         
         options = plot_options(kwargs)
-       
+
         try:
-            xdata,xlable,xunit = self.get_channel(x_channel)
-        except NameError as e:
-            print(f"xchannel {x_channel} not supported") 
-        finally:
-            try:
-                ydata,ylable,yunit = self.get_channel(y_channel)
-            except NameError as e:
-                print(f"ychannel {y_channel} not supported") 
-        #except :
-           
-        #finally:
-            '''add a the data to an existing plot or create a new'''
-            try:
-                ax = kwargs['plot']     
-            except:
-                fig = plt.figure()
-                plt.suptitle(self.name)
-                ax = fig.subplots()
-            
-            ydata = options.smooth_y(ydata)
-            #try:
-            #    y_smooth = options.get_y_smooth()
-            #    if(y_smooth > 0):
-            #        ydata = savgol_filter(ydata, y_smooth, 1)
-            #except:
-            #    pass
-            xdata = options.smooth_x(xdata)
-            
-            #try:
-            #    x_smooth = options.get_x_smooth()
-            #    if(x_smooth > 0):
-            #        xdata = savgol_filter(xdata, x_smooth, 1)
-            #except:
-            #    pass
-            line =None
-            try:
-                line, = ax.plot(xdata,ydata)
-                line.set_label(options.get_legend())
-            except:
-                pass
-            ax.set_xlabel(f'{xlable} / {xunit}')
-            ax.set_ylabel(f'{ylable} / {yunit}')
-            return line, ax     
+            options.x_data, options.x_label, options.x_unit = self.get_channel(x_channel)
+        except NameError:
+            print(f"xchannel {x_channel} not supported")
+        try:
+            options.y_data, options.y_label, options.y_unit = self.get_channel(y_channel)
+        except NameError:
+            print(f"ychannel {y_channel} not supported")
+
+        return options.exe()
 
     def plot_rawdata(self):
-            fig = plt.figure()
-            
-            plt.suptitle(self.name)
-            nr_data = len(self.rawdata) -1 # The time channel should not be counted.
-            print(self.name, ": EC data sets: ", nr_data)
-            plot = fig.subplots(nr_data,1)
-            #ax = fig.subplots()
-            index=0
-            for ch_name in self.rawdata:
-                if( ch_name != 'Time'):
-                    try:
-                        #time = channel.time_track()
-                        plot[index].plot(self.rawdata[ch_name].time_track(),self.rawdata[ch_name].data)
-                        yunit = self.rawdata[ch_name].properties["unit_string"]
-                        plot[index].set_ylabel(f'{ch_name} / {yunit}')
-                        plot[index].set_xlabel(f'Time / s')
-                    finally:
-                        index +=1                    
-            
-            return
+        fig = plt.figure()
+        
+        plt.suptitle(self.name)
+        nr_data = len(self.rawdata) -1 # The time channel should not be counted.
+        print(self.name, ": EC data sets: ", nr_data)
+        plot = fig.subplots(nr_data,1)
+        #ax = fig.subplots()
+        index=0
+        for ch_name in self.rawdata:
+            if( ch_name != 'Time'):
+                try:
+                    #time = channel.time_track()
+                    plot[index].plot(self.rawdata[ch_name].time_track(),self.rawdata[ch_name].data)
+                    yunit = self.rawdata[ch_name].properties["unit_string"]
+                    plot[index].set_ylabel(f'{ch_name} / {yunit}')
+                    plot[index].set_xlabel(f'Time / s')
+                finally:
+                    index +=1                    
+        
+        return
                 
             
             

@@ -238,53 +238,48 @@ class CV_Data(EC_Setup):
         "y_smooth= number" - smoothing of the y-axis. \n
         
         '''
-        xlable ="wrong channel name"
-        xunit = ""
-        ylable ="wrong channel name"
-        yunit = "wrong channel name"
-       
         options = plot_options(kwargs)  
         
         
-        xdata = self.E
+        options.x_data = self.E
         if(options.get_dir() == "pos"):  
-            ydata = self.i_p
+            options.y_data = self.i_p
         
         elif(options.get_dir() == "neg"):  
-             ydata = self.i_n
+            options.y_data = self.i_n
              
         else:
-            xdata=np.concatenate((self.E, self.E), axis=None)
-            ydata=np.concatenate((self.i_p, self.i_n), axis=None)  
+            options.x_data=np.concatenate((self.E, self.E), axis=None)
+            options.y_data=np.concatenate((self.i_p, self.i_n), axis=None)  
         
         options.set_x_txt("E", "V")
         options.set_y_txt(self.i_label, self.i_unit)
         
         '''add a the data to an existing plot or create a new'''
-        try:
-            ax = kwargs['plot']     
-        except:
-            fig = plt.figure()
-            plt.suptitle(self.name)
-            ax = fig.subplots()
+        #try:
+        #    ax = kwargs['plot']     
+        #except:
+        #    fig = plt.figure()
+        #    plt.suptitle(self.name)
+        #    ax = fig.subplots()
         #try:
         #    y_smooth = int(options['y_smooth'])
         #    if(y_smooth > 0):
         #        ydata = savgol_filter(ydata, y_smooth, 1)
         #except:
         #    pass
-        ydata = options.smooth_y(ydata) 
-        line = None
-        try:
-            line, = ax.plot(xdata,ydata)
-            line.set_label(options.get_legend())
-        except:
-            pass
+        #ydata = options.smooth_y(ydata) 
+        #line = None
+        #try:
+        #    line, = ax.plot(xdata,ydata)
+        #    line.set_label(options.get_legend())
+        #except:
+        #    pass
         #ax.set_xlabel(f'{xlable} / {xunit}')
         #ax.set_ylabel(f'{ylable} / {yunit}')
-        ax.set_ylabel(options.get_y_txt())
-        ax.set_xlabel(options.get_x_txt())
-        return line, ax
+        #ax.set_ylabel(options.get_y_txt())
+        #ax.set_xlabel(options.get_x_txt())
+        return options.exe()
     
     def get_index_of_E(self, E:float):
         index = 0
