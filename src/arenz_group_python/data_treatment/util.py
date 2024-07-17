@@ -4,7 +4,8 @@ Utility module.
 """
 
 import math
-from scipy.signal import savgol_filter
+from scipy.signal import savgol_filter, medfilt
+from scipy import ndimage, datasets
 import matplotlib.pyplot as plt
 
 
@@ -45,11 +46,13 @@ class plot_options:
         self.options = {
             'x_smooth' : 0,
             'y_smooth' : 0,
+            'y_median'   : 0,
             'plot' : NEWPLOT,
             'dir' : "all",
             'legend' : "noName",
             'xlabel' : "def",
-            'ylabel' : "def"
+            'ylabel' : "def",
+            'style'  : ""
         }
 
         self.options.update(kwargs)
@@ -95,6 +98,19 @@ class plot_options:
             pass
         return ydata
     
+    def median_y(self, ydata =[]):
+        try:
+            y_median = self.options["y_median"]
+            if(y_median>0): 
+                if y_median % 2 ==0:
+                    y_median +=1           
+                ydata_s = medfilt(ydata, y_median)
+            else:
+                ydata_s = ydata
+        except:
+            pass
+        return ydata_s
+    
     def smooth_x(self, xdata):
         try:
             x_smooth = self.get_x_smooth()
@@ -121,6 +137,12 @@ class plot_options:
             ax = fig.subplots()
         
         try:
+            y_median = int(self.options['y_median'])
+            if y_median > 0:
+                if y_median % 2 ==0:
+                    y_median +=1 
+                #print("median filter Y", y_median)
+                self.y_data = medfilt(self.y_data, y_median)
             y_smooth = int(self.options['y_smooth'])
             if y_smooth > 0:
                 self.y_data = savgol_filter(self.y_data, y_smooth, 1)
@@ -134,7 +156,7 @@ class plot_options:
             pass
 
         try:
-            line = ax.plot(self.x_data, self.y_data)
+            line = ax.plot(self.x_data, self.y_data, self.options['style'])
         except:
             pass
         ax.set_xlabel(f'{self.x_label} / {self.x_unit}')

@@ -56,8 +56,8 @@ class AutoClaveSynthesis:
             case "T_HotPlate_in_C":
                 return self.Temp_HP - K_TO_DEGC, "T", "°C"
             case "P_Reactor":
-                return self.Overpressure, "P", "bar"
-            case "P_Reactor":
+                return self.Overpressure, "P", "Pa"
+            case "P_Reactor_in_bar":
                 return self.Overpressure / PA_TO_BAR , "P", "bar"
             case "Rot":
                 return self.Rot, "v", "rpm"
@@ -105,10 +105,16 @@ class AutoClaveSynthesis:
         options = {
             'time_smooth': 0,
             'pressure_smooth': 0,
-            "temp_smooth": 0}
+            'pressure_median': 0,
+            "temp_smooth": 10,
+            "temp_median" : 7,
+            "temp_channel": "T_Reactor_in_C",
+            "pressure_smooth" : 0
+            }
         options.update(kwargs)
-
-        cleaned_temp_R = self.clean_outliers(self.Temp_R, window_size=20, threshold=1)
+        #options=plot_options(kwargs)
+        temp_R, temp_q, T_unit = self.get_channel(options["temp_channel"])
+        cleaned_temp_R = self.clean_outliers(temp_R, window_size=20, threshold=1)
 
         window_length = min(51, len(cleaned_temp_R) // 2 * 2 + 1)
         polyorder = min(3, window_length - 1)
@@ -125,35 +131,24 @@ class AutoClaveSynthesis:
         # Round the maximum temperature to the nearest multiple of 25
         set_temperature = round(max_temperature_R / 25) * 25
 
+        Time,a,time_unit = self.get_channel("Time_in_min")
         time_set_temp = None
         for i, temp in enumerate(smoothed_temp_R):
             if temp >= set_temperature:
-                time_set_temp = self.Time[i]
+                time_set_temp = Time[i]
                 break
 
         if time_set_temp is None:
-            time_set_temp = max(self.Time)
-
-        max_overpressure = round(max(self.Overpressure), 2)
-        max_time = round(max(self.Time), 2)
+            time_set_temp = max(Time)
+        ###PRESSURE######
+        Overpressure, p_q, p_unit = self.get_channel("P_Reactor_in_bar")
+        max_overpressure = round(max(Overpressure), 2)
+        
+        #Time,a,b = self.get_channel("Time_in_min")
+        max_time = round(max(Time), 2)
         rotation = int(max(self.Rot))
 
-        parameters = {
-            "Set Temperature [°C]": set_temperature,
-            'Max Temperature of Reactor [°C]': round(max_temperature_R, 2),
-            'Time to Set Temperature [min]': round(time_set_temp, 2),
-            'Heating Rate [°C/min]': round(((set_temperature - smoothed_temp_R[0]) / time_set_temp), 2),
-            'Max Overpressure [bar]': max_overpressure,
-            'Time to Max Overpressure [min]': round(self.Time[self.Overpressure.argmax()], 2),
-            'Pressure Increase Rate [bar/min]': round((max_overpressure - self.Overpressure[0]) / round(self.Time[self.Overpressure.argmax()], 2), 2),
-            "Rotation Rate [rpm]": rotation,
-            "Time of Synthesis [min]": max_time
-        }
-
-        # Create a DataFrame to format the values correctly
-        parameters_df = pd.DataFrame(list(parameters.items()), columns=['Parameter', 'Value'])
-        parameters_df['Value'] = parameters_df['Value'].astype(float)
-
+       
 
         fig, axs = plt.subplots(1, 2, figsize=(12, 6))
         fig.suptitle(self.name, fontsize = 20)
@@ -166,24 +161,30 @@ class AutoClaveSynthesis:
 
         pressure_smooth = int(options["pressure_smooth"])
         if pressure_smooth > 0:
-            smoothed_pressure = savgol_filter(self.Overpressure, min(pressure_smooth, len(self.Overpressure) // 2 * 2 + 1), 1)
+            smoothed_pressure = savgol_filter(Overpressure, min(pressure_smooth, len(self.Overpressure) // 2 * 2 + 1), 1)
         else:
-            smoothed_pressure = self.Overpressure
+            smoothed_pressure = Overpressure
 
         time_smooth = int(options["time_smooth"])
         if time_smooth > 0:
-            smoothed_time = savgol_filter(self.Time, min(time_smooth, len(self.Time) // 2 * 2 + 1), 1)
+            smoothed_time = savgol_filter(Time, min(time_smooth, len(self.Time) // 2 * 2 + 1), 1)
         else:
             smoothed_time = self.Time
-
+            
+        #Make plot
         ax_temp = axs[0]
         ax_pres = ax_temp.twinx()
 
-        ax_temp.plot(smoothed_time, smoothed_temp, 'g-', label='Temperature [°C]')
-        ax_pres.plot(smoothed_time, smoothed_pressure, 'b-', label='Overpressure [bar]')
+        self.plot("Time_in_min", "T_Reactor_in_C", plot = ax_temp, y_smooth=options["temp_smooth"], y_median=options["temp_median"], style="g-")
+        self.plot("Time_in_min", "P_Reactor_in_bar", plot = ax_pres,y_smooth=options["pressure_smooth"], y_median=options["pressure_median"], style="b-")
+        self.plot("Time_in_min", "T_Reactor_in_C", y_smooth=options["temp_smooth"], y_median=options["temp_median"], style="g-")
 
-        ax_temp.set_ylabel('Temperature [°C]', color='g', fontsize = 13)
-        ax_pres.set_ylabel('Overpressure [bar]', color='b', fontsize = 13)
+        
+        #ax_temp.plot(smoothed_time, smoothed_temp, 'g-', label='Temperature [°C]')
+        #ax_pres.plot(smoothed_time, smoothed_pressure, 'b-', label='Overpressure [bar]')
+
+        ax_temp.set_ylabel(f'Temperature / {T_unit} ', color='g', fontsize = 13)
+        ax_pres.set_ylabel(f'Overpressure / {p_unit}', color='b', fontsize = 13)
 
         ax_temp.set_ylim(0, max_temperature_R + (max_temperature_R / 10))
         ax_pres.set_ylim(0, max_overpressure + (max_overpressure / 10))
@@ -193,12 +194,44 @@ class AutoClaveSynthesis:
 
         ax_temp.legend(lines_temp + lines_pres, labels_temp + labels_pres, loc='best')
 
-        ax_temp.set_xlabel('Time [min]', fontsize = 13)
+        ax_temp.set_xlabel(f'Time / {time_unit}', fontsize = 13)
         ax_temp.set_xlim(0, max_time + (max_time / 10))
 
         axs[1].axis('off')
 
         # Create table with formatted DataFrame
+        
+        parameters = {
+            "Set Temperature [°C]": set_temperature,
+            'Max Temperature of Reactor [°C]': round(max_temperature_R, 2),
+            'Time to Set Temperature [min]': round(time_set_temp, 2),
+            'Heating Rate [°C/min]': round(((set_temperature - smoothed_temp_R[0]) / time_set_temp), 2),
+            'Max Overpressure [bar]': round(max_overpressure,1),
+            'Time to Max Overpressure [min]': round(self.Time[Overpressure.argmax()], 2),
+            'Pressure Increase Rate [bar/min]': round((max_overpressure - Overpressure[0]) / round(self.Time[Overpressure.argmax()], 2), 2),
+            "Rotation Rate [rpm]": rotation,
+            "Time of Synthesis [min]": max_time
+        }
+        
+        # Create a DataFrame to format the values correctly
+        parameters_df = pd.DataFrame(list(parameters.items()), columns=['Parameter', 'Value'])
+        parameters_df['Value'] = parameters_df['Value'].astype(float)
+
+
+        tb = {
+            {"Set Temperature", set_temperature, T_unit},
+            {'Max Temperature of Reactor',round(max_temperature_R, 2), T_unit},
+            {'Time to Set Temperature', round(time_set_temp, 2), time_unit},
+            {'Heating Rate', round(((set_temperature - smoothed_temp_R[0]) / time_set_temp), 2), T_unit + "/" + time_unit},
+            {'Max Overpressure', round(max_overpressure,1),p_unit},
+            {'Time to Max Overpressure', round(self.Time[Overpressure.argmax()], 2)},
+            { 'Pressure Increase Rate [bar/min]', round((max_overpressure - Overpressure[0]) / round(self.Time[Overpressure.argmax()], 2), 2), p_unit + "/"+time_unit},
+            { "Rotation Rate", rotation, "rpm"  },
+            {"Time of Synthesis ", max_time, time_unit}
+        }
+
+
+        
         table = axs[1].table(cellText=parameters_df.values, colLabels=parameters_df.columns, cellLoc='center', loc='center', edges='horizontal')
         table.auto_set_font_size(False)
         table.set_fontsize(10)
