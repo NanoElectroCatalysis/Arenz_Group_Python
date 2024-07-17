@@ -2,6 +2,7 @@
 import csv
 from pathlib import Path
 from .util_paths import Project_Paths
+import re
 
 
 DELIMETER = '\t'
@@ -36,6 +37,7 @@ def save_key_values(file_path:Path, sample_name:str, properties:list):
     new_row = [sample] + properties
     sample_already_in_dataset= False
     #print(p)
+    #read in the whole file and check each row.
     if p.exists:    
         with open(p, 'r', newline='') as csvfile:
             #reads the file
@@ -46,7 +48,8 @@ def save_key_values(file_path:Path, sample_name:str, properties:list):
             sample_already_in_dataset = False
             for row in spamreader:
                 all_data.append(row)
-                if(row[0] == sample_name):
+                sa = re.search(sample_name, row[0])
+                if sa :
                     print("sample name found -  updating row")
                     all_data[i] = new_row
                     sample_already_in_dataset= True

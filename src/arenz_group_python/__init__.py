@@ -14,7 +14,20 @@ print(__path__)
 
 __version__ = "0.0.100"
 
-__all__ = ["ec_data","EC_Data","CV_Data","CV_Datas","save_key_values","Project_Paths"]
+__all__ = ["ec_data","EC_Data","CV_Data","CV_Datas","save_key_values","Project_Paths","AutoClaveSynthesis"]
 
 
 from .data_treatment import *
+
+from .data_treatment.util_paths import Project_Paths
+
+
+# public interface
+
+#def rowdata():
+#    """Try to apply the pattern at the start of the string, returning
+#    a Match object, or None if no match was found."""
+#    return Project_Paths().rawdata_path
+
+
+
