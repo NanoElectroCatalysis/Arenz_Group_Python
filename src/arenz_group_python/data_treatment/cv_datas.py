@@ -54,6 +54,39 @@ class CV_Datas:
         CV_plot, analyse_plot = fig.subplots(1,2)
         return CV_plot, analyse_plot
     
+    def plot(self, *args, **kwargs):
+        fig = plt.figure()
+        fig.set_figheight(5)
+        fig.set_figwidth(6)
+        plt.suptitle("CVs")
+        CV_plot = fig.subplots()
+        #analyse_plot.title.set_text('CVs')
+
+        #analyse_plot.title.set_text('Levich Plot')
+        
+        rot=[]
+        y = []
+        E = []
+        #Epot=-0.5
+        y_axis_title =""
+        CVs = copy.deepcopy(self.datas)
+        #CVs = [CV_Data() for i in range(len(paths))]
+        cv_kwargs = kwargs
+        for cv in CVs:
+            #rot.append(math.sqrt(cv.rotation))
+            for arg in args:
+                cv.norm(arg)
+            
+            #cv_kwargs["legend"] = "aaaaa"
+            cv_kwargs["plot"] = CV_plot
+            cv.plot(**cv_kwargs)
+            y_axis_title= cv.i_label
+            #print(cv.setup)
+        #print(rot)
+         
+        CV_plot.legend()
+    
+    
     def Levich(self, Epot, *args, **kwargs):
         """Levich analysis. Creates plot of the data and a Levich plot.
 
@@ -66,7 +99,7 @@ class CV_Datas:
   
         CV_plot, analyse_plot = self._make_plot("Levich Analysis")
         #CV_plot, analyse_plot = fig.subplots(1,2)
-        analyse_plot.title.set_text('CVs')
+        CV_plot.title.set_text('CVs')
 
         analyse_plot.title.set_text('Levich Plot')
         
@@ -92,6 +125,7 @@ class CV_Datas:
         #print(rot)
         rot = np.array(rot)
         y = np.array(y)
+        rot_max = max(rot)
         CV_plot.plot(E,y, "o")
         CV_plot.legend()
         #print(rot)
@@ -101,14 +135,17 @@ class CV_Datas:
 
         analyse_plot.set_xlabel("$\omega^{0.5}$ ( rpm$^{0.5}$)")
         analyse_plot.set_ylabel(y_axis_title)
+        #analyse_plot.set_xlim([0, math.sqrt(rot_max)])
+        #analyse_plot.xlim(left=0)
         m_pos, b = np.polyfit(rot, y[:,0], 1)
         y_pos= m_pos*rot+b
-        line,=analyse_plot.plot(rot,y_pos,'-' )
+        line, = analyse_plot.plot(rot,y_pos,'-' )
         line.set_label(f"pos: B={m_pos:3.3e}")
         m_neg, b = np.polyfit(rot, y[:,1], 1)
         y_neg= m_neg*rot+b
         line,=analyse_plot.plot(rot,y_neg,'-' )
         line.set_label(f"neg: B={m_neg:3.3e}")
+        #ax.xlim(left=0)
         analyse_plot.legend()
         print("Levich", m_pos,m_neg)
         return m_pos,m_neg

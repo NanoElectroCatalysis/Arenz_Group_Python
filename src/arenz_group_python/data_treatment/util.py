@@ -49,7 +49,7 @@ class plot_options:
             'y_median'   : 0,
             'plot' : NEWPLOT,
             'dir' : "all",
-            'legend' : "noName",
+            'legend' : "_",
             'xlabel' : "def",
             'ylabel' : "def",
             'style'  : ""
@@ -73,7 +73,7 @@ class plot_options:
         return str(self.x_label + "("+ self.x_unit +")")
     
     def get_legend(self):
-        return str(self.options['legend'])
+            return str(self.options['legend'])
     
     def get_x_smooth(self):
         return int(self.options['x_smooth'])
@@ -156,7 +156,11 @@ class plot_options:
             pass
 
         try:
-            line = ax.plot(self.x_data, self.y_data, self.options['style'])
+            lineLabel='_'
+            line, = ax.plot(self.x_data, self.y_data, self.options['style'])
+            #line,=analyse_plot.plot(rot,y_pos,'-' )
+            line.set_label( self.get_legend() )
+            
         except:
             pass
         ax.set_xlabel(f'{self.x_label} / {self.x_unit}')

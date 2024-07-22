@@ -80,8 +80,8 @@ class CV_Data(EC_Setup):
             return
     
     def set_area(self,value,unit):
-        self._area = value
-        self._area_unit = unit
+        self.setup_data._area = value
+        self.setup_data._area_unit = unit
     
     def conv(self, data: EC_Data, ** kwargs):
         """Converts EC_Data to a CV
@@ -199,24 +199,24 @@ class CV_Data(EC_Setup):
         norm_label = ""
         norm_unit = ""
         if norm_to == "area" :
-           norm_factor = self._area
+           norm_factor = self.setup_data._area
            norm_label = "$A^{-1}$"
-           norm_unit = self._area_unit
+           norm_unit = self.setup_data._area_unit
         elif norm_to == "rate" :
-           norm_factor = self.rate_V_s
+           norm_factor = self.setup_data.rate_V_s
            norm_label = "$v^{-1}$"
            norm_unit = "s $V^{-1}$"
         elif norm_to == "sqrt_rate":
-           norm_factor = math.sqrt(self.rate_V_s)
+           norm_factor = math.sqrt(self.setup_data.rate_V_s)
            norm_label = "$v^{-0.5}$"
            norm_unit = "$s^{0.5}$ $V^{-0.5}$"
         elif norm_to == "rot_rate":
-           norm_factor = math.sqrt(self.rot_rate_Hz)
+           norm_factor = math.sqrt(self.setup_data.rot_rate_Hz)
            norm_label = "$f^{-1}$"
            norm_unit = "$Hz^{-1}$"
           
         elif norm_to == "sqrt_rot_rate":
-           norm_factor = math.sqrt(self.rot_rate_Hz)
+           norm_factor = math.sqrt(self.setup_data.rot_rate_Hz)
            norm_label = "$f^{-0.5}$"
            norm_unit = "$Hz^{-0.5}$"    
         else:
