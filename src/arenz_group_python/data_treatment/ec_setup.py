@@ -9,6 +9,7 @@ class ec_setup_data:
             self._area_unit="cm^2"
             self._rotation = 0.0
             self._rotation_unit ="/min"
+            self.name =""
             return
 
 class EC_Setup:
@@ -94,6 +95,31 @@ class EC_Setup:
             self.setup_data._rotation_unit = unit
         return
     
+    def legend(self, **kwargs)-> str:
+        """_summary_
+
+        use: legend = '?' to get a list of possible options
+        Returns:
+            str: legend 
+        """
+        s = str()
+        #print(kwargs)
+        if 'legend' in kwargs:
+            item = kwargs['legend']
+            if item == '?':
+                #print(self.setup_data._setup)
+                return "_"
+            elif item == "name":
+                return self.setup_data.name
+            elif item in self.setup_data._setup:
+                #print("items was found", item)
+                s = self.setup_data._setup[item]
+                return s
+            else:
+                return item
+        return "_"
+        
+
 
 
 
