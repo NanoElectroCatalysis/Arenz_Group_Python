@@ -72,8 +72,18 @@ class plot_options:
     def get_x_txt(self):
         return str(self.x_label + "("+ self.x_unit +")")
     
+    
     def get_legend(self):
             return str(self.options['legend'])
+    
+    @property 
+    def legend(self):
+        return self.get_legend()    
+    
+    @legend.setter
+    def legend(self, value:str) -> str:
+        self.options['legend'] = value
+        #return self.get_legend()    
     
     def get_x_smooth(self):
         return int(self.options['x_smooth'])
@@ -129,7 +139,11 @@ class plot_options:
             ax = fig.subplots()
 
     def exe(self):
-        
+        """_summary_
+
+        Returns:
+            _type_: _description_
+        """
         ax = self.options['plot']
         if ax == NEWPLOT:
             fig = plt.figure()

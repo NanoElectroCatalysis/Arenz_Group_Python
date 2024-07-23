@@ -50,7 +50,7 @@ class EC_Data(EC_Setup):
                 self.Time = tdms_file['EC']['Time'].data
                 self.i = tdms_file['EC']['i'].data
                 self.E = tdms_file['EC']['E'].data
-                self.name = tdms_file.properties['name']
+                self.setup_data.name = tdms_file.properties['name']
                 try:
                     self.Z_E = tdms_file['EC']['Z_E'].data #not all data file contains U channel
                     self.Phase_E = tdms_file['EC']['Phase_E'].data #not all data file contains U channel
@@ -87,7 +87,7 @@ class EC_Data(EC_Setup):
         self._area_unit = unit
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.setup_data.name}"
 
 
     def get_channel(self,datachannel:str):
@@ -166,9 +166,9 @@ class EC_Data(EC_Setup):
     def plot_rawdata(self):
         fig = plt.figure()
         
-        plt.suptitle(self.name)
+        plt.suptitle(self.setup_data.name)
         nr_data = len(self.rawdata) -1 # The time channel should not be counted.
-        print(self.name, ": EC data sets: ", nr_data)
+        print(self.setup_data.name, ": EC data sets: ", nr_data)
         plot = fig.subplots(nr_data,1)
         #ax = fig.subplots()
         index=0

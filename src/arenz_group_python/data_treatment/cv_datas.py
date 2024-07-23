@@ -29,17 +29,21 @@ class CV_Datas:
         #print(index)
         return
     
-    def __getitem__(self, item_index:int): 
+    def __getitem__(self, item_index:int) -> CV_Data: 
         return self.datas[item_index]
     
     def __setitem__(self, item_index:int, new_CV:CV_Data):
-        self.datas[item_index].new_CV
+        self.datas[item_index] = new_CV
     
-    def bg_corr(self, bg_cv:CV_Data):
+    def bg_corr(self, bg_cv:CV_Data) -> CV_Data:
         """Background correct the data by subtracting the bg_cv. 
 
         Args:
-            bg_cv (CV_Data): _description_
+            bg_cv (CV_Data):
+        
+        Returns:
+            CV_Data: copy of the data.
+        
         """
         for cv in self.datas:
             cv.sub(bg_cv)
@@ -53,8 +57,12 @@ class CV_Datas:
         plt.suptitle(Title)
         CV_plot, analyse_plot = fig.subplots(1,2)
         return CV_plot, analyse_plot
-    
+################################################################    
     def plot(self, *args, **kwargs):
+        """Plot CVs.
+            use args to normalize the data
+            use kwargs for other settings.
+        """
         fig = plt.figure()
         fig.set_figheight(5)
         fig.set_figwidth(6)
@@ -86,12 +94,12 @@ class CV_Datas:
          
         CV_plot.legend()
     
-    
-    def Levich(self, Epot, *args, **kwargs):
+#################################################################################################    
+    def Levich(self, Epot:float, *args, **kwargs):
         """Levich analysis. Creates plot of the data and a Levich plot.
 
         Args:
-            Epot (_type_): Potential at which the current will be used.
+            Epot (float): Potential at which the current will be used.
 
         Returns:
             _type_: _description_
@@ -147,10 +155,23 @@ class CV_Datas:
         line.set_label(f"neg: B={m_neg:3.3e}")
         #ax.xlim(left=0)
         analyse_plot.legend()
+        analyse_plot.set_xlim(left=0,right =None)
         print("Levich", m_pos,m_neg)
         return m_pos,m_neg
 
-    def KouLev(self, Epot, *args,**kwargs):
+#######################################################################################################
+    def KouLev(self, Epot: float, *args,**kwargs):
+        """Creates a Koutechy-Levich plot.
+
+        Args:
+            Epot (float): The potential where the idl is
+            use arguments to normalize the data.
+            for example "area"
+
+        Returns:
+            _type_: _description_
+        """
+        
         #fig = plt.figure()
         #fig.set_figheight(5)
         #fig.set_figwidth(12)
@@ -208,6 +229,7 @@ class CV_Datas:
         line,=analyse_plot.plot(rot,y_neg,'-' )
         line.set_label(f"neg: m={B_neg:3.3e}")
         analyse_plot.legend()
+        analyse_plot.set_xlim(left=0,right =None)
         print("KouLev", B_pos,B_neg)
         return m_pos,m_neg
     

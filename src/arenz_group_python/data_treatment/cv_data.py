@@ -33,7 +33,7 @@ class CV_Data(EC_Setup):
         """max voltage""" 
         self.E_min = -2.5
         """min voltage"""
-        self.name="CV"
+        ##self.name="CV" name is given in the setup.
         self.xmin = -2.5
         self.xmax = 2.5
         self.setup = {}
@@ -95,7 +95,7 @@ class CV_Data(EC_Setup):
         #self.setup = data.setup
         #self.set_area(data._area, data._area_unit)
         #self.set_rotation(data.rotation, data.rotation_unit)
-        self.name = data.name
+        #self.name = data.name
         return
         
     def convert(self, time, E, i, **kwargs):
@@ -238,8 +238,9 @@ class CV_Data(EC_Setup):
         "y_smooth= number" - smoothing of the y-axis. \n
         
         '''
-        options = plot_options(kwargs)  
         
+        options = plot_options(kwargs)  
+        options.legend = self.legend(**kwargs)
         
         options.x_data = self.E
         if(options.get_dir() == "pos"):  
