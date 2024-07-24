@@ -2,15 +2,15 @@
 
 from pathlib import Path
 import inspect
+from enum import StrEnum
 
+class PROJECT_FOLDERS(StrEnum):
+    rawdata = "data_raw"
+    treated_data = "data_treated"
+    scripts = "py_scripts"
+    nb_models = "notebooks_models"
+    nb_exploration = "notebooks_exploration_cleaning" 
 
-PROJECT_FOLDERS = [
-    "data_raw",
-    "data_treated",
-    "py_scripts",
-    "notebooks_models",
-    "notebooks_exploration_cleaning" 
-    ]
 ############################################################
 ############################################################
 class Project_Paths:
@@ -65,10 +65,11 @@ class Project_Paths:
         """
         p = path_to_caller
         k = Path()
+        #print(PROJECT_FOLDERS.rawdata)
         if path_to_caller == Path(""):
             p = Path.cwd()
         try:
-            k = self._find_dir(p, "data_raw")
+            k = self._find_dir(p, str(PROJECT_FOLDERS.rawdata))
         except NotADirectoryError as err:
             print(err)
         
@@ -86,7 +87,7 @@ class Project_Paths:
             Path: path to "treated_data" folder
         """
         try:
-            k = self._find_dir(path_to_caller, "data_treated")
+            k = self._find_dir(path_to_caller, str(PROJECT_FOLDERS.treated_data))
         except NotADirectoryError as err:
             print(err)
         
@@ -145,8 +146,8 @@ class Project_Paths:
 def make_project_files( main_dir: Path):               
     print("\ncreating files:\n")
     def_files = [
-        "notebooks_models/modelData.ipynb",
-        "py_scripts/my_Module.py"
+        PROJECT_FOLDERS.nb_models + "/modelData.ipynb",
+        PROJECT_FOLDERS.scripts +"/my_Module.py"
     ]
     for file in def_files:
         try:
@@ -156,7 +157,7 @@ def make_project_files( main_dir: Path):
         except FileExistsError:
             print(f"-\"{file}\" already exists")
 
-    path = main_dir / "py_scripts" / "__init__.py"
+    path = main_dir / PROJECT_FOLDERS.scripts / "__init__.py"
     try:
         with open(path,"x") as f:
             f.write("# Leave it empty. This is just a special file that tells pip that your main module is in this folder.\n# No need to add anything here. Feel free to delete this line when you make your own package.")
@@ -165,8 +166,8 @@ def make_project_files( main_dir: Path):
     except FileExistsError :
         print(f"-\"{path.name}\" already exists")
 
-
-    path = main_dir / "notebooks_exploration_cleaning" / "extractData.ipynb"
+    
+    path = main_dir / PROJECT_FOLDERS.nb_exploration / "extractData.ipynb"
     try:
         with open(path,"x") as f:
             f.write('''{
@@ -243,7 +244,7 @@ def make_project_files( main_dir: Path):
 def make_project_files_data( main_dir: Path):               
  
 
-    path = main_dir / "rawdata" / "README.txt"
+    path = main_dir / PROJECT_FOLDERS.rawdata / "README.txt"
     try:
         with open(path,"x") as f:
             f.write("# Use the rawdata folder to store all experimental data. ONLY!!!!.")
@@ -254,7 +255,7 @@ def make_project_files_data( main_dir: Path):
         
         
     ##### PATH to data file    
-    path = main_dir / "data" / "README.txt"
+    path = main_dir / PROJECT_FOLDERS.treated_data / "README.txt"
     try:
         with open(path,"x") as f:
             f.write("# Use the data folder to store all extracted values from data manipulation. NO RAW DATA!!!!.")
@@ -263,7 +264,7 @@ def make_project_files_data( main_dir: Path):
     except FileExistsError :
         print(f"-\"{path.name}\" already exists")
         
-    path = main_dir / "data" / "extracted_values.csv"
+    path = main_dir / PROJECT_FOLDERS.treated_data / "extracted_values.csv"
     try:
         with open(path,"x") as f:
             f.write("")
