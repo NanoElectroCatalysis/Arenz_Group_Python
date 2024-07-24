@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.19' 
+VERSION = '0.0.21' 
 DESCRIPTION = 'a pip-installable package with function for Arenz Group'
 LONG_DESCRIPTION = 'My first Python package with a slightly longer description'
 
@@ -18,5 +18,5 @@ setup(
     author_email='gustav.wiberg@unibe.ch',
     keywords=['python', 'arenz group', 'tdms'],
     url='https://github.com/guswib/arenz_group_python',
-    install_requires=['nptdms','matplotlib', 'pathlib','scipy','shutil','numpy','pandas']
+    install_requires=['nptdms','matplotlib', 'pathlib','scipy','numpy','pandas']
 )
