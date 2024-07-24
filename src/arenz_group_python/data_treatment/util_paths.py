@@ -11,11 +11,26 @@ PROJECT_FOLDERS = [
     "notebooks_models",
     "notebooks_exploration_cleaning" 
     ]
-
-
+############################################################
+############################################################
 class Project_Paths:
+    """
+    Class Project_Paths can be used to more easily create the paths typically used in a project
+
+        - "Project_Paths().cwd" to go get current working directory
+
+        - "Project_Paths().data_rawdata" to go get rawdata directory
+
+        - "Project_Paths().data_path" to go get current working directory
+
+        - "Project_Paths().data_path" to go get current working directory
+
+
+        create_project_structure( Path) to create a project folder tree. Note, it uses the executing notebook as root dir if no path is given
     
-    def _find_dir(self,path_to_caller: Path, dir_name:str):
+    """
+    #######################################################################
+    def _find_dir(self,path_to_caller: Path, dir_name:str) -> Path:
         
         
         if isinstance(path_to_caller, Path):
@@ -34,8 +49,8 @@ class Project_Paths:
             raise NotADirectoryError(f'\"{dir_name}\" could not be found as a branch of the folder tree form the notebook.\nPlease use standard project structure.')
         return path_to_dir      
 
-
-    def _rawdata_path(self, path_to_caller : Path = Path.cwd() ):
+    ######################################################################################
+    def _rawdata_path(self, path_to_caller : Path = Path.cwd() ) -> Path:
         """_summary_
 
         Args:
@@ -56,7 +71,8 @@ class Project_Paths:
         return k 
         #return Path(".") 
     
-    def _treated_data_path(self, path_to_caller : Path = Path.cwd() ):
+    ###############################################################################################
+    def _treated_data_path(self, path_to_caller : Path = Path.cwd() ) -> Path:
         """_summary_
 
         Args:
@@ -72,29 +88,34 @@ class Project_Paths:
         
         return k 
 
-
-    def callers(self):
+    #################################################################################################
+    def callers(self) -> str:
         caller_fram = inspect.stack()[1]
         caller_filename_full = caller_fram.filename
         return caller_filename_full
-    
-    def _current_working_dir(self):
+
+    #####################################################################
+    def _current_working_dir(self)  -> Path:
         return Path.cwd()
     
+    #####################################################################################################
     @property 
-    def cwd(self):
+    def cwd(self)  -> Path:
         return self._current_working_dir() 
         
+    ####################################################################################################
     @property 
-    def rawdata_path(self):
+    def rawdata_path(self)  -> Path:
+        """return to raw data path"""
         return self._rawdata_path()
     
-        
+    ##################################################################################################
     @property 
-    def data_path(self):
+    def data_path(self)  -> Path:
+        """return to data path"""
         return self._treated_data_path()
     
-    
+    ##################################################################################################
     def create_project_structure(self, project_path: Path):
         """The fx creates a standard folder structure for projects.
 
@@ -114,9 +135,9 @@ class Project_Paths:
         make_project_files( project_path)
         make_project_files_data(project_path)           
         
+#end of clasee ############################################################################   
                     
-                    
- 
+################################################################################
 def make_project_files( main_dir: Path):               
     print("\ncreating files:\n")
     def_files = [
@@ -212,8 +233,9 @@ def make_project_files( main_dir: Path):
             f.close()
         print(f"+\"{path.name}\" was created")
     except FileExistsError:
-        print(f"-\"{path.name}\" already exists")                
-                
+        print(f"-\"{path.name}\" already exists")   
+
+################################################################################                
 def make_project_files_data( main_dir: Path):               
  
 
@@ -245,4 +267,11 @@ def make_project_files_data( main_dir: Path):
         print(f"+\"{path.name}\" was created")
     except FileExistsError :
         print(f"-\"{path.name}\" already exists")
+
+def make_project_files_data( server_dir: Path, fileID:str="*.*"):
+    pp = Project_Paths()
+    rawdata_path = pp.rawdata_path
+    if server_dir.is_dir:
+        print("dir ok")
+        for child in server_dir.iterdir(): child 
 
