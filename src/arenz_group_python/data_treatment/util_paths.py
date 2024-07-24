@@ -5,8 +5,8 @@ import inspect
 
 
 PROJECT_FOLDERS = [
-    "rawdata",
-    "data",
+    "data_raw",
+    "data_treated",
     "py_scripts",
     "notebooks_models",
     "notebooks_exploration_cleaning" 
@@ -32,19 +32,23 @@ class Project_Paths:
     #######################################################################
     def _find_dir(self,path_to_caller: Path, dir_name:str) -> Path:
         
-        
-        if isinstance(path_to_caller, Path):
+        path_to_dir = Path()
+        if isinstance(path_to_caller, Path):  #make sure the path is a Path
             p = path_to_caller
         else:
-            p = Path(path_to_caller)    
-        parents_dir = p.parents
-        path_to_dir = Path()
-        for x in parents_dir:
-            a = x / dir_name
-            #print(a.is_dir(),"\t\t",str(a) )
-            if a.is_dir():
-                path_to_dir = a
-                break
+            p = Path(path_to_caller)
+
+        if (p / dir_name).exists():
+             a = p / dir_name   
+        else:   
+            parents_dir = p.parents
+            
+            for x in parents_dir:
+                a = x / dir_name
+                #print(a.is_dir(),"\t\t",str(a) )
+                if a.is_dir():
+                    path_to_dir = a
+                    break
         if path_to_dir == Path():
             raise NotADirectoryError(f'\"{dir_name}\" could not be found as a branch of the folder tree form the notebook.\nPlease use standard project structure.')
         return path_to_dir      
@@ -64,7 +68,7 @@ class Project_Paths:
         if path_to_caller == Path(""):
             p = Path.cwd()
         try:
-            k = self._find_dir(p, "rawdata")
+            k = self._find_dir(p, "data_raw")
         except NotADirectoryError as err:
             print(err)
         
@@ -82,7 +86,7 @@ class Project_Paths:
             Path: path to "treated_data" folder
         """
         try:
-            k = self._find_dir(path_to_caller, "data")
+            k = self._find_dir(path_to_caller, "data_treated")
         except NotADirectoryError as err:
             print(err)
         
@@ -268,7 +272,7 @@ def make_project_files_data( main_dir: Path):
     except FileExistsError :
         print(f"-\"{path.name}\" already exists")
 
-def make_project_files_data( server_dir: Path, fileID:str="*.*"):
+def find_project_files_data2( server_dir: Path, fileID:str="*.*"):
     pp = Project_Paths()
     rawdata_path = pp.rawdata_path
     if server_dir.is_dir:
