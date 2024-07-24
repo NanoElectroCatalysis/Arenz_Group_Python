@@ -268,3 +268,10 @@ def make_project_files_data( main_dir: Path):
     except FileExistsError :
         print(f"-\"{path.name}\" already exists")
 
+def make_project_files_data( server_dir: Path, fileID:str="*.*"):
+    pp = Project_Paths()
+    rawdata_path = pp.rawdata_path
+    if server_dir.is_dir:
+        print("dir ok")
+        for child in server_dir.iterdir(): child 
+

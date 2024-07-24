@@ -40,7 +40,8 @@ class AutoClaveSynthesis:
 
     def __str__(self):
         return f"{self.name}"
-
+    
+    #####################################################################################################################
     def get_channel(self, datachannel: str):
         match datachannel:
             case "Time":
@@ -63,7 +64,8 @@ class AutoClaveSynthesis:
                 return self.Rot, "v", "rpm"
             case _:
                 raise NameError("The channel name is not supported")
-
+            
+    #####################################################################################################################
     def clean_outliers(self, data, window_size, threshold):
         clean_data = data.copy()
         half_window = window_size // 2
@@ -81,6 +83,7 @@ class AutoClaveSynthesis:
 
         return clean_data
     
+    #####################################################################################################################
     def plot(self, x_channel: str, y_channel: str, **kwargs):
         #xlabel = "wrong channel name"
         #xunit = "wrong channel name"
@@ -100,7 +103,7 @@ class AutoClaveSynthesis:
             print(f"ychannel {y_channel} not supported")
 
         return options.exe()
-
+    #####################################################################################################################
     def AC_synthesis(self, **kwargs):
         options = {
             'time_smooth': 0,
@@ -219,7 +222,7 @@ class AutoClaveSynthesis:
 
 
         tb =  [["Set Temperature", str(set_temperature), T_unit]]
-#f"pos: B={m_pos:3.3e}"
+        #f"pos: B={m_pos:3.3e}"
 
        # tb.append(["Set Temperature", str(f"{set_temperature}"), T_unit])
         tb.append(['Max Temperature of Reactor',round(max_temperature_R, 2), T_unit])
