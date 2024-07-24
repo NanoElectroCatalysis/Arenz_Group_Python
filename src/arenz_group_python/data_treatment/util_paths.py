@@ -39,7 +39,7 @@ class Project_Paths:
             p = Path(path_to_caller)
 
         if (p / dir_name).exists():
-             a = p / dir_name   
+             path_to_dir = p / dir_name   
         else:   
             parents_dir = p.parents
             
@@ -272,6 +272,7 @@ def make_project_files_data( main_dir: Path):
         print(f"+\"{path.name}\" was created")
     except FileExistsError :
         print(f"-\"{path.name}\" already exists")
+    ###########################################################################################
 
 def find_project_files_data2( server_dir: Path, fileID:str="*.*"):
     pp = Project_Paths()
