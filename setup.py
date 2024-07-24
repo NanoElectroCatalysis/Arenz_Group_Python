@@ -18,5 +18,5 @@ setup(
     author_email='gustav.wiberg@unibe.ch',
     keywords=['python', 'arenz group', 'tdms'],
     url='https://github.com/guswib/arenz_group_python',
-    install_requires=['nptdms','matplotlib', 'pathlib','scipy','shutil','numpy','pandas']
+    install_requires=['nptdms','matplotlib', 'pathlib','scipy','numpy','pandas']
 )
