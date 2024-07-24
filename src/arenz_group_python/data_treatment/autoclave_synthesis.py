@@ -218,21 +218,42 @@ class AutoClaveSynthesis:
         parameters_df['Value'] = parameters_df['Value'].astype(float)
 
 
-        tb = {
-            {"Set Temperature", set_temperature, T_unit},
-            {'Max Temperature of Reactor',round(max_temperature_R, 2), T_unit},
-            {'Time to Set Temperature', round(time_set_temp, 2), time_unit},
-            {'Heating Rate', round(((set_temperature - smoothed_temp_R[0]) / time_set_temp), 2), T_unit + "/" + time_unit},
-            {'Max Overpressure', round(max_overpressure,1),p_unit},
-            {'Time to Max Overpressure', round(self.Time[Overpressure.argmax()], 2)},
-            { 'Pressure Increase Rate [bar/min]', round((max_overpressure - Overpressure[0]) / round(self.Time[Overpressure.argmax()], 2), 2), p_unit + "/"+time_unit},
-            { "Rotation Rate", rotation, "rpm"  },
-            {"Time of Synthesis ", max_time, time_unit}
-        }
+        tb =  [["Set Temperature", str(set_temperature), T_unit]]
+#f"pos: B={m_pos:3.3e}"
 
+       # tb.append(["Set Temperature", str(f"{set_temperature}"), T_unit])
+        tb.append(['Max Temperature of Reactor',round(max_temperature_R, 2), T_unit])
+        tb.append(['Time to Set Temperature', f"{time_set_temp:3.2e}", time_unit])
+        tb.append(['Heating Rate', round(((set_temperature - smoothed_temp_R[0]) / time_set_temp), 2), T_unit + "/" + time_unit])
+        tb.append(['Max Overpressure', round(max_overpressure,1) , p_unit])
+        tb.append(['Time to Max Overpressure', round(self.Time[Overpressure.argmax()], 2),time_unit] )
+        tb.append(['Pressure Increase Rate', round((max_overpressure - Overpressure[0]) / round(self.Time[Overpressure.argmax()], 2), 2), p_unit + "/"+time_unit])
+        tb.append(["Rotation Rate", rotation, "rpm" ])
+        tb.append(["Time of Synthesis ", max_time, time_unit])
+        #tb.append([])
+        #tb.append([])
+        #    {'Heating Rate', round(((set_temperature - smoothed_temp_R[0]) / time_set_temp), 2), T_unit + "/" + time_unit},
+        #    {'Max Overpressure', round(max_overpressure,1),p_unit},
+        #    {'Time to Max Overpressure', round(self.Time[Overpressure.argmax()], 2)},
+        #    { 'Pressure Increase Rate [bar/min]', round((max_overpressure - Overpressure[0]) / round(self.Time[Overpressure.argmax()], 2), 2), p_unit + "/"+time_unit},
+        #    { "Rotation Rate", rotation, "rpm"  },
+        #    {"Time of Synthesis ", max_time, time_unit}
+        #}
+        columns = ('Quantity', 'Value', 'Unit')
+        col_width = [0.7,0.2,0.2]
 
-        
-        table = axs[1].table(cellText=parameters_df.values, colLabels=parameters_df.columns, cellLoc='center', loc='center', edges='horizontal')
+        #print("col",len(columns))
+        #print(tb)
+        #for i in tb:
+        #    print(len(i))
+        #table = axs[1].table(cellText=parameters_df.values, colLabels=parameters_df.columns, cellLoc='center', loc='center', edges='horizontal')
+        table = axs[1].table(cellText=tb, 
+                             colLabels=columns,
+                             colWidths=col_width, 
+                             cellLoc='center', 
+                             loc='center', 
+                             edges='horizontal')
+
         table.auto_set_font_size(False)
         table.set_fontsize(10)
         table.scale(1, 2)
@@ -241,6 +262,8 @@ class AutoClaveSynthesis:
         for (i, j), cell in table.get_celld().items():
             if i == 0:
                 cell.set_text_props(weight="bold")
+            if i > 0 and j==0:
+                 cell.set_text_props(ha="left")
 
         plt.tight_layout(rect=[0, 0, 1, 0.95])
         plt.show()

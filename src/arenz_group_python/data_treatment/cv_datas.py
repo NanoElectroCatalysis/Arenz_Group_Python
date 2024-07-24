@@ -53,7 +53,7 @@ class CV_Datas:
     def _make_plot(self, Title:str):
         fig = plt.figure()
         fig.set_figheight(5)
-        fig.set_figwidth(12)
+        fig.set_figwidth(13)
         plt.suptitle(Title)
         CV_plot, analyse_plot = fig.subplots(1,2)
         return CV_plot, analyse_plot
@@ -94,7 +94,7 @@ class CV_Datas:
          
         CV_plot.legend()
     
-#################################################################################################    
+    #################################################################################################    
     def Levich(self, Epot:float, *args, **kwargs):
         """Levich analysis. Creates plot of the data and a Levich plot.
 
@@ -129,6 +129,7 @@ class CV_Datas:
             y.append(cv.get_i_at_E(Epot))
             E.append([Epot, Epot])
             y_axis_title= cv.i_label
+            y_axis_unit= cv.i_unit
             #print(cv.setup)
         #print(rot)
         rot = np.array(rot)
@@ -142,24 +143,29 @@ class CV_Datas:
         analyse_plot.plot(rot,y,'o')
 
         analyse_plot.set_xlabel("$\omega^{0.5}$ ( rpm$^{0.5}$)")
-        analyse_plot.set_ylabel(y_axis_title)
+        analyse_plot.set_ylabel(y_axis_title + " / " + y_axis_unit )
         #analyse_plot.set_xlim([0, math.sqrt(rot_max)])
         #analyse_plot.xlim(left=0)
+        x_plot = np.insert(rot,0,0)
         m_pos, b = np.polyfit(rot, y[:,0], 1)
-        y_pos= m_pos*rot+b
-        line, = analyse_plot.plot(rot,y_pos,'-' )
+        y_pos= m_pos*x_plot+b
+        line, = analyse_plot.plot(x_plot,y_pos,'-' )
         line.set_label(f"pos: B={m_pos:3.3e}")
         m_neg, b = np.polyfit(rot, y[:,1], 1)
-        y_neg= m_neg*rot+b
-        line,=analyse_plot.plot(rot,y_neg,'-' )
+        y_neg= m_neg*x_plot+b
+        line,=analyse_plot.plot(x_plot,y_neg,'-' )
         line.set_label(f"neg: B={m_neg:3.3e}")
         #ax.xlim(left=0)
         analyse_plot.legend()
         analyse_plot.set_xlim(left=0,right =None)
-        print("Levich", m_pos,m_neg)
+         
+        print("Levich analysis" )
+        print("dir","\tpos     ", "\tneg     " )
+        print(" :    ",f"\t{y_axis_unit} / rpm^0.5",f"\t{y_axis_unit} / rpm^0.5")
+        print("slope:","\t{:.2e}".format(m_pos) ,"\t{:.2e}".format(m_neg))
         return m_pos,m_neg
 
-#######################################################################################################
+    #######################################################################################################
     def KouLev(self, Epot: float, *args,**kwargs):
         """Creates a Koutechy-Levich plot.
 
@@ -205,9 +211,12 @@ class CV_Datas:
         #print(rot)
         CV_plot.plot(E,y, "o")
         CV_plot.legend()
+
+        rot = np.array(rot)
         
-        rot = np.array(rot) 
-        rot = 1 / rot    
+        rot = 1 / rot 
+        x_plot = np.insert(rot,0,0)  
+        #print(x_plot) 
         y_values = np.array(y)
         y_inv = 1/ y_values
 
@@ -218,21 +227,29 @@ class CV_Datas:
 
         analyse_plot.set_xlabel(str("$\omega^{-0.5}$" + "("+ "rpm$^{-0.5}$" +")"))
         analyse_plot.set_ylabel(str( f"(1 / ({y_axis_title}) +( 1 /{y_axis_unit})"))
+        
+        #FIT pos
         m_pos, b = np.polyfit(rot, y_inv[:,0], 1)
-        y_pos= m_pos*rot+b
+       
+        y_pos= m_pos*x_plot+b
         B_pos = 1/m_pos
-        line,=analyse_plot.plot(rot,y_pos,'-' )
+        line,=analyse_plot.plot(x_plot,y_pos,'-' )
         line.set_label(f"pos: m={B_pos:3.3e}")
+        #FIT neg
         m_neg, b = np.polyfit(rot, y_inv[:,1], 1)
-        y_neg= m_neg*rot+b
+        y_neg= m_neg*x_plot+b
         B_neg = 1/m_neg
-        line,=analyse_plot.plot(rot,y_neg,'-' )
+        line,=analyse_plot.plot(x_plot,y_neg,'-' )
         line.set_label(f"neg: m={B_neg:3.3e}")
         analyse_plot.legend()
         analyse_plot.set_xlim(left=0,right =None)
-        print("KouLev", B_pos,B_neg)
+        print("KouLev analysis" )
+        print("dir","\tpos     ", "\tneg     " )
+        print(" :",f"\trpm^0.5 /{y_axis_unit}",f"\trpm^0.5 /{y_axis_unit}")
+        print("slope:","\t{:.2e}".format(B_pos) ,"\t{:.2e}".format(B_neg))
         return m_pos,m_neg
     
+    ##################################################################################################################
     def Tafel(self, E_for_idl:float, lims=[0,0], *args, **kwargs):
         """_summary_
 

@@ -2,6 +2,7 @@
 
     This module contains the public facing API for reading TDMS files produced by EC4 DAQ.
 """
+from __future__ import annotations
 from nptdms import TdmsFile
 import math
 import numpy as np
@@ -43,7 +44,7 @@ class CV_Data(EC_Setup):
             #print(kwargs)
             self.conv(EC_Data(args[0]),**kwargs)
         
-    def sub(self, subData):
+    def sub(self, subData: CV_Data) -> None:
         try:
             self.i_p = self.i_p-subData.i_p
             self.i_n = self.i_n-subData.i_n
@@ -61,7 +62,8 @@ class CV_Data(EC_Setup):
     #    
     #    return "aa"
     
-    def add(self, subData):
+    #####################################################################################################
+    def add(self, subData: CV_Data):
         try:
             self.i_p = self.i_p+subData.i_p
         finally:
@@ -71,7 +73,8 @@ class CV_Data(EC_Setup):
         finally:
             pass
         return
-        
+
+    #####################################################################################################    
     def smooth(self, smooth_width:int):
         try:
             self.i_p = savgol_filter(self.i_p, smooth_width, 1)
@@ -79,10 +82,14 @@ class CV_Data(EC_Setup):
         finally:
             return
     
+
+    #####################################################################################################
     def set_area(self,value,unit):
         self.setup_data._area = value
         self.setup_data._area_unit = unit
-    
+
+
+    ######################################################################################################
     def conv(self, data: EC_Data, ** kwargs):
         """Converts EC_Data to a CV
 
@@ -97,7 +104,8 @@ class CV_Data(EC_Setup):
         #self.set_rotation(data.rotation, data.rotation_unit)
         #self.name = data.name
         return
-        
+
+    #####################################################################################################    
     def convert(self, time, E, i, **kwargs):
         """Converts data to CV data
 
@@ -193,7 +201,7 @@ class CV_Data(EC_Setup):
         self.i_p = y_pos     
         self.i_n = y_neg
     
-    
+   ######################################################################################### 
     def norm(self, norm_to:str):
         norm_factor = 1
         norm_label = ""
@@ -228,7 +236,7 @@ class CV_Data(EC_Setup):
         self.i_unit = self.i_unit +" "+ norm_unit
         return 
     
-            
+    ############################################################################        
     def plot(self,**kwargs):
         '''
         plots y_channel vs x_channel.\n
@@ -282,6 +290,7 @@ class CV_Data(EC_Setup):
         #ax.set_xlabel(options.get_x_txt())
         return options.exe()
     
+    ####################################################################################################
     def get_index_of_E(self, E:float):
         index = 0
         for x in self.E:
@@ -291,6 +300,7 @@ class CV_Data(EC_Setup):
                 index = index + 1
         return index
     
+    ########################################################################################################
     def get_i_at_E(self, E:float, dir:str = "all"):
         """Get the current at a specific voltage.
 
@@ -309,3 +319,4 @@ class CV_Data(EC_Setup):
         else:
             return [self.i_p[index] , self.i_n[index]]
     
+    ###########################################################################################
