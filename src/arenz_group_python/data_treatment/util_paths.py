@@ -157,6 +157,7 @@ class Project_Paths:
         Returns:
             str: absolute path to the directory with a matching tag.
         """
+        server_dir = _to_Path(server_dir)
         dirs = find_dirs_with_tags( server_dir, dirID , fileID )
         dest_dirs = create_Folder_Structure_For_RawData(server_dir, self.rawdata_path, dirs)
         for i in range(len(dirs)):
@@ -266,6 +267,64 @@ def make_project_files( main_dir: Path):
             f.close()
         print(f"+\"{path.name}\" was created")
     except FileExistsError:
+        print(f"-\"{path.name}\" already exists")  
+    
+    path = main_dir / PROJECT_FOLDERS.nb_exploration / "copy_data_from_server.ipynb"
+    try:
+        with open(path,"x") as f:
+            f.write('''{
+    "cells": [
+    {
+    "cell_type": "markdown",
+    "metadata": {},
+    "source": [
+        "# Copy data from teh server",
+        "use this notebook to copy data from the server.",
+        "",
+        "Tag the folder you want to by first creating a file with the name:",
+        "",
+        "{Project Name}.tag",
+        "",
+        "ex: my_first_project.tag",
+        " ",
+        "",
+        ""
+        ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+        "from arenz_group_python import Project_Paths",
+        "",
+        "pp = Project_Paths()",
+        "project_name = \'projectname\'",
+        "user_initials = \'\' #This is optional, but it can speed up things", 
+        "path_to_server = \'X:/EXP_DB\'",
+        "pp.copyDirs(path_to_server, user_initials , project_name )",
+        ""
+    ]
+    }
+    ],
+    "metadata": {
+    "kernelspec": {
+    "display_name": "Python 3",
+    "language": "python",
+    "name": "python3"
+    },
+    "language_info": {
+    "name": "python",
+    "version": "3.11.5"
+    }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 2
+    }''')
+            f.close()
+        print(f"+\"{path.name}\" was created")
+    except FileExistsError:
         print(f"-\"{path.name}\" already exists")   
 
 ################################################################################                
@@ -317,8 +376,8 @@ def find_dirs_with_tags( server_dir: Path, dirID: str , fileID:str ):
     dirs_with_tags =[]
     fileID = fileID + ".tag"
     str_match = "*" + dirID + "*/" + fileID
-    print(str_match)
-    if server_dir.is_dir:
+    print("Pattern to look for:", str_match)
+    if server_dir.is_dir() and server_dir.exists():
         print("Source Dir: ", server_dir)
         for root,dirs,files in server_dir.walk(on_error=print):
             for file in files: #look for tags
@@ -327,8 +386,12 @@ def find_dirs_with_tags( server_dir: Path, dirID: str , fileID:str ):
                     #print(file_p,"found tag")
                     if root not in dirs_with_tags:
                         dirs_with_tags.append(root)
+    else:
+        print("server path is not correct or server could not be found.")
     for dir in dirs_with_tags:
         print("\t",dir)
+    if len(dirs_with_tags)== 0:
+        print("no project folders were found.")
     return dirs_with_tags  
 
 def create_Folder_Structure_For_RawData(server_dir: Path, dest: Path, dirs):
@@ -367,3 +430,11 @@ def create_Folder_Structure_For_RawData(server_dir: Path, dest: Path, dirs):
             else:
                 print(f"\t.\\{dest_f.relative_to(dest)}", "exists")
     return dest_dirs
+
+def _to_Path(path_to_caller):
+    p = Path()
+    if isinstance(path_to_caller, Path):  #make sure the path is a Path
+        p = path_to_caller
+    else:
+        p = Path(path_to_caller)
+    return p
