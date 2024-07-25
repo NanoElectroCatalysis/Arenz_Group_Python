@@ -1,1 +1,0 @@
-# Use the rawdata folder to store all experimental data. ONLY!!!!.

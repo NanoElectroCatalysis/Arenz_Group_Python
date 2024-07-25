@@ -274,11 +274,7 @@ def make_project_files_data( main_dir: Path):
     path = main_dir / PROJECT_FOLDERS.rawdata / "README.txt"
     try:
         with open(path,"x") as f:
-            f.write("# Use the rawdata folder to store all experimental data. ONLY!!!!.")
-            f.write("\n")
-            f.write("Copy the following text into a notebook:\n")
-            f.write("from arenz_group_python import Project_Paths")
-            f.write("Project_Paths().copyDirs(pp.cwd.parent.parent / 'data','','p1')")
+            f.write("# Use the rawdata folder to store all experimental data. ONLY!!!!.\nCopy the following text into a notebook:\n\nfrom arenz_group_python import Project_Paths\nProject_Paths().copyDirs(pp.cwd.parent.parent / 'data','','p1')")
             f.close()
         print(f"+\"{path.name}\" was created")
     except FileExistsError :
