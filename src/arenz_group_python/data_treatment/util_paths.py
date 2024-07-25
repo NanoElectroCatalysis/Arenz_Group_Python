@@ -159,14 +159,15 @@ class Project_Paths:
         """
         server_dir = _to_Path(server_dir)
         dirs = find_dirs_with_tags( server_dir, dirID , fileID )
-        dest_dirs = create_Folder_Structure_For_RawData(server_dir, self.rawdata_path, dirs)
-        for i in range(len(dirs)):
-            try:
-                ig = shutil.ignore_patterns("*.tag")
-                shutil.copytree(dirs[i], dest_dirs[i], dirs_exist_ok=True, ignore = ig)      
-            except FileExistsError:
-                print("failed to copy:", dirs[i])
-                
+        if len(dirs) != 0:
+            dest_dirs = create_Folder_Structure_For_RawData(server_dir, self.rawdata_path, dirs)
+            for i in range(len(dirs)):
+                try:
+                    ig = shutil.ignore_patterns("*.tag")
+                    shutil.copytree(dirs[i], dest_dirs[i], dirs_exist_ok=True, ignore = ig)      
+                except FileExistsError:
+                    print("failed to copy:", dirs[i])
+                    
         return 
 
 #end of class ############################################################################   
@@ -298,6 +299,16 @@ def make_project_files( main_dir: Path):
     "outputs": [],
     "source": [
         "from arenz_group_python import Project_Paths",
+        ""
+    ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+        "from arenz_group_python import Project_Paths",
         "",
         "pp = Project_Paths()",
         "project_name = \'projectname\'",
@@ -387,13 +398,14 @@ def find_dirs_with_tags( server_dir: Path, dirID: str , fileID:str ):
                     if root not in dirs_with_tags:
                         dirs_with_tags.append(root)
     else:
-        print("server path is not correct or server could not be found.")
+        print("ERROR: The server path is not correct or server could not be found.")
+        print("\t",server_dir)
     for dir in dirs_with_tags:
         print("\t",dir)
     if len(dirs_with_tags)== 0:
-        print("no project folders were found.")
+        print("ERROR: no project folders were found.")
     return dirs_with_tags  
-
+##########################################################################################################################################
 def create_Folder_Structure_For_RawData(server_dir: Path, dest: Path, dirs):
     """ 
     Creates folder tree in the destination folder
@@ -403,6 +415,8 @@ def create_Folder_Structure_For_RawData(server_dir: Path, dest: Path, dirs):
         dest (Path): _description_
         dirs (_type_): _description_
     """
+    server_dir = _to_Path(server_dir)
+    dest = _to_Path(dest)
     print("destination: ", dest, " exists: ", dest.exists())
     dest_dirs =[]
     if dest.exists(): #if the destination folder exists already
@@ -410,19 +424,21 @@ def create_Folder_Structure_For_RawData(server_dir: Path, dest: Path, dirs):
             dest_f = dest / dir.relative_to(server_dir)
             dest_dirs.append(dest_f)
             if not dest_f.exists():
-                print(dest_f, dest_f.exists())
-                print (dir.parent)
-                if not dest_f.exists():
-                    ppp =[]
-                    for i in range(5):
-                        if dest_f.parents[i].exists(): 
-                            break
-                        else:
-                            ppp.insert(0,dest_f.parents[i])
-                    for parent in ppp:
-                        dest_fp = dest / parent
+                print(f"\t.\\{dest_f.relative_to(dest)}","creating")
+                #print (dir.parent)
+                parent_folders =[]
+                for i in range(6): 
+                    if dest_f.parents[i].exists(): 
+                        break
+                    else:
+                        parent_folders.insert(0,dest_f.parents[i])
+                for parent in parent_folders:
+                    dest_fp = dest / parent
+                    try:
                         dest_fp.mkdir()
-                        print("\tmake a tree", dest_fp.relative_to(dest), dest_fp.exists())
+                    #print("\tmake a tree", dest_fp.relative_to(dest), dest_fp.exists())
+                    except FileNotFoundError:
+                        print(f"parent does not exist for {dest_fp}")
                 try:
                     dest_f.mkdir()
                 except FileNotFoundError:
