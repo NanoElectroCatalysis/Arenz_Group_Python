@@ -3,6 +3,7 @@
 from pathlib import Path
 import inspect
 from enum import StrEnum
+import shutil
 
 class PROJECT_FOLDERS(StrEnum):
     rawdata = "data_raw"
@@ -95,8 +96,8 @@ class Project_Paths:
 
     #################################################################################################
     def callers(self) -> str:
-        caller_fram = inspect.stack()[1]
-        caller_filename_full = caller_fram.filename
+        caller_from = inspect.stack()[1]
+        caller_filename_full = caller_from.filename
         return caller_filename_full
 
     #####################################################################
@@ -131,16 +132,43 @@ class Project_Paths:
             try:
                 newFolder =  project_path / folderPath
                 newFolder.mkdir()
-            except FileExistsError as err:
+            except FileExistsError:
                 print(f"-\"{folderPath}\" exists already as a folder")
-            except FileNotFoundError as err:
+            except FileNotFoundError:
                 print("The path to the project is not correct")
                 return
         
         make_project_files( project_path)
-        make_project_files_data(project_path)           
+        make_project_files_data(project_path) 
         
-#end of clasee ############################################################################   
+    def find_dirs_with_tags(self, server_dir: Path, dirID: str , fileID:str ): 
+        
+        return find_dirs_with_tags( server_dir, dirID , fileID )
+    
+    def copyDirs(self, server_dir: Path, dirID: str , fileID:str ):
+        """Copy all files from each folder and subfolder containing a file with the ending .tag
+        to the raw data folder while keeping the folder structure.
+        
+        Args:
+            server_dir (Path): path to server data base
+            dirID (str): string to select only certain folders containing the string. Makes the crawling faster.
+            fileID (str): project name, i.e name of tag-file.
+
+        Returns:
+            str: absolute path to the directory with a matching tag.
+        """
+        dirs = find_dirs_with_tags( server_dir, dirID , fileID )
+        dest_dirs = create_Folder_Structure_For_RawData(server_dir, self.rawdata_path, dirs)
+        for i in range(len(dirs)):
+            try:
+                ig = shutil.ignore_patterns("*.tag")
+                shutil.copytree(dirs[i], dest_dirs[i], dirs_exist_ok=True, ignore = ig)      
+            except FileExistsError:
+                print("failed to copy:", dirs[i])
+                
+        return 
+
+#end of class ############################################################################   
                     
 ################################################################################
 def make_project_files( main_dir: Path):               
@@ -242,12 +270,15 @@ def make_project_files( main_dir: Path):
 
 ################################################################################                
 def make_project_files_data( main_dir: Path):               
- 
 
     path = main_dir / PROJECT_FOLDERS.rawdata / "README.txt"
     try:
         with open(path,"x") as f:
             f.write("# Use the rawdata folder to store all experimental data. ONLY!!!!.")
+            f.write("\n")
+            f.write("Copy the following text into a notebook:\n")
+            f.write("from arenz_group_python import Project_Paths")
+            f.write("Project_Paths().copyDirs(pp.cwd.parent.parent / 'data','','p1')")
             f.close()
         print(f"+\"{path.name}\" was created")
     except FileExistsError :
@@ -272,12 +303,71 @@ def make_project_files_data( main_dir: Path):
         print(f"+\"{path.name}\" was created")
     except FileExistsError :
         print(f"-\"{path.name}\" already exists")
-    ###########################################################################################
+###########################################################################################
 
-def find_project_files_data2( server_dir: Path, fileID:str="*.*"):
-    pp = Project_Paths()
-    rawdata_path = pp.rawdata_path
+
+#########################################################################################     
+def find_dirs_with_tags( server_dir: Path, dirID: str , fileID:str ):
+    """_summary_
+
+    Args:
+        server_dir (Path): path to server data base
+        dirID (str): string to select only certain folders containing the string.
+        fileID (str): project name, i.e name of tag-file.
+
+    Returns:
+        str: absolute path to the directory with a matching tag.
+    """
+    dirs_with_tags =[]
+    fileID = fileID + ".tag"
+    str_match = "*" + dirID + "*/" + fileID
+    print(str_match)
     if server_dir.is_dir:
-        print("dir ok")
-        for child in server_dir.iterdir(): child 
+        print("Source Dir: ", server_dir)
+        for root,dirs,files in server_dir.walk(on_error=print):
+            for file in files: #look for tags
+                file_p = root / file
+                if file_p.match(str_match):
+                    #print(file_p,"found tag")
+                    if root not in dirs_with_tags:
+                        dirs_with_tags.append(root)
+    for dir in dirs_with_tags:
+        print("\t",dir)
+    return dirs_with_tags  
 
+def create_Folder_Structure_For_RawData(server_dir: Path, dest: Path, dirs):
+    """ 
+    Creates folder tree in the destination folder
+
+    Args:
+        server_dir (Path): _description_
+        dest (Path): _description_
+        dirs (_type_): _description_
+    """
+    print("destination: ", dest, " exists: ", dest.exists())
+    dest_dirs =[]
+    if dest.exists(): #if the destination folder exists already
+        for dir in dirs:
+            dest_f = dest / dir.relative_to(server_dir)
+            dest_dirs.append(dest_f)
+            if not dest_f.exists():
+                print(dest_f, dest_f.exists())
+                print (dir.parent)
+                if not dest_f.exists():
+                    ppp =[]
+                    for i in range(5):
+                        if dest_f.parents[i].exists(): 
+                            break
+                        else:
+                            ppp.insert(0,dest_f.parents[i])
+                    for parent in ppp:
+                        dest_fp = dest / parent
+                        dest_fp.mkdir()
+                        print("\tmake a tree", dest_fp.relative_to(dest), dest_fp.exists())
+                try:
+                    dest_f.mkdir()
+                except FileNotFoundError:
+                    print(f"parent does not exist for {dest_f}")
+            else:
+                print(f"\t.\\{dest_f.relative_to(dest)}", "exists")
+    return dest_dirs
