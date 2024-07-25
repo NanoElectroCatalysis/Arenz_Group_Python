@@ -406,7 +406,7 @@ def find_dirs_with_tags( server_dir: Path, dirID: str , fileID:str ):
         print("ERROR: no project folders were found.")
     return dirs_with_tags  
 ##########################################################################################################################################
-def create_Folder_Structure_For_RawData(server_dir: Path, dest: Path, dirs):
+def create_Folder_Structure_For_RawData(server_dir: Path, dest: Path, dirs: list[Path]):
     """ 
     Creates folder tree in the destination folder
 
@@ -421,7 +421,7 @@ def create_Folder_Structure_For_RawData(server_dir: Path, dest: Path, dirs):
     dest_dirs =[]
     if dest.exists(): #if the destination folder exists already
         for dir in dirs:
-            dest_f = dest / dir.relative_to(server_dir)
+            dest_f = dest / dir.relative_to(dir.parent)
             dest_dirs.append(dest_f)
             if not dest_f.exists():
                 print(f"\t.\\{dest_f.relative_to(dest)}","creating")
