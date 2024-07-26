@@ -98,8 +98,11 @@ class CV_Data(EC_Setup):
             data (EC_Data): the data that should be converted.
         """
         #print("Convert:",kwargs)
-        self.convert(data.Time,data.E,data.i,**kwargs)
-        self.setup_data = data.setup_data
+        try:
+            self.convert(data.Time,data.E,data.i,**kwargs)
+            self.setup_data = data.setup_data
+        except ValueError:
+            print("no_data")
         #self.setup = data.setup
         #self.set_area(data._area, data._area_unit)
         #self.set_rotation(data.rotation, data.rotation_unit)
@@ -131,7 +134,7 @@ class CV_Data(EC_Setup):
         
         self.xmin = x.min()
         self.xmax = x.max()
-
+        
         x_start = np.mean(x[0:3])
         index_min = np.argmin(x)
         index_max = np.argmax(x)
@@ -334,13 +337,19 @@ class CV_Data(EC_Setup):
         """
         index1 = self.get_index_of_E(start_E)
         index2 = self.get_index_of_E(end_E)
-        
-        Q_p = integrate.cumulative_simpson(self.i_p, x=self.E, initial=0)*self.setup_data.rate_V_s
-        Q_n = integrate.cumulative_simpson(self.i_n, x=self.E, initial=0)*self.setup_data.rate_V_s
-                
+        imax = max(index1,index2)
+        imin = min(index1,index2)
+        print("INDEX",index1,index2)
+        try:
+            Q_p = integrate.cumulative_simpson(self.i_p[imin:imax], x=self.E[imin:imax], initial=0)*self.rate
+            Q_n = integrate.cumulative_simpson(self.i_n[imin:imax], x=self.E[imin:imax], initial=0)*self.rate
+        except ValueError as e:
+            print("the integration did not work on this dataset")
+            return None
+        end = len(Q_p)-1
         if dir == "pos":
-            return Q_p[max(index1,index2)]-Q_p[min(index1,index2)]
+            return Q_p[end]-Q_p[0]
         elif dir == "neg":
-            return Q_n[max(index1,index2)]-Q_n[min(index1,index2)]
+            return  Q_n[end]-Q_n[0]
         else:
-            return [Q_p[max(index1,index2)]-Q_p[min(index1,index2)] , Q_n[max(index1,index2)]-Q_n[min(index1,index2)]]
+            return [Q_p[end]-Q_p[0] , Q_n[end]-Q_n[0]]

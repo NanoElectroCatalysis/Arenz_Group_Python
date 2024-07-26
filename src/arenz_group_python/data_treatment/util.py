@@ -168,7 +168,7 @@ class plot_options:
                 self.x_data = savgol_filter(self.x_data, x_smooth, 1)
         except:
             pass
-
+        line = None
         try:
             lineLabel='_'
             line, = ax.plot(self.x_data, self.y_data, self.options['style'])

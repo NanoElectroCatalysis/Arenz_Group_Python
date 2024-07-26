@@ -1,4 +1,4 @@
-
+from .util import extract_value_unit
 
 
 
@@ -78,6 +78,10 @@ class EC_Setup:
         """
         self.setup_data._rotation_unit = value
 
+    @property
+    def rate(self):
+        v,u = extract_value_unit(self.setup_data._setup['Rate'])
+        return v
 
     def set_area(self,value:float,unit:str = ""):
         self.setup_data._area = value
