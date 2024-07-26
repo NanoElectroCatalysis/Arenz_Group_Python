@@ -10,10 +10,11 @@ ec_data is used to load in the raw files.
 """
 import os
 #__path__ = [os.path.join(os.path.dirname(os.path.abspath(__file__)), 'contents')]
-__all__ = ["EC_Data", "ec_data","CV_Data","CV_Datas","save_key_values","util_paths","Project_Paths", "AutoClaveSynthesis"]
+__all__ = ["EC_Data","EC_Datas", "ec_data","CV_Data","CV_Datas","save_key_values","util_paths","Project_Paths", "AutoClaveSynthesis"]
 
 
 from .ec_data import EC_Data 
+from .ec_datas import EC_Datas 
 from .cv_data import CV_Data
 from .cv_datas import CV_Datas 
 from .autoclave_synthesis import * 

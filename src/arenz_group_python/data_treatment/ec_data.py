@@ -10,7 +10,7 @@ from scipy.signal import savgol_filter
 from . import util
 from .util import plot_options
 from .ec_setup import EC_Setup
-
+import copy
 
 class EC_Data(EC_Setup):
     """ Reads and stores data from a TDMS file in the format of EC4 DAQ.
@@ -136,6 +136,15 @@ class EC_Data(EC_Setup):
             cosValue[i] = math.cos(self.Phase_E[i])
         return cosValue          
     
+    def index_at_time(self, time_s_:float):
+        max_index = len(self.Time)
+        index = -1
+        for i in range(max_index):
+            if time_s_ < self.Time[i]:
+                index = i
+                break
+        return index
+    
     def plot(self, x_channel:str, y_channel:str, **kwargs):
         '''
         plots y_channel vs x_channel.\n
@@ -150,14 +159,31 @@ class EC_Data(EC_Setup):
         #ylable ="wrong channel name"
         #yunit = "wrong channel name"
         
+        range = {
+            'limit_min' : -1,
+            'limit_max' : -1   
+        }
+        range.update(kwargs)
+        #print(kwargs)
+        #print(range)
         options = plot_options(kwargs)
-
+        index_min = 0
+        if range["limit_min"] >0:
+            index_min = self.index_at_time(range["limit_min"])
+        index_max = len(self.Time)-1
+        if range["limit_max"] >0:
+            index_max = self.index_at_time(range["limit_max"])
+        
+        max_index = len(self.Time)-1
+        #print("index", index_min,index_max)
         try:
-            options.x_data, options.x_label, options.x_unit = self.get_channel(x_channel)
+            x_data, options.x_label, options.x_unit = self.get_channel(x_channel)
+            options.x_data = x_data[index_min:index_max]
         except NameError:
             print(f"xchannel {x_channel} not supported")
         try:
-            options.y_data, options.y_label, options.y_unit = self.get_channel(y_channel)
+            y_data, options.y_label, options.y_unit = self.get_channel(y_channel)
+            options.y_data = y_data[index_min:index_max]
         except NameError:
             print(f"ychannel {y_channel} not supported")
 

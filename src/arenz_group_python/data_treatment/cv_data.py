@@ -6,6 +6,7 @@ from __future__ import annotations
 from nptdms import TdmsFile
 import math
 import numpy as np
+from scipy import integrate
 import matplotlib.pyplot as plt
 from scipy.signal import savgol_filter 
 from . import util
@@ -320,3 +321,26 @@ class CV_Data(EC_Setup):
             return [self.i_p[index] , self.i_n[index]]
     
     ###########################################################################################
+
+    def integrate(self, start_E:float, end_E:float, dir:str = "all"):
+        """Integrate Current between the voltage limit using cumulative_simpson
+
+        Args:
+            start_E (float): potential where to get the current.
+            end_E(float) 
+            dir (str): direction, "pos,neg or all"
+        Returns:
+            [float]: charge
+        """
+        index1 = self.get_index_of_E(start_E)
+        index2 = self.get_index_of_E(end_E)
+        
+        Q_p = integrate.cumulative_simpson(self.i_p, x=self.E, initial=0)*self.setup_data.rate_V_s
+        Q_n = integrate.cumulative_simpson(self.i_n, x=self.E, initial=0)*self.setup_data.rate_V_s
+                
+        if dir == "pos":
+            return Q_p[max(index1,index2)]-Q_p[min(index1,index2)]
+        elif dir == "neg":
+            return Q_n[max(index1,index2)]-Q_n[min(index1,index2)]
+        else:
+            return [Q_p[max(index1,index2)]-Q_p[min(index1,index2)] , Q_n[max(index1,index2)]-Q_n[min(index1,index2)]]
