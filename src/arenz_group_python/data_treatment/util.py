@@ -57,23 +57,53 @@ class Q_V:
     def __mul__(self, other):
         v = Q_V()
         v.value = self.value * other.value
-        v.unit = self.unit +" "+ other.unit
-        v.quantity = self.quantity + " " + other.quantity
+        v.unit = quantity_fix(self.unit +" "+ other.unit)
+        v.quantity = quantity_fix(self.quantity + " " + other.quantity)
         return v
     
     def __div__(self, other):
         v = Q_V()
         v.value = self.value / other.value
         v.unit = self.unit +" /"+other.unit
-        v.quantity = self.quantity + " /" + other.quantity
+        v.quantity = quantity_fix(self.quantity + " /" + other.quantity)
         return v
     
     def __truediv__(self, other):
         v = Q_V()
         v.value = self.value / other.value
-        v.unit = self.unit +" /"+other.unit
-        v.quantity = self.quantity + " /" + other.quantity
+        v.unit = quantity_fix(self.unit +" /"+other.unit)
+        v.quantity = quantity_fix(self.quantity + " /" + other.quantity)
         return v
+    
+def quantity_fix(s:str):
+    b = s.split(" ", 100)
+    k={}
+    for c in b:
+        aa = c.split("^",2)
+        nyckel = aa[0]
+        sign = 1
+        fac =1
+        if nyckel.startswith("/"):
+            nyckel = nyckel[1:]
+            sign = -1
+        if len(aa)>1:
+            fac = float(aa[1]) 
+        val = float(k.get(nyckel, 0))  
+        k[nyckel] = val + sign*fac
+    prep={} 
+    for key, value in k.items():
+        if int(value*100) != 0:
+            prep[key] = value
+    sr =""
+    print (prep)  
+    for key, value in prep.items():
+        if int(value*10) == 10:
+            sr = sr +" " + key
+        elif int(value) == value:
+            sr = sr+ f' {key}^{value:.0f}'
+        else:
+            sr = sr+ f' {key}^{value:.1f}'
+    return sr
 
 class plot_options:
     def __init__(self, kwargs):
