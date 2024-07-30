@@ -1,5 +1,5 @@
 from .util import extract_value_unit
-
+from .util import Q_V
 
 
 class ec_setup_data:
@@ -49,7 +49,7 @@ class EC_Setup:
     ##AREA        
     @property 
     def area(self):
-        return self.setup_data._area
+        return Q_V(self.setup_data._area,self.setup_data._area_unit,"A")
         
     @area.setter
     def area(self, value:float):
@@ -100,7 +100,7 @@ class EC_Setup:
             float: sweep rate in V/s
         """
         v,u = extract_value_unit(self.setup_data._setup['Rate'])
-        return v
+        return Q_V(v,u,"v")
     ###########################################################
     
     @property
@@ -111,7 +111,7 @@ class EC_Setup:
             float: weight in g
         """
         v,u = extract_value_unit(self.setup_data._setup['Electrode.Cat.Weight'])
-        return v
+        return Q_V(v,u,"m")
     
     @property
     def loading(self):
@@ -121,8 +121,29 @@ class EC_Setup:
             float: loading in g m^-2
         """
         v,u = extract_value_unit(self.setup_data._setup['Electrode.Cat.Loading'])
-        return v
+        return Q_V(v,u,"m /A")
     
+    @property
+    def temp0(self):
+        """returns the catalyst loading in g m^-2
+
+        Returns:
+            float: loading in g m^-2
+        """
+        v,u = extract_value_unit(self.setup_data._setup['Temp_0'])
+        return Q_V(v,u,"T")
+    
+    @property
+    def pressure(self):
+        """returns the pressure."""
+        v,u = extract_value_unit(self.setup_data._setup['Pressure'])
+        return Q_V(v,u,"p")
+    
+    @property
+    def name(self):
+        """returns dataset name"""
+
+        return self.setup_data.name
     
     def set_area(self,value:float,unit:str = ""):
         self.setup_data._area = value

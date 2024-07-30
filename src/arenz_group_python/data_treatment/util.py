@@ -11,6 +11,10 @@ import matplotlib.pyplot as plt
 
 NEWPLOT = "new_plot"
 
+
+
+
+
 def extract_value_unit(s:str):
     """_summary_
 
@@ -31,7 +35,45 @@ def extract_value_unit(s:str):
         pass
     return value, unit
 
+class Q_V:
+    def __init__(self, value=0 , unit="", quantity=""):
+        self.value = value
+        self.unit = unit
+        self.quantity =quantity
 
+        
+    def __str__(self) -> str:
+        return f'{self.value:.3e} {self.unit}'
+    
+    def __float__(self) -> float:
+        return self.value
+    
+    def __add__(self, other):
+        if self.unit == other.unit:
+            v = Q_V()
+            v.value= self.value + other.value             
+        return Q_V(self.value+other.value,self.unit, self.quantity)
+    
+    def __mul__(self, other):
+        v = Q_V()
+        v.value = self.value * other.value
+        v.unit = self.unit +" "+ other.unit
+        v.quantity = self.quantity + " " + other.quantity
+        return v
+    
+    def __div__(self, other):
+        v = Q_V()
+        v.value = self.value / other.value
+        v.unit = self.unit +" /"+other.unit
+        v.quantity = self.quantity + " /" + other.quantity
+        return v
+    
+    def __truediv__(self, other):
+        v = Q_V()
+        v.value = self.value / other.value
+        v.unit = self.unit +" /"+other.unit
+        v.quantity = self.quantity + " /" + other.quantity
+        return v
 
 class plot_options:
     def __init__(self, kwargs):

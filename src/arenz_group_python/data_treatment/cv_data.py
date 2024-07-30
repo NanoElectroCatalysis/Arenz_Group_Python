@@ -16,7 +16,7 @@ from .ec_setup import EC_Setup
 from .util import plot_options
 from pathlib import Path
 from .util import extract_value_unit     
-
+from .util import Q_V
 
 class CV_Data(EC_Setup):
     def __init__(self,*args, **kwargs):
@@ -362,8 +362,10 @@ class CV_Data(EC_Setup):
         i_n = self.i_n[imin:imax+1].copy()
         i_n[np.isnan(i_n)] = 0
 
-        Q_p = integrate.cumulative_simpson(i_p, x=self.E[imin:imax+1], initial=0)/self.rate
-        Q_n = integrate.cumulative_simpson(i_n, x=self.E[imin:imax+1], initial=0)/self.rate
+        array_Q_p = integrate.cumulative_simpson(i_p, x=self.E[imin:imax+1], initial=0) / float(self.rate)
+        array_Q_n = integrate.cumulative_simpson(i_n, x=self.E[imin:imax+1], initial=0)/ float(self.rate)
+        
+        
         
         Q_unit =self.i_unit.replace("A","C")
         #yn= np.concatenate(i_p,i_n,axis=0)
@@ -384,10 +386,13 @@ class CV_Data(EC_Setup):
         #except ValueError as e:
         #    print("the integration did not work on this dataset")
         #    return None
-        end = len(Q_p)-1
+        end = len(array_Q_p)-1
+        Q_p = Q_V(array_Q_p[end]-array_Q_p[0],Q_unit,"Q")        
+        Q_n = Q_V(array_Q_n[end]-array_Q_n[0],Q_unit,"Q")
+        print(Q_p)
         if dir == "pos":
-            return [Q_p[end]-Q_p[0],Q_unit] 
+            return Q_p#[Q_p[end]-Q_p[0],Q_unit] 
         elif dir == "neg":
-            return  [Q_n[end]-Q_n[0],Q_unit]
+            return  Q_p #[Q_n[end]-Q_n[0],Q_unit]
         else:
-            return [Q_p[end]-Q_p[0] ,Q_unit, Q_n[end]-Q_n[0],Q_unit]
+            return [Q_p, Q_n] #[Q_p[end]-Q_p[0] ,Q_unit, Q_n[end]-Q_n[0],Q_unit]
