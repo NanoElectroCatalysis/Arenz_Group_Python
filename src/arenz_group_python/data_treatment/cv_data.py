@@ -362,8 +362,8 @@ class CV_Data(EC_Setup):
         i_n = self.i_n[imin:imax+1].copy()
         i_n[np.isnan(i_n)] = 0
 
-        Q_p = integrate.cumulative_simpson(i_p, x=self.E[imin:imax+1], initial=0)*self.rate
-        Q_n = integrate.cumulative_simpson(i_n, x=self.E[imin:imax+1], initial=0)*self.rate
+        Q_p = integrate.cumulative_simpson(i_p, x=self.E[imin:imax+1], initial=0)/self.rate
+        Q_n = integrate.cumulative_simpson(i_n, x=self.E[imin:imax+1], initial=0)/self.rate
         
         Q_unit =self.i_unit.replace("A","C")
         #yn= np.concatenate(i_p,i_n,axis=0)

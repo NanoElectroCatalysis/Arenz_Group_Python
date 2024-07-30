@@ -94,9 +94,35 @@ class EC_Setup:
     ###RATE
     @property
     def rate(self):
+        """returns the sweep rate in V/s
+
+        Returns:
+            float: sweep rate in V/s
+        """
         v,u = extract_value_unit(self.setup_data._setup['Rate'])
         return v
     ###########################################################
+    
+    @property
+    def weight(self):
+        """returns the catalyst weight in g
+
+        Returns:
+            float: weight in g
+        """
+        v,u = extract_value_unit(self.setup_data._setup['Electrode.Cat.Weight'])
+        return v
+    
+    @property
+    def loading(self):
+        """returns the catalyst loading in g m^-2
+
+        Returns:
+            float: loading in g m^-2
+        """
+        v,u = extract_value_unit(self.setup_data._setup['Electrode.Cat.Loading'])
+        return v
+    
     
     def set_area(self,value:float,unit:str = ""):
         self.setup_data._area = value
@@ -113,6 +139,9 @@ class EC_Setup:
         else:
             self.setup_data._rotation_unit = unit
         return
+    #########################################################################
+
+    
     
     def legend(self, **kwargs)-> str:
         """_summary_

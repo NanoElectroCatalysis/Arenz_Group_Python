@@ -197,6 +197,7 @@ class EC_Data(EC_Setup):
         nr_data = len(self.rawdata) -1 # The time channel should not be counted.
         print(self.setup_data.name, ": EC data sets: ", nr_data)
         plot = fig.subplots(nr_data,1)
+        
         #ax = fig.subplots()
         index=0
         for ch_name in self.rawdata:
