@@ -20,10 +20,10 @@ class EC_Data(EC_Setup):
     """
     def __init__(self, path = ""):
         super().__init__()
-        self._area=1
-        self._area_unit="cm^2"
-        self.rotation =0
-        self.rotation_unit ="/min"
+        #self._area=1
+        #self._area_unit="cm^2"
+        #self.rotation =0
+        #self.rotation_unit ="/min"
         self.Time=np.array([],dtype=np.float64) 
         self.E=np.array([],dtype=np.float64)
         self.i=np.array([],dtype=np.float64)
@@ -70,6 +70,7 @@ class EC_Data(EC_Setup):
                     Value = tdms_file['Setup']['Value']
                     for x in range(len(Items)):
                         self.setup[Items[x]] = Value[x]
+                    self.setup_reset()
                 except KeyError:
                     pass
                 [self.area, self.setup_data._area_unit] = util.extract_value_unit(self.setup["Electrode.Area"])

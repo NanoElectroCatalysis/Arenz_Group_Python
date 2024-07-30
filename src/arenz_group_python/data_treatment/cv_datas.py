@@ -87,6 +87,7 @@ class CV_Datas:
             
             #cv_kwargs["legend"] = "aaaaa"
             cv_kwargs["plot"] = CV_plot
+            cv_kwargs["name"] = self.setup_data.name
             cv.plot(**cv_kwargs)
             y_axis_title= cv.i_label
             #print(cv.setup)

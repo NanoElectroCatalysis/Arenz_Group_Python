@@ -15,7 +15,7 @@ from .ec_data import EC_Data
 from .ec_setup import EC_Setup
 from .util import plot_options
 from pathlib import Path
-     
+from .util import extract_value_unit     
 
 
 class CV_Data(EC_Setup):
@@ -91,16 +91,18 @@ class CV_Data(EC_Setup):
 
 
     ######################################################################################################
-    def conv(self, data: EC_Data, ** kwargs):
+    def conv(self, ec_data: EC_Data, ** kwargs):
         """Converts EC_Data to a CV
 
         Args:
-            data (EC_Data): the data that should be converted.
+            ec_data (EC_Data): the data that should be converted.
         """
         #print("Convert:",kwargs)
         try:
-            self.convert(data.Time,data.E,data.i,**kwargs)
-            self.setup_data = data.setup_data
+            #print("CONVERTING_AAA",len(ec_data.Time), len(ec_data.E), len(ec_data.i))
+            self.setup_data = ec_data.setup_data
+            self.convert(ec_data.Time,ec_data.E,ec_data.i,**kwargs)
+           
         except ValueError:
             print("no_data")
         #self.setup = data.setup
@@ -121,8 +123,20 @@ class CV_Data(EC_Setup):
         """
         x= E
         y= i
-        options = plot_options(kwargs)
         
+        #print("Convert", len(E))
+        #print("SETP",self.setup)
+        #Start_Delay, = extract_value_unit(self.setup_data._setup['Start_Delay'])
+        #print("Start", self.setup['Start'])
+        #print("V1", self.setup['V1'])
+        V0, V0_str = extract_value_unit(self.setup['Start'])
+        #print("V1", self.setup['V1'])
+        V1, V1_str = extract_value_unit(self.setup['V1'])
+        #print("V2", self.setup['V2'])
+        V2, V2_str = extract_value_unit(self.setup['V2'])
+        print("CV", V0,V1,V2)
+        options = plot_options(kwargs)
+        #print("CONVERTING",len(time), len(E), len(i))
         #try:
         #    y_smooth = int(options['y_smooth'])
         #    if(y_smooth > 0):
@@ -140,11 +154,12 @@ class CV_Data(EC_Setup):
         index_max = np.argmax(x)
 
         #array of dx
-        x_div = np.gradient(x)
+        
+        x_div = np.gradient(savgol_filter(x, 10, 1))
         #dt:
         t_div = (time.max() - time.min()) / (time.size - 1)
         zero_crossings = np.where(np.diff(np.signbit(x_div)))[0]
-        
+        #print("ZERO:",zero_crossings)
         self.rate_V_s = np.mean(np.abs(x_div)) / t_div
         #print(f"Rate: {self.rate_V_s}")
         up_start =0
@@ -152,7 +167,7 @@ class CV_Data(EC_Setup):
 
 
 
-        #print(f"ZeroCrossings: {zero_crossings}"")
+        #print(f"ZeroCrossings: {zero_crossings}")
         if x[0]<x[zero_crossings[0]]:
             up_start =0
             up_end = zero_crossings[0]
@@ -251,7 +266,8 @@ class CV_Data(EC_Setup):
         
         '''
         
-        options = plot_options(kwargs)  
+        options = plot_options(kwargs)
+        options.name = self.setup_data.name
         options.legend = self.legend(**kwargs)
         
         options.x_data = self.E
@@ -325,7 +341,7 @@ class CV_Data(EC_Setup):
     
     ###########################################################################################
 
-    def integrate(self, start_E:float, end_E:float, dir:str = "all"):
+    def integrate(self, start_E:float, end_E:float, dir:str = "all", show_plot: bool = False, *args, **kwargs):
         """Integrate Current between the voltage limit using cumulative_simpson
 
         Args:
@@ -339,17 +355,39 @@ class CV_Data(EC_Setup):
         index2 = self.get_index_of_E(end_E)
         imax = max(index1,index2)
         imin = min(index1,index2)
-        print("INDEX",index1,index2)
-        try:
-            Q_p = integrate.cumulative_simpson(self.i_p[imin:imax], x=self.E[imin:imax], initial=0)*self.rate
-            Q_n = integrate.cumulative_simpson(self.i_n[imin:imax], x=self.E[imin:imax], initial=0)*self.rate
-        except ValueError as e:
-            print("the integration did not work on this dataset")
-            return None
+        #print("INDEX",index1,index2)
+        #try:
+        i_p = self.i_p[imin:imax+1].copy()
+        i_p[np.isnan(i_p)] = 0
+        i_n = self.i_n[imin:imax+1].copy()
+        i_n[np.isnan(i_n)] = 0
+
+        Q_p = integrate.cumulative_simpson(i_p, x=self.E[imin:imax+1], initial=0)*self.rate
+        Q_n = integrate.cumulative_simpson(i_n, x=self.E[imin:imax+1], initial=0)*self.rate
+        
+        Q_unit =self.i_unit.replace("A","C")
+        #yn= np.concatenate(i_p,i_n,axis=0)
+        
+        y = [max(np.max(i_p),np.max(i_n)), min(np.min(i_p),np.min(i_n))]
+        x1 = [self.E[imin],self.E[imin]]
+        x2 = [self.E[imax+1],self.E[imax+1]]  
+        cv_kwargs = kwargs  
+        if show_plot:
+            cv_kwargs["dir"] = dir
+            line, ax = self.plot(**cv_kwargs)
+            ax.plot(x1,y,'r',x2,y,'r')
+            if dir != "neg":
+                ax.fill_between(self.E[imin:imax+1],i_p,color='C0',alpha=0.2)
+            if dir != "pos":
+                ax.fill_between(self.E[imin:imax+1],i_n,color='C1',alpha=0.2)
+            
+        #except ValueError as e:
+        #    print("the integration did not work on this dataset")
+        #    return None
         end = len(Q_p)-1
         if dir == "pos":
-            return Q_p[end]-Q_p[0]
+            return [Q_p[end]-Q_p[0],Q_unit] 
         elif dir == "neg":
-            return  Q_n[end]-Q_n[0]
+            return  [Q_n[end]-Q_n[0],Q_unit]
         else:
-            return [Q_p[end]-Q_p[0] , Q_n[end]-Q_n[0]]
+            return [Q_p[end]-Q_p[0] ,Q_unit, Q_n[end]-Q_n[0],Q_unit]

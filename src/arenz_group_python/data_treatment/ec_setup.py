@@ -22,6 +22,16 @@ class EC_Setup:
         self.setup_data = ec_setup_data()
         return
     
+    def setup_reset(self):
+        if 'Electrode.Area' in self.setup_data._setup:
+            v,u = extract_value_unit(self.setup_data._setup['Electrode.Area'])
+            self.set_area(v,u)
+        if 'Inst.Convection.Speed' in self.setup_data._setup:
+            v,u = extract_value_unit(self.setup_data._setup['Inst.Convection.Speed'])
+            self.set_rotation(v,u)
+            #self.setup_data._area_unit = u
+    
+    
     @property 
     def setup(self):
         """setup meta data
@@ -32,9 +42,11 @@ class EC_Setup:
         return self.setup_data._setup
         
     @setup.setter
-    def setup(self, value:float):
+    def setup(self, value):
         self.setup_data._setup = value
-
+    
+    ############################################
+    ##AREA        
     @property 
     def area(self):
         return self.setup_data._area
@@ -48,10 +60,11 @@ class EC_Setup:
         return self.setup_data._area_unit
         
     @area_unit.setter
-    def area(self, value:str):
+    def area_unit(self, value:str):
         self.setup_data._area_unit = value
 
-
+#####################################################
+## ROTATION
     @property
     def rotation(self):
         return self.setup_data._rotation
@@ -77,12 +90,14 @@ class EC_Setup:
             value (str): rotation unit
         """
         self.setup_data._rotation_unit = value
-
+    #####################################################
+    ###RATE
     @property
     def rate(self):
         v,u = extract_value_unit(self.setup_data._setup['Rate'])
         return v
-
+    ###########################################################
+    
     def set_area(self,value:float,unit:str = ""):
         self.setup_data._area = value
         if unit == "":
