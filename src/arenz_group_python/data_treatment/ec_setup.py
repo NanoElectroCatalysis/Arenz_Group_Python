@@ -13,6 +13,15 @@ class ec_setup_data:
             return
 
 class EC_Setup:
+    """Describes the setup.
+    
+    properties:
+    
+    - area
+    - rate
+    - rotation
+    -loading
+    """
     def __init__(self):
         #self._setup.setup = {"Current Range" : "", "Control Mode" : "", "Cell Switch": 0}
         #self._setup._area= 1.0
@@ -49,6 +58,10 @@ class EC_Setup:
     ##AREA        
     @property 
     def area(self):
+        """
+        Returns:
+            area value and unit.
+        """
         return Q_V(self.setup_data._area,self.setup_data._area_unit,"A")
         
     @area.setter
@@ -188,8 +201,34 @@ class EC_Setup:
                 return item
         return "_"
         
+    def get_norm_factor(self, norm_to:str):
+        norm_factor = Q_V(1)
+         
+        if norm_to == "area" :
+           
+           norm_factor = self.area
+           
+        elif norm_to == "area_cm":
+            norm_factor = self.area
+            if norm_factor.unit == "m^2":
+                norm_factor = norm_factor*Q_V(1e4,"cm^2 m^-2")
 
-
+        elif norm_to == "rate" :
+           norm_factor = self.rate
+           
+        elif norm_to == "sqrt_rate":
+    
+           norm_factor = self.rate ** 0.5
+        elif norm_to == "rot_rate" or norm_to == "rotation"or norm_to == "rot":
+           
+            norm_factor = self.rotation
+          
+        elif norm_to == "sqrt_rot_rate" or norm_to == "sqrt_rot" :
+           
+           norm_factor = self.rotation ** 0.5    
+        else:
+            return
+        return norm_factor
 
 
 

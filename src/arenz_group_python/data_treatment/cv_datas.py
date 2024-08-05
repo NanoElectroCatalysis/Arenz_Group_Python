@@ -15,15 +15,30 @@ from .ec_setup import EC_Setup
 from pathlib import Path
 import copy
 from .util import Quanity_Value_Unit as Q_V
-from .util_graph import plot_options,quantity_plot_fix
+from .util_graph import plot_options,quantity_plot_fix, make_plot_2x,make_plot_1x
 
 
 STYLE_POS_DL = "bo"
 STYLE_NEG_DL = "ro"
 
 class CV_Datas:
+    """Class to analyze CV datas. 
+    Class Functions:
+    - .plot() - plot data    
+    - .bg_corr() to back ground correct.
+    
+    Analysis:
+    - .Levich() - plot data    
+    - .KouLev() - Koutechy-Levich analysis    
+    - .Tafel() - Tafel analysis data    
+    
+    Options args:
+    "area" - to normalize to area
+    
+    Options keywords:
+    legend = "name"
+    """
     def __init__(self, paths:list[Path], **kwargs):
-        
         self.datas = [CV_Data() for i in range(len(paths))]
         index=0
         for path in paths:
@@ -41,39 +56,44 @@ class CV_Datas:
     def __setitem__(self, item_index:int, new_CV:CV_Data):
         self.datas[item_index] = new_CV
     
-    def bg_corr(self, bg_cv:CV_Data) -> CV_Data:
+    def bg_corr(self, bg_cv:CV_Data|Path) -> CV_Data:
         """Background correct the data by subtracting the bg_cv. 
 
         Args:
-            bg_cv (CV_Data):
+            bg_cv (CV_Data or Path):
         
         Returns:
             CV_Data: copy of the data.
         
         """
+        if isinstance(bg_cv, CV_Data):
+            corr_cv =bg_cv    
+        else:
+            corr_cv =CV_Data(bg_cv)
+            #print(bg_cv)
         for cv in self.datas:
-            cv.sub(bg_cv)
+            cv.sub(corr_cv)
         return copy.deepcopy(self)
     
     
-    def _make_plot(self, Title:str):
-        fig = plt.figure()
-        fig.set_figheight(5)
-        fig.set_figwidth(13)
-        plt.suptitle(Title)
-        CV_plot, analyse_plot = fig.subplots(1,2)
-        return CV_plot, analyse_plot
+     
 ################################################################    
     def plot(self, *args, **kwargs):
         """Plot CVs.
             use args to normalize the data
-            use kwargs for other settings.
+            - area or area_cm
+            - rotation
+            - rate
+            
+            #### use kwargs for other settings.
+            
+            - legend = "name"
+            - x_smooth = 10
+            - y_smooth = 10
+            
+            
         """
-        fig = plt.figure()
-        fig.set_figheight(5)
-        fig.set_figwidth(6)
-        plt.suptitle("CVs")
-        CV_plot = fig.subplots()
+        CV_plot = make_plot_1x("CVs")
         #analyse_plot.title.set_text('CVs')
 
         #analyse_plot.title.set_text('Levich Plot')
@@ -110,10 +130,10 @@ class CV_Datas:
             Epot (float): Potential at which the current will be used.
 
         Returns:
-            _type_: _description_
+            List : Slope of data based on positive and negative sweep.
         """
   
-        CV_plot, analyse_plot = self._make_plot("Levich Analysis")
+        CV_plot, analyse_plot = make_plot_2x("Levich Analysis")
         #CV_plot, analyse_plot = fig.subplots(1,2)
         CV_plot.title.set_text('CVs')
 
@@ -126,6 +146,8 @@ class CV_Datas:
         y_axis_title =""
         CVs = copy.deepcopy(self.datas)
         #CVs = [CV_Data() for i in range(len(paths))]
+        #########################################################
+        ##Make plot
         cv_kwargs = kwargs
         x_qv = Q_V(1, "rpm^0.5","w")
         for cv in CVs:
@@ -211,7 +233,7 @@ class CV_Datas:
         #fig.set_figheight(5)
         #fig.set_figwidth(12)
         #plt.suptitle("Koutechy-Levich Analysis")
-        CV_plot, analyse_plot = self._make_plot("Koutechy-Levich Analysis")
+        CV_plot, analyse_plot = make_plot_2x("Koutechy-Levich Analysis")
         
         #CV_plot, analyse_plot = fig.subplots(1,2)
         CV_plot.title.set_text('CVs')
@@ -305,7 +327,7 @@ class CV_Datas:
             E_for_idl (float,optional.): potential that used to determin the diffusion limited current. This is optional.
             
         """
-        CV_plot, analyse_plot = self._make_plot("Tafel Analysis")
+        CV_plot, analyse_plot = make_plot_2x("Tafel Analysis")
         CV_plot.title.set_text('CVs')
 
         analyse_plot.title.set_text('Tafel Plot')
@@ -325,8 +347,8 @@ class CV_Datas:
             rot.append( math.sqrt(cv.rotation))
         
             for arg in args:
-                if arg == "area":
-                    cv.norm(arg)
+                #if arg == "area":
+                cv.norm(arg)
             cv_kwargs["legend"] = str(f"{float(cv.rotation):.0f}")
             cv_kwargs["plot"] = CV_plot
             line,a = cv.plot(**cv_kwargs)

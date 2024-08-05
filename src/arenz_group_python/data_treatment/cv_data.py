@@ -134,7 +134,7 @@ class CV_Data(EC_Setup):
         V1, V1_str = extract_value_unit(self.setup['V1'])
         #print("V2", self.setup['V2'])
         V2, V2_str = extract_value_unit(self.setup['V2'])
-        print("CV", V0,V1,V2)
+        #print("CV", V0,V1,V2)
         options = plot_options(kwargs)
         #print("CONVERTING",len(time), len(E), len(i))
         #try:
@@ -222,44 +222,17 @@ class CV_Data(EC_Setup):
     
    ######################################################################################### 
     def norm(self, norm_to:str):
-        norm_factor = Q_V(1)
-        norm_label = ""
-        norm_unit = ""
-        if norm_to == "area" :
-           #norm_label = "$A^{-1}$"
-           norm_unit = self.setup_data._area_unit
-           norm_factor = Q_V(self.setup_data._area,norm_unit,"A")
-        elif norm_to == "rate" :
-           #norm_label = "$v^{-1}$"
-           norm_unit = "s $V^{-1}$"
-           norm_factor = Q_V(self.setup_data.rate_V_s, "V s^-1", "v")
-           
-        elif norm_to == "sqrt_rate":
-           norm_factor = math.sqrt(self.setup_data.rate_V_s)
-           norm_label = "$v^{-0.5}$"
-           norm_unit = "$s^{0.5}$ $V^{-0.5}$"
-           norm_factor = Q_V(self.setup_data.rate_V_s, "V s^-1", "v") ** 0.5
-        elif norm_to == "rot_rate":
-            norm_label = "$f^{-1}$"
-            norm_unit = "$Hz^{-1}$"
-            norm_factor = Q_V(self.setup_data.rot_rate_Hz, "Hz", "f")
-          
-        elif norm_to == "sqrt_rot_rate":
-           norm_factor = math.sqrt(self.setup_data.rot_rate_Hz)
-           norm_label = "$f^{-0.5}$"
-           norm_unit = "$Hz^{-0.5}$"
-           norm_factor = Q_V(self.setup_data.rot_rate_Hz, "Hz", "f") ** 0.5    
-        else:
-            return
-                
-        self.i_n = self.i_n / float(norm_factor)
-        self.i_p = self.i_p /   float(norm_factor)
+         
+        norm_factor = self.get_norm_factor(norm_to)
+        #print(norm_factor)
+        if norm_factor:
+            self.i_n = self.i_n / float(norm_factor)
+            self.i_p = self.i_p /   float(norm_factor)
         #norm_factor_inv = norm_factor ** -1
-        current = Q_V(1,self.i_unit, self.i_label) / norm_factor
-        #self.i_label = self.i_label +" "+ norm_label
-        #self.i_unit = self.i_unit +" "+ norm_unit
-        self.i_label = current.quantity
-        self.i_unit = current.unit
+            current = Q_V(1,self.i_unit, self.i_label) / norm_factor
+         
+            self.i_label = current.quantity
+            self.i_unit = current.unit
         
         return 
     

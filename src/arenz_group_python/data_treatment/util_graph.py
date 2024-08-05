@@ -14,13 +14,21 @@ from .util import Quanity_Value_Unit as Q_V
 
 NEWPLOT = "new_plot"
 
-def make_plot_2x(self, Title:str):
+
+def make_plot_1x(Title:str):
+    fig = plt.figure()
+    fig.set_figheight(5)
+    fig.set_figwidth(6)
+    plt.suptitle(Title)
+    return fig.subplots()
+
+def make_plot_2x(Title:str):
         fig = plt.figure()
         fig.set_figheight(5)
         fig.set_figwidth(13)
         plt.suptitle(Title)
-        CV_plot, analyse_plot = fig.subplots(1,2)
-        return CV_plot, analyse_plot
+        plot1,plot2 = fig.subplots(1,2)
+        return plot1, plot2
     
     
 
@@ -134,13 +142,13 @@ class plot_options:
             pass
         return xdata
     
-    def fig(name, **kwargs):
+    def fig(self, **kwargs):
         try:
             ax = kwargs['plot']
         except:
-            fig = plt.figure()
+            #fig = plt.figure()
             #  plt.subtitle(self.name)
-            ax = fig.subplots()
+            ax = make_plot_1x(self.name)
 
     def exe(self):
         """_summary_
@@ -150,9 +158,9 @@ class plot_options:
         """
         ax = self.options['plot']
         if ax == NEWPLOT:
-            fig = plt.figure()
-            plt.suptitle(self.name)
-            ax = fig.subplots()
+           # fig = plt.figure()
+           # plt.suptitle(self.name)
+            ax = make_plot_1x(self.name)
         
         try:
             y_median = int(self.options['y_median'])
