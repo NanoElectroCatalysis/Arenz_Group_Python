@@ -13,10 +13,10 @@ from . import util
 from .ec_data import EC_Data
 
 from .ec_setup import EC_Setup
-from .util import plot_options
+from .util_graph import plot_options
 from pathlib import Path
 from .util import extract_value_unit     
-from .util import Q_V
+from .util import Quanity_Value_Unit as Q_V
 
 class CV_Data(EC_Setup):
     def __init__(self,*args, **kwargs):
@@ -222,37 +222,45 @@ class CV_Data(EC_Setup):
     
    ######################################################################################### 
     def norm(self, norm_to:str):
-        norm_factor = 1
+        norm_factor = Q_V(1)
         norm_label = ""
         norm_unit = ""
         if norm_to == "area" :
-           norm_factor = self.setup_data._area
-           norm_label = "$A^{-1}$"
+           #norm_label = "$A^{-1}$"
            norm_unit = self.setup_data._area_unit
+           norm_factor = Q_V(self.setup_data._area,norm_unit,"A")
         elif norm_to == "rate" :
-           norm_factor = self.setup_data.rate_V_s
-           norm_label = "$v^{-1}$"
+           #norm_label = "$v^{-1}$"
            norm_unit = "s $V^{-1}$"
+           norm_factor = Q_V(self.setup_data.rate_V_s, "V s^-1", "v")
+           
         elif norm_to == "sqrt_rate":
            norm_factor = math.sqrt(self.setup_data.rate_V_s)
            norm_label = "$v^{-0.5}$"
            norm_unit = "$s^{0.5}$ $V^{-0.5}$"
+           norm_factor = Q_V(self.setup_data.rate_V_s, "V s^-1", "v") ** 0.5
         elif norm_to == "rot_rate":
-           norm_factor = math.sqrt(self.setup_data.rot_rate_Hz)
-           norm_label = "$f^{-1}$"
-           norm_unit = "$Hz^{-1}$"
+            norm_label = "$f^{-1}$"
+            norm_unit = "$Hz^{-1}$"
+            norm_factor = Q_V(self.setup_data.rot_rate_Hz, "Hz", "f")
           
         elif norm_to == "sqrt_rot_rate":
            norm_factor = math.sqrt(self.setup_data.rot_rate_Hz)
            norm_label = "$f^{-0.5}$"
-           norm_unit = "$Hz^{-0.5}$"    
+           norm_unit = "$Hz^{-0.5}$"
+           norm_factor = Q_V(self.setup_data.rot_rate_Hz, "Hz", "f") ** 0.5    
         else:
             return
                 
-        self.i_n = self.i_n /norm_factor
-        self.i_p = self.i_p /norm_factor
-        self.i_label = self.i_label +" "+ norm_label
-        self.i_unit = self.i_unit +" "+ norm_unit
+        self.i_n = self.i_n / float(norm_factor)
+        self.i_p = self.i_p /   float(norm_factor)
+        #norm_factor_inv = norm_factor ** -1
+        current = Q_V(1,self.i_unit, self.i_label) / norm_factor
+        #self.i_label = self.i_label +" "+ norm_label
+        #self.i_unit = self.i_unit +" "+ norm_unit
+        self.i_label = current.quantity
+        self.i_unit = current.unit
+        
         return 
     
     ############################################################################        

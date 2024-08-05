@@ -1,5 +1,5 @@
 from .util import extract_value_unit
-from .util import Q_V
+from .util import Quanity_Value_Unit as Q_V
 
 
 class ec_setup_data:
@@ -67,7 +67,7 @@ class EC_Setup:
 ## ROTATION
     @property
     def rotation(self):
-        return self.setup_data._rotation
+        return Q_V(self.setup_data._rotation,self.setup_data._rotation_unit,"\u03C9") #using GREEK SMALL LETTER OMEGA
 
     @rotation.setter
     def rotation(self, value:float):

@@ -6,7 +6,7 @@ from nptdms import TdmsFile
 from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 
-from .util import plot_options
+from .util_graph import plot_options
 
 K_TO_DEGC = 273.15
 PA_TO_BAR = 1.0e5

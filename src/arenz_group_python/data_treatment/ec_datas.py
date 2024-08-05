@@ -8,11 +8,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import savgol_filter
 from . import util
-from .util import plot_options
+from .util_graph import plot_options
 from .ec_setup import EC_Setup
 from .ec_data import EC_Data
 from pathlib import Path
 import copy
+
 
 class EC_Datas:
     def __init__(self, paths:list[Path], **kwargs):

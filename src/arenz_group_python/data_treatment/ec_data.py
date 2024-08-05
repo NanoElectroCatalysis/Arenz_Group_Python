@@ -8,9 +8,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import savgol_filter
 from . import util
-from .util import plot_options
+from .util_graph import plot_options
 from .ec_setup import EC_Setup
 import copy
+from .util import Quanity_Value_Unit as Q_V
 
 class EC_Data(EC_Setup):
     """ Reads and stores data from a TDMS file in the format of EC4 DAQ.
