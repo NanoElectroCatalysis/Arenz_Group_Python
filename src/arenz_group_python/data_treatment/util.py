@@ -7,7 +7,7 @@ import math
 from scipy.signal import savgol_filter, medfilt
 from scipy import ndimage, datasets
 import matplotlib.pyplot as plt
-
+from fractions import Fraction
 
 NEWPLOT = "new_plot"
 
