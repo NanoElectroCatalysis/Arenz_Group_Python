@@ -22,7 +22,7 @@ STYLE_POS_DL = "bo"
 STYLE_NEG_DL = "ro"
 
 class CV_Datas:
-    """Class to analyze CV datas. 
+    """# Class to analyze CV datas. 
     Class Functions:
     - .plot() - plot data    
     - .bg_corr() to back ground correct.
@@ -38,8 +38,13 @@ class CV_Datas:
    ### Options keywords:
     legend = "name"
     """
-    def __init__(self, paths:list[Path], **kwargs):
-        self.datas = [CV_Data() for i in range(len(paths))]
+    def __init__(self, paths:list[Path] | Path, **kwargs):
+        
+        if isinstance(paths,Path ):
+            path_list = [paths]
+        else:
+            path_list = paths
+        self.datas = [CV_Data() for i in range(len(path_list))]
         index=0
         for path in paths:
             ec = EC_Data(path)
@@ -70,11 +75,7 @@ class CV_Datas:
         if not isinstance(item_index, int):
             raise TypeError("key must be an integer")
         self.datas[item_index] = new_CV
-    
-    
-    
-    
-    
+     
     
     def __sub__(self, other: CV_Data):
         """_summary_
