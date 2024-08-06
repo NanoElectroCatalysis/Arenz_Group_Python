@@ -10,7 +10,7 @@ where=["src"]
 
 [project]
 name = 'Arenz_Group_Python'
-version = "0.1.10"
+version = "0.1.12"
 dependencies = [
     'nptdms',
     'matplotlib', 
