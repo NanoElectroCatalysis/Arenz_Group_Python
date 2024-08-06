@@ -51,8 +51,10 @@ class EC_Datas:
         self.datas[item_index] = new_data
         
     def plot(self, x_channel:str, y_channel:str, *args, **kwargs):
-        
-        ax = make_plot_1x("Title")
+        options = plot_options()
+        options.update(kwargs)
+        line, ax = options.exe()
+        #ax = make_plot_1x(options.name)
         plot_kwargs = kwargs
         datas = copy.deepcopy(self.datas)
         for data in datas:

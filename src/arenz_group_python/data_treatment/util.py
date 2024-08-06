@@ -86,8 +86,8 @@ class Quanity_Value_Unit:
         v = Quanity_Value_Unit()
         if isinstance(other, Quanity_Value_Unit):
             v.value = self.value / other.value
-            v.unit = quantity_fix(self.unit + quantity_fix(other.unit,-1))
-            v.quantity = quantity_fix(self.quantity + quantity_fix(other.quantity,-1))
+            v.unit = quantity_fix(self.unit + " "+ quantity_fix(other.unit,-1))
+            v.quantity = quantity_fix(self.quantity + " "+quantity_fix(other.quantity,-1))
         else:
             v.value = self.value / other
             v.unit = self.unit
@@ -98,8 +98,8 @@ class Quanity_Value_Unit:
         v = Quanity_Value_Unit()
         if isinstance(other, Quanity_Value_Unit):
             v.value = self.value / other.value
-            v.unit = quantity_fix(self.unit +quantity_fix(other.unit,-1))
-            v.quantity = quantity_fix(self.quantity +  quantity_fix(other.quantity,-1))
+            v.unit = quantity_fix(self.unit +" "+ quantity_fix(other.unit,-1))
+            v.quantity = quantity_fix(self.quantity +" " +  quantity_fix(other.quantity,-1))
         else:
             v.value = self.value / other
             v.unit = self.unit

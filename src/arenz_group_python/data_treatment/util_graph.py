@@ -64,7 +64,8 @@ class plot_options:
             'legend' : "_",
             'xlabel' : "def",
             'ylabel' : "def",
-            'style'  : ""
+            'style'  : "",
+            'title'  : ""
         }
 
         self.options.update(kwargs)
@@ -148,7 +149,7 @@ class plot_options:
         except:
             #fig = plt.figure()
             #  plt.subtitle(self.name)
-            ax = make_plot_1x(self.name)
+            ax = make_plot_1x(self.options['title'])
 
     def exe(self):
         """_summary_
