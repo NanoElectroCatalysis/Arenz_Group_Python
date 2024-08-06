@@ -92,9 +92,15 @@ class EC_Data(EC_Setup):
         return f"{self.setup_data.name}"
 
 
-    def get_channel(self,datachannel:str):
+    def get_channel(self,datachannel:str) -> tuple[list,str,str] :
         """
         Get the channel of the EC4 DAQ file.
+        
+        - Time
+        - E,U , E-IZ,E-IR
+        - i, j
+        - Z_E. Z_U
+        
         """
         match datachannel:
             case "Time":

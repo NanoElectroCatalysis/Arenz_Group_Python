@@ -48,10 +48,14 @@ class symbol_string:
         return symbol_string(s)
 
 class Quanity_Value_Unit:
-    def __init__(self, value=0 , unit="", quantity=""):
-        self.value = value
-        self.unit = unit
-        self.quantity =quantity
+    def __init__(self, value: float | str =0.0 , unit="", quantity=""):
+        if isinstance(value, str):
+            self.value,self.unit = extract_value_unit(value)
+            self.quantity = ""
+        else:
+            self.value = value
+            self.unit = unit
+            self.quantity =quantity
 
         
     def __str__(self) -> str:
@@ -80,16 +84,26 @@ class Quanity_Value_Unit:
     
     def __div__(self, other):
         v = Quanity_Value_Unit()
-        v.value = self.value / other.value
-        v.unit = quantity_fix(self.unit +" /"+other.unit)
-        v.quantity = quantity_fix(self.quantity + " /" + other.quantity)
+        if isinstance(other, Quanity_Value_Unit):
+            v.value = self.value / other.value
+            v.unit = quantity_fix(self.unit + quantity_fix(other.unit,-1))
+            v.quantity = quantity_fix(self.quantity + quantity_fix(other.quantity,-1))
+        else:
+            v.value = self.value / other
+            v.unit = self.unit
+            v.quantity = self.quantity      
         return v
     
     def __truediv__(self, other):
         v = Quanity_Value_Unit()
-        v.value = self.value / other.value
-        v.unit = quantity_fix(self.unit +" /"+other.unit)
-        v.quantity = quantity_fix(self.quantity + " /" + other.quantity)
+        if isinstance(other, Quanity_Value_Unit):
+            v.value = self.value / other.value
+            v.unit = quantity_fix(self.unit +quantity_fix(other.unit,-1))
+            v.quantity = quantity_fix(self.quantity +  quantity_fix(other.quantity,-1))
+        else:
+            v.value = self.value / other
+            v.unit = self.unit
+            v.quantity = self.quantity  
         return v
     
     def __pow__(self, other):

@@ -151,13 +151,25 @@ class CV_Data(EC_Setup):
 
 
     ######################################################################################################
-    def conv(self, ec_data: EC_Data, ** kwargs):
+    def conv(self, ec_data: EC_Data, *args, ** kwargs):
         """Converts EC_Data to a CV
 
         Args:
             ec_data (EC_Data): the data that should be converted.
         """
         #print("Convert:",kwargs)
+        
+        ch_E ="E"
+        for a in args:
+            if a == "IR":
+                ch_E = "E-IR"
+        options = {
+            'x_smooth' : 0,
+            'y_smooth' : 0,
+            'IR': 0
+        }
+        options.update(kwargs)
+        
         try:
             #print("CONVERTING_AAA",len(ec_data.Time), len(ec_data.E), len(ec_data.i))
             self.setup_data = ec_data.setup_data
