@@ -50,29 +50,84 @@ class CV_Datas:
         #print(index)
         return
     
-    def __getitem__(self, item_index:int) -> CV_Data: 
-        return self.datas[item_index]
+    def __getitem__(self, item_index:slice|int) -> CV_Data: 
+
+        if isinstance(item_index, slice):
+            step = 1
+            start = 0
+            stop = len(self.datas)
+            if item_index.step:
+                step =  item_index.step
+            if item_index.start:
+                start = item_index.start
+            if item_index.stop:
+                stop = item_index.stop    
+            return [self.datas[i] for i in range(start,stop,step)  ]
+        else:
+            return self.datas[item_index]
     
     def __setitem__(self, item_index:int, new_CV:CV_Data):
+        if not isinstance(item_index, int):
+            raise TypeError("key must be an integer")
         self.datas[item_index] = new_CV
     
-    def bg_corr(self, bg_cv:CV_Data|Path) -> CV_Data:
+    
+    
+    
+    
+    
+    def __sub__(self, other: CV_Data):
+        """_summary_
+
+        Args:
+            other (CV_Data): CV_Data to be added 
+
+        Returns:
+            CV_Datas: returns a copy of the inital dataset. 
+        """
+        
+        if isinstance(other, CV_Data):
+            new_CVs = copy.deepcopy(self)
+            for new_cv in new_CVs:
+                new_cv.i_p = new_cv.i_p - other.i_p
+                new_cv.i_n = new_cv.i_n - other.i_n
+        elif isinstance(other, CV_Datas):
+            new_CVs = copy.deepcopy(self)
+            for new_cv in new_CVs:
+                new_cv.i_p = new_cv.i_p - other.i_p
+                new_cv.i_n = new_cv.i_n - other.i_n
+        
+        
+            
+        return new_CVs
+    
+    
+    
+    def bg_corr(self, bg_cv: CV_Data|Path) -> CV_Data:
         """Background correct the data by subtracting the bg_cv. 
 
         Args:
-            bg_cv (CV_Data or Path):
+            bg_cv (CV_Datas, CV_Data or Path):
         
         Returns:
             CV_Data: copy of the data.
         
         """
-        if isinstance(bg_cv, CV_Data):
-            corr_cv =bg_cv    
-        else:
-            corr_cv =CV_Data(bg_cv)
-            #print(bg_cv)
-        for cv in self.datas:
-            cv.sub(corr_cv)
+        if isinstance(bg_cv, CV_Datas):
+            if len(bg_cv.datas) == len(self.datas):
+                for i in range(0,len(self.datas)):
+                    self.datas[i].sub(bg_cv[i])
+            else:
+                raise ValueError('The data sets are not of the same length.')
+
+        else:         
+            if isinstance(bg_cv, CV_Data):
+                corr_cv =bg_cv    
+            else:
+                corr_cv =CV_Data(bg_cv)
+                #print(bg_cv)
+            for cv in self.datas:
+                cv.sub(corr_cv)
         return copy.deepcopy(self)
     
     

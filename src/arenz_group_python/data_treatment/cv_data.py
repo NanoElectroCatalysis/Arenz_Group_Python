@@ -9,6 +9,9 @@ import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
 from scipy.signal import savgol_filter 
+
+import copy
+
 from . import util
 from .ec_data import EC_Data
 
@@ -52,18 +55,73 @@ class CV_Data(EC_Setup):
         finally:
             return
     
+    def __mul__(self, other: float):
+        """ 
 
+        Args:
+            other (float): factor to div. the data.
+
+        Returns:
+            CV_Data: a copy of the original data
+        """
+        new_cv = copy.deepcopy(self)
+        new_cv.i_p = new_cv.i_p * other
+        new_cv.i_n = new_cv.i_n * other
+        return new_cv
+    
+    def __div__(self, other: float):
+        """ 
+
+        Args:
+            other (float): factor to div. the data.
+
+        Returns:
+            CV_Data: a copy of the original data
+        """
+        new_cv = copy.deepcopy(self)
+        new_cv.i_p = new_cv.i_p / other
+        new_cv.i_n = new_cv.i_n / other
+        return new_cv
         
     def div(self, div_factor:float):
+        """_summary_
+
+        Args:
+            div_factor (float): div the current dataset with the factor.
+        """
         try:
             self.i_p = self.i_p / div_factor
             self.i_n = self.i_n / div_factor
         finally:
             return
     
-    #def __add__(self, other):
-    #    
-    #    return "aa"
+    def __add__(self, other: CV_Data):
+        """_summary_
+
+        Args:
+            other (CV_Data): CV_Data to be added 
+
+        Returns:
+            CV_Data: returns a copy of the inital dataset. 
+        """
+        new_cv = copy.deepcopy(self)
+        new_cv.i_p = new_cv.i_p + other.i_p
+        new_cv.i_n = new_cv.i_n + other.i_n
+        return new_cv
+    
+    def __sub__(self, other: CV_Data):
+        """_summary_
+
+        Args:
+            other (CV_Data): CV_Data to be added 
+
+        Returns:
+            CV_Data: returns a copy of the inital dataset. 
+        """
+        new_cv = copy.deepcopy(self)
+        new_cv.i_p = (new_cv.i_p - other.i_p).copy()
+        new_cv.i_n = new_cv.i_n - other.i_n
+        return new_cv
     
     #####################################################################################################
     def add(self, subData: CV_Data):
@@ -146,7 +204,7 @@ class CV_Data(EC_Setup):
         #finally:
         #    pass
         
-        y =options.smooth_y(y)
+        y = options.smooth_y(y)
         
         self.xmin = x.min()
         self.xmax = x.max()
