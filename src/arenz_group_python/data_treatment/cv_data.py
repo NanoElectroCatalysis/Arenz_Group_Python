@@ -51,6 +51,8 @@ class CV_Data(EC_Setup):
             self.i_n = self.i_n-subData.i_n
         finally:
             return
+    
+
         
     def div(self, div_factor:float):
         try:

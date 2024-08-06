@@ -27,15 +27,15 @@ class CV_Datas:
     - .plot() - plot data    
     - .bg_corr() to back ground correct.
     
-    Analysis:
+   ### Analysis:
     - .Levich() - plot data    
     - .KouLev() - Koutechy-Levich analysis    
     - .Tafel() - Tafel analysis data    
     
-    Options args:
+   ### Options args:
     "area" - to normalize to area
     
-    Options keywords:
+   ### Options keywords:
     legend = "name"
     """
     def __init__(self, paths:list[Path], **kwargs):
