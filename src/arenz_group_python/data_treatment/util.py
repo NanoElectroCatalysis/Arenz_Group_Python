@@ -8,6 +8,7 @@ from scipy.signal import savgol_filter, medfilt
 from scipy import ndimage, datasets
 import matplotlib.pyplot as plt
 from fractions import Fraction
+import copy
 
 
 def extract_value_unit(s:str):
@@ -23,7 +24,7 @@ def extract_value_unit(s:str):
     unit =""
     value = math.nan
     try:
-        list = s.strip().split(" ")
+        list = s.strip().split(" ",1)
         value = float(list[0])
         unit = list[1]    
     finally:
@@ -31,7 +32,7 @@ def extract_value_unit(s:str):
     return value, unit
 
 #######################################################################################
-
+"""
 class symbol_string:
     def __init__(self,s:str=""):
         self.symbols = s
@@ -46,76 +47,154 @@ class symbol_string:
     def __pow__(self, other):
         s = quantity_fix(self.symbols,other)    
         return symbol_string(s)
+"""
 
-class Quanity_Value_Unit:
-    def __init__(self, value: float | str =0.0 , unit="", quantity=""):
-        if isinstance(value, str):
-            self.value,self.unit = extract_value_unit(value)
-            self.quantity = ""
-        else:
-            self.value = value
-            self.unit = unit
-            self.quantity =quantity
-
+class symbols:
+    def __init__(self,s:str=None):
+        self._sym = {}
+        if s:
+            list_of_quantities = (s.strip()).split(" ", 100)
+            if len(list_of_quantities)>0:
+                k={}
+                for single_quantity in list_of_quantities:
+                    nyckel, exponent = get_unit_and_exponent(single_quantity)
+                    val = float(k.get(nyckel, 0))  
+                    k[nyckel] = val + exponent
+                self._sym = k.copy()
+        #print(k)
         
     def __str__(self) -> str:
-        return f'{self.value:.3e} {self.unit}'
+        sr =""
+        for key, value in self._sym.items():
+            if  int(value*10) == 0:
+                pass
+            elif int(value*10) == 10:
+                sr = sr +f' {key}'
+            elif int(value) == value:
+                sr = sr+ f' {key}^{value:.0f}'
+            else:
+                sr = sr+ f' {key}^{value:.1f}'
+        return sr.strip()
+    
+    def __add__(self, other):
+        #s = quantity_fix(self.symbols + other.symbols)             
+        k=symbols()
+        k=self._sym
+        for quantity,exponent in other._sym.items():
+            val = float(self._sym.get(quantity, 0))  
+            k[quantity] = val + exponent
+        r = symbols()
+        r._sym = k.copy()
+        return r
+    
+    def __add__(self, other):
+        #s = quantity_fix(self.symbols + other.symbols)             
+        if isinstance(other,symbols):
+            k=symbols()
+            k=self._sym.copy()
+            for quantity,exponent in other._sym.items():
+                #print("aadd: ",quantity,quantity != "") 
+                if quantity != "":
+                    val = float(self._sym.get(quantity, 0))
+                    k[quantity] = val + exponent
+            r = symbols()
+            r._sym = k.copy()
+            return r
+        else:
+            raise TypeError("must be of the same type") 
+    
+    def __sub__(self,other):
+        k=symbols()
+        k = other*-1
+        return (self+k)
+    
+    def __mul__(self, other):
+        if isinstance(other,int) or isinstance(other,float):
+            r=symbols()
+            k=self._sym.copy()
+            for quantity,exponent in self._sym.items():
+                #print("q",quantity,quantity != "") 
+                if quantity != "":
+                    k[quantity] = exponent * other
+            r._sym = k.copy()
+            return r
+        else:
+            raise TypeError("must be a float or an int")
+    def __eq__(self, other: object) -> bool:
+        return str(self) == str(other)
+
+########################################################################################
+class Quanity_Value_Unit:
+    def __init__(self, value: float | str =0.0 , unit="", quantity=""):
+        
+        if isinstance(value, str):
+            v,u = extract_value_unit(value)
+            q = ""
+        else:
+            v = value
+            if isinstance(unit, symbols):
+                u = str(unit).strip()
+            else:
+                u=unit.strip()
+            if isinstance(unit, symbols):
+                q = str(quantity)
+            else:
+                q=quantity
+        self._unit =symbols(u)
+        self._quantity =symbols(q)
+        self.value = float(v)
+        
+    def __str__(self) -> str:
+        return f'{self.value:.3e} {self._unit}'
     
     def __float__(self) -> float:
         return self.value
     
-    def __add__(self, other):
-        if self.unit == other.unit:
-            v = Quanity_Value_Unit()
-            v.value= self.value + other.value             
-        return Quanity_Value_Unit(self.value+other.value,self.unit, self.quantity)
+    def __add__(self, other: object):
+        v = Quanity_Value_Unit()
+        if isinstance(other,Quanity_Value_Unit):
+            if self._unit == other._unit:       
+                return Quanity_Value_Unit(self.value+other.value,str(self._unit), str(self._quantity))
+        else:
+            raise TypeError("Must be of the same type")
+        return v
     
     def __mul__(self, other):
-        v = Quanity_Value_Unit()
         if isinstance(other, Quanity_Value_Unit):
-            v.value = self.value * other.value
-            v.unit = quantity_fix(self.unit +" "+ other.unit)
-            v.quantity = quantity_fix(self.quantity + " " + other.quantity)
+            v= Quanity_Value_Unit(self.value * other.value, (self._unit + other._unit), self._quantity + other._quantity)
         else:
-            v.value = self.value * other
-            v.unit = self.unit
-            v.quantity = self.quantity
+            v= Quanity_Value_Unit(self.value * other, self._unit, self._quantity)
         return v
     
     def __div__(self, other):
-        v = Quanity_Value_Unit()
         if isinstance(other, Quanity_Value_Unit):
-            v.value = self.value / other.value
-            v.unit = quantity_fix(self.unit + " "+ quantity_fix(other.unit,-1))
-            v.quantity = quantity_fix(self.quantity + " "+quantity_fix(other.quantity,-1))
-        else:
-            v.value = self.value / other
-            v.unit = self.unit
-            v.quantity = self.quantity      
+            v = Quanity_Value_Unit(self.value / other.value, self._unit - other._unit, self._quantity - other._quantity)
+        else: 
+            v = Quanity_Value_Unit(self.value / other, self._unit, self._quantity)    
         return v
     
-    def __truediv__(self, other):
-        v = Quanity_Value_Unit()
+    def __truediv__(self, other: object):
+        
         if isinstance(other, Quanity_Value_Unit):
-            v.value = self.value / other.value
-            v.unit = quantity_fix(self.unit +" "+ quantity_fix(other.unit,-1))
-            v.quantity = quantity_fix(self.quantity +" " +  quantity_fix(other.quantity,-1))
+            v = Quanity_Value_Unit(self.value / other.value, self._unit - other._unit, self._quantity - other._quantity)
         else:
-            v.value = self.value / other
-            v.unit = self.unit
-            v.quantity = self.quantity  
+            v = Quanity_Value_Unit(self.value / other, self._unit, self._quantity) 
         return v
     
     def __pow__(self, other):
-        v = Quanity_Value_Unit()
-        v.value = self.value ** other
-        v.unit = quantity_fix(self.unit,other)    
-        v.quantity = quantity_fix(self.quantity,other) 
-        return v
+        return Quanity_Value_Unit( self.value ** other, self._unit*other, self._quantity*other)
+    
+    @property
+    def unit(self):
+        return str(self._unit)
+    
+    @property
+    def quantity(self):
+        return str(self._quantity)
 
 def get_unit_and_exponent(s:str):
     aa = s.split("^",2)
-    nyckel = aa[0]
+    nyckel = aa[0].strip()
     sign = 1
     fac =  1.0
     if nyckel.startswith("/"):

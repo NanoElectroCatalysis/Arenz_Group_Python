@@ -46,7 +46,7 @@ class CV_Datas:
             path_list = paths
         self.datas = [CV_Data() for i in range(len(path_list))]
         index=0
-        for path in paths:
+        for path in path_list:
             ec = EC_Data(path)
             try:
                 self.datas[index].conv(ec,**kwargs)
@@ -149,7 +149,11 @@ class CV_Datas:
             
             
         """
-        CV_plot = make_plot_1x("CVs")
+        #CV_plot = make_plot_1x("CVs")
+        p = plot_options(kwargs)
+        p.set_title("CVs")
+        line, CV_plot = p.exe()
+        legend = p.legend
         #analyse_plot.title.set_text('CVs')
 
         #analyse_plot.title.set_text('Levich Plot')
@@ -166,14 +170,13 @@ class CV_Datas:
             #rot.append(math.sqrt(cv.rotation))
             for arg in args:
                 cv.norm(arg)
-            
-            #cv_kwargs["legend"] = "aaaaa"
+
             cv_kwargs["plot"] = CV_plot
             cv_kwargs["name"] = cv.setup_data.name
+            if legend == "_" :
+                cv_kwargs["legend"] = cv.setup_data.name
+            
             p = cv.plot(**cv_kwargs)
-            y_axis_title= cv.i_label
-            #print(cv.setup)
-        #print(rot)
          
         CV_plot.legend()
         return CV_plot
@@ -195,48 +198,21 @@ class CV_Datas:
 
         analyse_plot.title.set_text('Levich Plot')
         
-        rot=[]
-        y = []
-        E = []
-        #Epot=-0.5
-        y_axis_title =""
-        CVs = copy.deepcopy(self.datas)
-        #CVs = [CV_Data() for i in range(len(paths))]
         #########################################################
         ##Make plot
         cv_kwargs = kwargs
-        x_qv = Q_V(1, "rpm^0.5","w")
-        for cv in CVs:
-            x_qv = cv.rotation
-            rot.append(math.sqrt(cv.rotation))
-            for arg in args:
-                cv.norm(arg)
-            cv_kwargs["legend"] = str(f"{float(cv.rotation):.0f}")
-            cv_kwargs["plot"] = CV_plot
-            cv.plot(**cv_kwargs)
-            y.append(cv.get_i_at_E(Epot))
-            E.append([Epot, Epot])
-            y_axis_title= cv.i_label
-            y_axis_unit= cv.i_unit
-            
-            #print(cv.setup)
-        #print(rot)
-        rot = np.array(rot)
-        y = np.array(y)
-        rot_max = max(rot) 
-        #options = plot_options()
-        #options.name = self.setup_data.name
-        #options.legend = self.legend(**kwargs)
-        
-        #options.x_data = rot
-        #options.y_data = y[:,0]
-        CV_plot.plot(E,y[:,0], STYLE_POS_DL,E,y[:,1], STYLE_NEG_DL)
-        CV_plot.legend()
-        #print(rot)
-        #print(y[:,0])
+        cv_kwargs["plot"] = CV_plot
+       
 
+        rot,y,E,y_axis_title,y_axis_unit  = plots_for_rotations(self.datas,Epot,*args, **cv_kwargs)
+       # rot = np.array(rot)
+       # y = np.array(y)
+        rot_max = max(rot) 
+        #Levich analysis
+        
         analyse_plot.plot(rot,y[:,0],STYLE_POS_DL)
         analyse_plot.plot(rot,y[:,1],STYLE_NEG_DL)
+        x_qv = Q_V(1, "rpm^0.5","w")
         x_qv = x_qv**0.5
         x_qv.value = 1
         x_rot = Q_V(1,x_qv.unit,x_qv.quantity)
@@ -285,17 +261,12 @@ class CV_Datas:
             _type_: _description_
         """
         
-        #fig = plt.figure()
-        #fig.set_figheight(5)
-        #fig.set_figwidth(12)
-        #plt.suptitle("Koutechy-Levich Analysis")
         CV_plot, analyse_plot = make_plot_2x("Koutechy-Levich Analysis")
         
-        #CV_plot, analyse_plot = fig.subplots(1,2)
         CV_plot.title.set_text('CVs')
 
         analyse_plot.title.set_text('Koutechy-Levich Plot')
-        
+        """
         rot=[]
         y = []
         E = []
@@ -303,8 +274,8 @@ class CV_Datas:
         y_axis_title =""
         y_axis_unit =""
         CVs = copy.deepcopy(self.datas)
-        cv_kwargs = kwargs
-        x_qv = Q_V(1, "rpm^0.5","w")
+        
+       
         for cv in CVs:
             x_qv = cv.rotation
             rot.append( math.sqrt(cv.rotation))
@@ -319,16 +290,19 @@ class CV_Datas:
             #print(cv.setup)
         #print(rot)
         
-        y_values = np.array(y)
+        """
 
-        CV_plot.plot(E,y_values[:,0], STYLE_POS_DL, E,y_values[:,1],STYLE_NEG_DL)
-        CV_plot.legend()
-
-        rot = np.array(rot)
+        #CV_plot.plot(E,y_values[:,0], STYLE_POS_DL, E,y_values[:,1],STYLE_NEG_DL)
+        #CV_plot.legend()
+        cv_kwargs = kwargs
+        cv_kwargs["plot"] = CV_plot
+        rot,y,E,y_axis_title,y_axis_unit  = plots_for_rotations(self.datas,Epot,*args, **cv_kwargs)
+        
+        #rot = np.array(rot)
         
         rot = 1 / rot 
         x_plot = np.insert(rot,0,0)  
-        
+        x_qv = Q_V(1, "rpm^0.5","w")
         x_u =  Q_V(1, x_qv.unit,x_qv.quantity)** -0.5
         #print(x_plot) 
         y_values = np.array(y)
@@ -475,3 +449,36 @@ class CV_Datas:
         #print("Tafel",m_pos,m_neg)
         #return m_pos,m_neg
         return Tafel_pos, Tafel_neg
+    
+    
+    
+def plots_for_rotations(datas: CV_Datas,Epot:float, *args, **kwargs):
+    rot=[]
+    y = []
+    E = []
+        #Epot=-0.5
+    y_axis_title =""
+    y_axis_unit =""
+    CVs = copy.deepcopy(datas)
+    cv_kwargs = kwargs
+    x_qv = Q_V(1, "rpm^0.5","w")
+    line=[]
+    for cv in CVs:
+        x_qv = cv.rotation
+        rot.append(math.sqrt(cv.rotation))
+        for arg in args:
+            cv.norm(arg)
+        cv_kwargs["legend"] = str(f"{float(cv.rotation):.0f}")
+        #cv_kwargs["plot"] = CV_plot
+        l,ax = cv.plot(**cv_kwargs)
+        line.append(l)
+        y.append(cv.get_i_at_E(Epot))
+        E.append([Epot, Epot])
+        y_axis_title= str(cv.i_label)
+        y_axis_unit= str(cv.i_unit)
+    rot = np.array(rot)
+    y = np.array(y) 
+    CV_plot =  cv_kwargs["plot"] 
+    CV_plot.plot(E,y[:,0], STYLE_POS_DL,E,y[:,1], STYLE_NEG_DL)
+    CV_plot.legend()
+    return rot,y,E,y_axis_title,y_axis_unit

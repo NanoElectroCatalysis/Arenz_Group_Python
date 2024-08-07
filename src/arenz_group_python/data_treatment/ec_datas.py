@@ -50,16 +50,48 @@ class EC_Datas:
             raise TypeError("key must be an integer")
         self.datas[item_index] = new_data
         
-    def plot(self, x_channel:str, y_channel:str, *args, **kwargs):
-        options = plot_options(kwargs)
+    def plot(self, x_channel:str = "E", y_channel:str = "i", *args, **kwargs):
+        p = plot_options(kwargs)
         #options.update(kwargs)
-        line, ax = options.exe()
+        p.set_title("Data plot")
+        line, ax = p.exe()
         #ax = make_plot_1x(options.name)
         plot_kwargs = kwargs
         datas = copy.deepcopy(self.datas)
         for data in datas:
             plot_kwargs["plot"] = ax
             plot_kwargs["name"] = data.setup_data.name
+            plot_kwargs["legend"] = data.setup_data.name
+            data.plot(x_channel, y_channel, **plot_kwargs)
+        ax.legend()
+        return ax
+    
+    def Tafel(self, x_channel:str = "i", y_channel:str = "E", transpose: bool = True, *args, **kwargs):
+        
+        plot_kwargs = kwargs
+
+        if transpose:
+           # t = x_channel
+           # x_channel =y_channel
+           # y_channel = t
+            plot_kwargs["xscale"] ="log"
+        else:
+            plot_kwargs["yscale"] ="log"
+             
+        p = plot_options(kwargs)
+        p.set_title("Tafel plot")
+        #options.update(kwargs)
+        
+        line, ax = p.exe()
+        #ax.set_yscale('log')
+        #ax.get_yscale
+        #ax = make_plot_1x(options.name)
+        plot_kwargs["plot"] = ax        
+        datas = copy.deepcopy(self.datas)
+        #print("aaaaa", x_channel)
+        for data in datas:
+            plot_kwargs["name"] = data.setup_data.name
+            plot_kwargs["legend"] = data.setup_data.name
             data.plot(x_channel, y_channel, **plot_kwargs)
         ax.legend()
         return ax

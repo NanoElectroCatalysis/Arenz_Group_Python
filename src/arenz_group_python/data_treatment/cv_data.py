@@ -22,6 +22,9 @@ from .util import extract_value_unit
 from .util import Quanity_Value_Unit as Q_V
 
 class CV_Data(EC_Setup):
+    
+    
+    
     def __init__(self,*args, **kwargs):
         super().__init__()
         #self._area=2
@@ -33,8 +36,9 @@ class CV_Data(EC_Setup):
         self.i_n=[]
         self.i_label = "i"
         self.i_unit = "A"
+        
         self.rate_V_s = 1
-        self.E_max = 2.5
+        
         """max voltage""" 
         self.E_min = -2.5
         """min voltage"""
@@ -215,6 +219,12 @@ class CV_Data(EC_Setup):
         #        y = savgol_filter(y, y_smooth, 1)
         #finally:
         #    pass
+        positive_start = False
+        if V0 == V1:
+            positive_start = (V1 < V2)
+        else:
+            positive_start = V0 < V1
+        #print("startDIR:", positive_start)
         
         y = options.smooth_y(y)
         
@@ -240,16 +250,19 @@ class CV_Data(EC_Setup):
 
 
         #print(f"ZeroCrossings: {zero_crossings}")
+        #print(zero_crossings)
         if x[0]<x[zero_crossings[0]]:
             up_start =0
             up_end = zero_crossings[0]
             dn_start = zero_crossings[0]
             dn_end = x.size
+            
         else:
             up_start =zero_crossings[0]
             up_end = x.size
             dn_start = 0
             dn_end = zero_crossings[0]
+            reversed=True
         
         self.E_max = 2.5
         self.E_min = -2.5
@@ -257,11 +270,18 @@ class CV_Data(EC_Setup):
         x_sweep = np.linspace(self.E_min, self.E_max, dE_range) 
         self.E = x_sweep
         
-        x_u = x[0:zero_crossings[0]]
-        y_u = y[0:zero_crossings[0]]
-        x_n = np.flipud(x[zero_crossings[0]:])
-        y_n = np.flipud(y[zero_crossings[0]:])
-        
+        if positive_start:
+            x_u = x[0:zero_crossings[0]]
+            y_u = y[0:zero_crossings[0]]
+            x_n = np.flipud(x[zero_crossings[0]:])
+            y_n = np.flipud(y[zero_crossings[0]:])
+        else:
+            #print("neg first sweep")
+            x_n = np.flipud(x[0:zero_crossings[0]])
+            y_n = np.flipud(y[0:zero_crossings[0]])
+            x_u = x[zero_crossings[0]:]
+            y_u = y[zero_crossings[0]:]
+            
         y_pos=np.interp(x_sweep, x_u, y_u)
         y_neg=np.interp(x_sweep, x_n, y_n)
 
@@ -320,6 +340,7 @@ class CV_Data(EC_Setup):
         '''
         
         options = plot_options(kwargs)
+        options.set_title(self.setup_data.name)
         options.name = self.setup_data.name
         options.legend = self.legend(**kwargs)
         
@@ -335,32 +356,8 @@ class CV_Data(EC_Setup):
             options.y_data=np.concatenate((self.i_p, self.i_n), axis=None)  
         
         options.set_x_txt("E", "V")
-        options.set_y_txt(self.i_label, self.i_unit)
+        options.set_y_txt(self.i_label, self.i_unit) 
         
-        '''add a the data to an existing plot or create a new'''
-        #try:
-        #    ax = kwargs['plot']     
-        #except:
-        #    fig = plt.figure()
-        #    plt.suptitle(self.name)
-        #    ax = fig.subplots()
-        #try:
-        #    y_smooth = int(options['y_smooth'])
-        #    if(y_smooth > 0):
-        #        ydata = savgol_filter(ydata, y_smooth, 1)
-        #except:
-        #    pass
-        #ydata = options.smooth_y(ydata) 
-        #line = None
-        #try:
-        #    line, = ax.plot(xdata,ydata)
-        #    line.set_label(options.get_legend())
-        #except:
-        #    pass
-        #ax.set_xlabel(f'{xlable} / {xunit}')
-        #ax.set_ylabel(f'{ylable} / {yunit}')
-        #ax.set_ylabel(options.get_y_txt())
-        #ax.set_xlabel(options.get_x_txt())
         return options.exe()
     
     ####################################################################################################

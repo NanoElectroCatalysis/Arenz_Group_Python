@@ -33,10 +33,10 @@ def make_plot_2x(Title:str):
     
 
 def quantity_plot_fix(s:str):
-    list_of_quantities = s.split(" ", 100)
+    list_of_quantities = str(s).strip().split(" ", 100)
     s_out =""
     for single_quantity in list_of_quantities:
-        aa = single_quantity.split("^",2)
+        aa = single_quantity.strip().split("^",2)
         nyckel = aa[0]
         if len(aa)>1:                   #if "^" was found.
             nyckel = nyckel + "$^{" + aa[1] + "}$"  
@@ -59,6 +59,8 @@ class plot_options:
             'x_smooth' : 0,
             'y_smooth' : 0,
             'y_median'   : 0,
+            'yscale':None,
+            'xscale':None,
             'plot' : NEWPLOT,
             'dir' : "all",
             'legend' : "_",
@@ -70,6 +72,10 @@ class plot_options:
 
         self.options.update(kwargs)
         return
+    
+    def set_title(self,title:str = "", override: bool=False):
+        if self.options['title'] == "" or override:
+            self.options['title'] = title
     
     def set_y_txt(self, label, unit):
         self.y_label = label
@@ -142,6 +148,7 @@ class plot_options:
         except:
             pass
         return xdata
+            
     
     def fig(self, **kwargs):
         try:
@@ -161,7 +168,12 @@ class plot_options:
         if ax == NEWPLOT:
            # fig = plt.figure()
            # plt.suptitle(self.name)
-            ax = make_plot_1x(self.name)
+            ax = make_plot_1x(self.options['title'])
+            if self.options['yscale']:
+                ax.set_yscale(self.options['yscale'])
+            if self.options['xscale']:
+                ax.set_xscale(self.options['xscale'])
+        
         
         try:
             y_median = int(self.options['y_median'])
@@ -173,12 +185,20 @@ class plot_options:
             y_smooth = int(self.options['y_smooth'])
             if y_smooth > 0:
                 self.y_data = savgol_filter(self.y_data, y_smooth, 1)
+            yscale = ax.get_yscale()
+            if yscale == "log":
+                self.y_data=abs(self.y_data)
         except:
             pass
+       
+        
         try:
             x_smooth = int(self.options['x_smooth'])
             if x_smooth > 0:
                 self.x_data = savgol_filter(self.x_data, x_smooth, 1)
+            xscale = ax.get_xscale()
+            if xscale == "log":
+                self.x_data=abs(self.x_data)
         except:
             pass
         line = None
