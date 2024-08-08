@@ -78,17 +78,6 @@ class symbols:
     
     def __add__(self, other):
         #s = quantity_fix(self.symbols + other.symbols)             
-        k=symbols()
-        k=self._sym
-        for quantity,exponent in other._sym.items():
-            val = float(self._sym.get(quantity, 0))  
-            k[quantity] = val + exponent
-        r = symbols()
-        r._sym = k.copy()
-        return r
-    
-    def __add__(self, other):
-        #s = quantity_fix(self.symbols + other.symbols)             
         if isinstance(other,symbols):
             k=symbols()
             k=self._sym.copy()
@@ -124,7 +113,7 @@ class symbols:
         return str(self) == str(other)
 
 ########################################################################################
-class Quanity_Value_Unit:
+class Quantity_Value_Unit:
     def __init__(self, value: float | str =0.0 , unit="", quantity=""):
         
         if isinstance(value, str):
@@ -151,39 +140,56 @@ class Quanity_Value_Unit:
         return self.value
     
     def __add__(self, other: object):
-        v = Quanity_Value_Unit()
-        if isinstance(other,Quanity_Value_Unit):
-            if self._unit == other._unit:       
-                return Quanity_Value_Unit(self.value+other.value,str(self._unit), str(self._quantity))
+        v = Quantity_Value_Unit()
+        if isinstance(other,Quantity_Value_Unit):
+            if self.unit == other.unit:       
+                return Quantity_Value_Unit(self.value+other.value,str(self._unit), str(self._quantity))
+            else:
+                raise ValueError("Must have the same unit")
+        else:
+            raise TypeError("Must be of the same type")
+        return v
+    
+    def __sub__(self, other: object):
+        v = Quantity_Value_Unit()
+        if isinstance(other,Quantity_Value_Unit):
+            if self.unit == other.unit:       
+                return Quantity_Value_Unit(self.value-other.value,str(self._unit), str(self._quantity))
+            else:
+                raise ValueError("Must have the same unit")
         else:
             raise TypeError("Must be of the same type")
         return v
     
     def __mul__(self, other):
-        if isinstance(other, Quanity_Value_Unit):
-            v= Quanity_Value_Unit(self.value * other.value, (self._unit + other._unit), self._quantity + other._quantity)
+        if isinstance(other, Quantity_Value_Unit):
+            v= Quantity_Value_Unit(self.value * other.value, (self._unit + other._unit), self._quantity + other._quantity)
         else:
-            v= Quanity_Value_Unit(self.value * other, self._unit, self._quantity)
+            v= Quantity_Value_Unit(self.value * float(other), self._unit, self._quantity)
         return v
     
     def __div__(self, other):
-        if isinstance(other, Quanity_Value_Unit):
-            v = Quanity_Value_Unit(self.value / other.value, self._unit - other._unit, self._quantity - other._quantity)
+        if isinstance(other, Quantity_Value_Unit):
+            v = Quantity_Value_Unit(self.value / other.value, self._unit - other._unit, self._quantity - other._quantity)
         else: 
-            v = Quanity_Value_Unit(self.value / other, self._unit, self._quantity)    
+            v = Quantity_Value_Unit(self.value / float(other), self._unit, self._quantity)    
         return v
     
     def __truediv__(self, other: object):
         
-        if isinstance(other, Quanity_Value_Unit):
-            v = Quanity_Value_Unit(self.value / other.value, self._unit - other._unit, self._quantity - other._quantity)
+        if isinstance(other, Quantity_Value_Unit):
+            v = Quantity_Value_Unit(self.value / other.value, self._unit - other._unit, self._quantity - other._quantity)
         else:
-            v = Quanity_Value_Unit(self.value / other, self._unit, self._quantity) 
+            v = Quantity_Value_Unit(self.value / float(other), self._unit, self._quantity) 
         return v
     
-    def __pow__(self, other):
-        return Quanity_Value_Unit( self.value ** other, self._unit*other, self._quantity*other)
-    
+    def __pow__(self, other:int|float):
+        if isinstance(other, float) or isinstance(other, int):
+            return Quantity_Value_Unit( self.value ** float(other), self._unit*other, self._quantity*other)
+        else:
+            raise TypeError("Must be a number, i.e. float or int")
+            return
+        
     @property
     def unit(self):
         return str(self._unit)

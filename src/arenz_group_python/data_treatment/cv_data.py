@@ -3,23 +3,19 @@
     This module contains the public facing API for reading TDMS files produced by EC4 DAQ.
 """
 from __future__ import annotations
-from nptdms import TdmsFile
 import math
 import numpy as np
 from scipy import integrate
-import matplotlib.pyplot as plt
 from scipy.signal import savgol_filter 
 
 import copy
 
-from . import util
 from .ec_data import EC_Data
 
 from .ec_setup import EC_Setup
 from .util_graph import plot_options
-from pathlib import Path
 from .util import extract_value_unit     
-from .util import Quanity_Value_Unit as Q_V
+from .util import Quantity_Value_Unit as Q_V
 
 class CV_Data(EC_Setup):
     
@@ -51,14 +47,14 @@ class CV_Data(EC_Setup):
         else:
             #print(kwargs)
             self.conv(EC_Data(args[0]),**kwargs)
-        
+    #############################################################################   
     def sub(self, subData: CV_Data) -> None:
         try:
             self.i_p = self.i_p-subData.i_p
             self.i_n = self.i_n-subData.i_n
         finally:
             return
-    
+    #############################################################################
     def __mul__(self, other: float):
         """ 
 
@@ -72,7 +68,7 @@ class CV_Data(EC_Setup):
         new_cv.i_p = new_cv.i_p * other
         new_cv.i_n = new_cv.i_n * other
         return new_cv
-    
+    #############################################################################
     def __div__(self, other: float):
         """ 
 
@@ -86,7 +82,7 @@ class CV_Data(EC_Setup):
         new_cv.i_p = new_cv.i_p / other
         new_cv.i_n = new_cv.i_n / other
         return new_cv
-        
+    #############################################################################    
     def div(self, div_factor:float):
         """_summary_
 
@@ -98,7 +94,7 @@ class CV_Data(EC_Setup):
             self.i_n = self.i_n / div_factor
         finally:
             return
-    
+    #############################################################################
     def __add__(self, other: CV_Data):
         """_summary_
 
@@ -112,7 +108,7 @@ class CV_Data(EC_Setup):
         new_cv.i_p = new_cv.i_p + other.i_p
         new_cv.i_n = new_cv.i_n + other.i_n
         return new_cv
-    
+    #############################################################################
     def __sub__(self, other: CV_Data):
         """_summary_
 

@@ -14,7 +14,7 @@ from .ec_setup import EC_Setup
 
 from pathlib import Path
 import copy
-from .util import Quanity_Value_Unit as Q_V
+from .util import Quantity_Value_Unit as Q_V
 from .util_graph import plot_options,quantity_plot_fix, make_plot_2x,make_plot_1x
 
 
@@ -54,7 +54,7 @@ class CV_Datas:
                 index=index+1 
         #print(index)
         return
-    
+    #############################################################################
     def __getitem__(self, item_index:slice|int) -> CV_Data: 
 
         if isinstance(item_index, slice):
@@ -70,13 +70,12 @@ class CV_Datas:
             return [self.datas[i] for i in range(start,stop,step)  ]
         else:
             return self.datas[item_index]
-    
+    #############################################################################
     def __setitem__(self, item_index:int, new_CV:CV_Data):
         if not isinstance(item_index, int):
             raise TypeError("key must be an integer")
         self.datas[item_index] = new_CV
-     
-    
+    #############################################################################
     def __sub__(self, other: CV_Data):
         """_summary_
 
@@ -97,13 +96,10 @@ class CV_Datas:
             for new_cv in new_CVs:
                 new_cv.i_p = new_cv.i_p - other.i_p
                 new_cv.i_n = new_cv.i_n - other.i_n
-        
-        
-            
         return new_CVs
     
     
-    
+    #############################################################################
     def bg_corr(self, bg_cv: CV_Data|Path) -> CV_Data:
         """Background correct the data by subtracting the bg_cv. 
 
@@ -131,8 +127,6 @@ class CV_Datas:
                 cv.sub(corr_cv)
         return copy.deepcopy(self)
     
-    
-     
 ################################################################    
     def plot(self, *args, **kwargs):
         """Plot CVs.

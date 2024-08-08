@@ -2,14 +2,7 @@
 
     This module contains the public facing API for reading TDMS files produced by EC4 DAQ.
 """
-from nptdms import TdmsFile
-import math
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.signal import savgol_filter
-from . import util
-from .util_graph import plot_options,make_plot_1x
-from .ec_setup import EC_Setup
+from .util_graph import plot_options
 from .ec_data import EC_Data
 from pathlib import Path
 import copy
@@ -71,13 +64,13 @@ class EC_Datas:
         plot_kwargs = kwargs
 
         if transpose:
-           # t = x_channel
-           # x_channel =y_channel
-           # y_channel = t
+            # t = x_channel
+            # x_channel =y_channel
+            # y_channel = t
             plot_kwargs["xscale"] ="log"
         else:
             plot_kwargs["yscale"] ="log"
-             
+            
         p = plot_options(kwargs)
         p.set_title("Tafel plot")
         #options.update(kwargs)

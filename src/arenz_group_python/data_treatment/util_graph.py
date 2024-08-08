@@ -3,14 +3,14 @@ Utility module.
 
 """
 
-import math
+#import math
 from scipy.signal import savgol_filter, medfilt
-from scipy import ndimage, datasets
+#from scipy import ndimage, datasets
 import matplotlib.pyplot as plt
-from fractions import Fraction
-import matplotlib.pyplot as plt
+#from fractions import Fraction
+#import matplotlib.pyplot as plt
 
-from .util import Quanity_Value_Unit as Q_V
+#from .util import Quantity_Value_Unit as Q_V
 
 NEWPLOT = "new_plot"
 
@@ -153,7 +153,7 @@ class plot_options:
     def fig(self, **kwargs):
         try:
             ax = kwargs['plot']
-        except:
+        except KeyError("plot keyword was not found"):
             #fig = plt.figure()
             #  plt.subtitle(self.name)
             ax = make_plot_1x(self.options['title'])
@@ -203,12 +203,11 @@ class plot_options:
             pass
         line = None
         try:
-            lineLabel='_'
             line, = ax.plot(self.x_data, self.y_data, self.options['style'])
             #line,=analyse_plot.plot(rot,y_pos,'-' )
             line.set_label( self.get_legend() )
             
-        except:
+        except:  # noqa: E722
             pass
         ax.set_xlabel(f'{quantity_plot_fix(self.x_label)} ( {quantity_plot_fix(self.x_unit)})')
         ylabel = quantity_plot_fix(self.y_label) + " (" + quantity_plot_fix(self.y_unit)+ ")"

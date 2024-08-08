@@ -1,5 +1,5 @@
 from .util import extract_value_unit
-from .util import Quanity_Value_Unit as Q_V
+from .util import Quantity_Value_Unit as Q_V
 
 
 class ec_setup_data:

@@ -6,12 +6,11 @@ from nptdms import TdmsFile
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import savgol_filter
+
 from . import util
 from .util_graph import plot_options
 from .ec_setup import EC_Setup
-import copy
-from .util import Quanity_Value_Unit as Q_V
+
 
 class EC_Data(EC_Setup):
     """ Reads and stores data from a TDMS file in the format of EC4 DAQ.
@@ -82,8 +81,6 @@ class EC_Data(EC_Setup):
             except KeyError as e: 
                 print(f"TDMS error: {e}") 
         
-    
-    
     def set_area(self,value,unit):
         self._area = value
         self._area_unit = unit
