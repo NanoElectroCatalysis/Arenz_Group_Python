@@ -5,7 +5,43 @@ from ..project.util_paths import Project_Paths
 import re
 
 
-DELIMETER = '\t'
+DELIMITER = '\t'
+
+
+def open_dict_from_file(file_path:Path):
+    k={}
+    with open(file_path, 'r') as file:
+        aa= True
+        while(aa):
+            a=  file.readline()
+            if a == "":
+                break
+            else:
+                #print(a)
+                vals = a.split("=",1)
+                if len(vals)>=2:
+                    key= str(vals[0]).strip().strip().replace("'","").replace('"',"").strip()
+                    k[key] = vals[1].strip()    
+        file.close
+    return k
+
+def read_keys_w_value(file_path:Path):
+    k={}
+    with open(file_path, 'r') as file:
+        aa= True
+        while(aa):
+            a=  file.readline()
+            if a == "":
+                break
+            else:
+                #print(a)
+                vals = a.split("=",1)
+                if len(vals)>=2:
+                    key= str(vals[0]).strip().strip().replace("'","").replace('"',"").strip()
+                    k[key] = vals[1].strip()    
+        file.close
+    return k
+
 
 def save_key_values(file_path:Path, sample_name:str, properties:list):
     """Saves key values into a csv. The function add a row, or replace an existing row based on the 
@@ -41,7 +77,7 @@ def save_key_values(file_path:Path, sample_name:str, properties:list):
     if p.exists:    
         with open(p, 'r', newline='') as csvfile:
             #reads the file
-            spamreader = csv.reader(csvfile, delimiter=DELIMETER, quotechar='|')
+            spamreader = csv.reader(csvfile, delimiter=DELIMITER, quotechar='|')
 
             all_data =[]
             i=0
@@ -64,7 +100,7 @@ def save_key_values(file_path:Path, sample_name:str, properties:list):
 
     #print(all_data) 
     with open(p, 'w', newline='') as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter=DELIMETER,
+        spamwriter = csv.writer(csvfile, delimiter=DELIMITER,
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         for row in all_data:
             spamwriter.writerow(row) #row
