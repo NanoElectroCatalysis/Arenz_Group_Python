@@ -187,10 +187,11 @@ def make_env_file( main_dir: Path):
     path = main_dir / ".env"
     file_Env =  ["#Python environment file\n"
                 f"PYTHONPATH={PROJECT_FOLDERS.scripts}\n",
-                "# Paths are relative to the workspace folder\n",
+                f"WORKSPACE_FOLDER={main_dir}\n",
+                "# PYTHONPATH=${WORKSPACE_FOLDER}"+ f"/{PROJECT_FOLDERS.scripts};"
+                "# Paths are relative to the workspace folder for python, but relative to the jypiter notebook\n",
+                "# so it is best make the path absolute.  ';'\n",
                 "# Add more path and separate them by ';'\n",
-                "# WORKSPACE_FOLDER=C:/full/path/to/myproject\n",
-                "# PYTHONPATH=${WORKSPACE_FOLDER}/src;${WORKSPACE_FOLDER}/tests\n"
                 ]
     try:
         with open(path,"x") as f:
