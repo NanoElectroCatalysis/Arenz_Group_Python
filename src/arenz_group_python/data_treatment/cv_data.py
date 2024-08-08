@@ -18,7 +18,20 @@ from .util import extract_value_unit
 from .util import Quantity_Value_Unit as Q_V
 
 class CV_Data(EC_Setup):
+    """# Class to analyze CV data. 
+    Class Functions:
+    - .plot() - plot data    
+    - .bg_corr() to back ground correct.
     
+    ### Analysis: 
+    - .Tafel() - Tafel analysis data    
+    
+    ### Options args:
+    "area" - to normalize to area
+    
+    ### Options keywords:
+    legend = "name"
+    """
     
     
     def __init__(self,*args, **kwargs):

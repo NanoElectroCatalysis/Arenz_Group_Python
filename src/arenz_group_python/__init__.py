@@ -5,7 +5,7 @@
 
 import os
 from .data_treatment import *
-from .data_treatment.util_paths import Project_Paths
+from .project.util_paths import Project_Paths
 
 #from .ec_data import * 
 

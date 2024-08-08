@@ -1,7 +1,7 @@
 
 import csv
 from pathlib import Path
-from .util_paths import Project_Paths
+from ..project.util_paths import Project_Paths
 import re
 
 
