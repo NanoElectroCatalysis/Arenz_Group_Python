@@ -26,6 +26,8 @@ class Project_Paths:
     - create_project_structure( Path) to create a project folder tree. Note, it uses the executing notebook as root dir if no path is given
     
     """
+    #def __new__(cls,*args, **kwargs):
+        
     #######################################################################
     def _find_dir(self,path_to_caller: Path, dir_name:str) -> Path:
         

@@ -185,11 +185,14 @@ def make_script_file(main_dir: Path):
 
 def make_env_file( main_dir: Path):
     path = main_dir / ".env"
-    file_Env =  ["#Python environment file\n"
-                f"PYTHONPATH={PROJECT_FOLDERS.scripts}\n",
-                f"WORKSPACE_FOLDER={main_dir}\n",
-                "# PYTHONPATH=${WORKSPACE_FOLDER}"+ f"/{PROJECT_FOLDERS.scripts};"
-                "# Paths are relative to the workspace folder for python, but relative to the jypiter notebook\n",
+    
+    file_Env =  ["#Python environment file\n",
+                "#The PYTHONPATH adds relative and absolute search paths\n",
+                "# Paths are relative to the workspace folder for python,",
+                "# however, they are relative to the jypiter notebook when execute in a notebook.\n",
+                "# Therefor, an absolute search path is needed if jypiter is to be used.\n",
+                f"WORKSPACE_FOLDER={str(main_dir)}\n",
+                "PYTHONPATH=${WORKSPACE_FOLDER}"+ f"/{PROJECT_FOLDERS.scripts};\n",
                 "# so it is best make the path absolute.  ';'\n",
                 "# Add more path and separate them by ';'\n",
                 ]
