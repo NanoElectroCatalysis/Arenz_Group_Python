@@ -8,42 +8,9 @@ import re
 DELIMITER = '\t'
 
 
-def open_dict_from_file(file_path:Path):
-    k={}
-    with open(file_path, 'r') as file:
-        aa= True
-        while(aa):
-            a=  file.readline()
-            if a == "":
-                break
-            else:
-                #print(a)
-                vals = a.split("=",1)
-                if len(vals)>=2:
-                    key= str(vals[0]).strip().strip().replace("'","").replace('"',"").strip()
-                    k[key] = vals[1].strip()    
-        file.close
-    return k
-
-def read_keys_w_value(file_path:Path):
-    k={}
-    with open(file_path, 'r') as file:
-        aa= True
-        while(aa):
-            a=  file.readline()
-            if a == "":
-                break
-            else:
-                #print(a)
-                vals = a.split("=",1)
-                if len(vals)>=2:
-                    key= str(vals[0]).strip().strip().replace("'","").replace('"',"").strip()
-                    k[key] = vals[1].strip()    
-        file.close
-    return k
 
 
-def save_key_values(file_path:Path, sample_name:str, properties:list):
+def save_key_values(file_path:Path, sample_name:str, properties:list, delimiter:str=DELIMITER):
     """Saves key values into a csv. The function add a row, or replace an existing row based on the 
     sample name. The first column will always sample name. The following columns will be the list values.
 
