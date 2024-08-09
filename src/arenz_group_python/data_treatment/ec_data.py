@@ -230,9 +230,9 @@ class EC_Data(EC_Setup):
         """
         idxmin=self.index_at_time(t_start)
         idxmax=self.index_at_time(t_end)+1
-        y,unit,quantity = self.get_channel(y_channel)[idxmin:idxmax]
-        array_Q = integrate.cumulative_simpson(y, x=self.Time[idxmin:idxmax], initial=0)
-        Charge = Q(array_Q[idxmax]-array_Q[idxmin],unit,quantity)*Q(1,"s","t")
+        y,unit,quantity = self.get_channel(y_channel)
+        array_Q = integrate.cumulative_simpson(y[idxmin:idxmax], x=self.Time[idxmin:idxmax], initial=0)
+        Charge = Q(array_Q[idxmax-1]-array_Q[idxmin+1],unit,quantity)*Q(1,"s","t")
         return Charge        
             
             
