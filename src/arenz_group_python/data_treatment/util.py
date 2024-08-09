@@ -4,11 +4,11 @@ Utility module.
 """
 
 import math
-from scipy.signal import savgol_filter, medfilt
-from scipy import ndimage, datasets
-import matplotlib.pyplot as plt
-from fractions import Fraction
-import copy
+#from scipy.signal import savgol_filter, medfilt
+#from scipy import ndimage, datasets
+#import matplotlib.pyplot as plt
+#from fractions import Fraction
+#import copy
 
 
 def extract_value_unit(s:str):
@@ -114,6 +114,9 @@ class symbols:
 
 ########################################################################################
 class Quantity_Value_Unit:
+    """A class for quantity calculation.
+    
+    """
     def __init__(self, value: float | str =0.0 , unit="", quantity=""):
         
         if isinstance(value, str):

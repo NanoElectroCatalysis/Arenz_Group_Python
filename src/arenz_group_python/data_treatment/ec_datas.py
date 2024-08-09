@@ -9,8 +9,17 @@ import copy
 
 
 class EC_Datas:
-    def __init__(self, paths:list[Path], **kwargs):
+    """ Reads data from a TDMS file in the format of EC4 DAQ.
+
+    When creating an opject the file path must be given.
+     
+    """
+    def __init__(self, paths:Path|list[Path], **kwargs):
         
+        if isinstance(paths,Path):
+            paths = [paths]
+        if isinstance(paths,str):
+            paths = [Path(paths)]
         self.datas = [EC_Data() for i in range(len(paths))]
         index=0
         for path in paths:
@@ -88,3 +97,19 @@ class EC_Datas:
             data.plot(x_channel, y_channel, **plot_kwargs)
         ax.legend()
         return ax
+    
+    def integrate(self,t_start,t_end,y_channel:str="i"):
+        """_summary_
+
+        Args:
+            t_start (_type_): _description_
+            t_end (_type_): _description_
+            y_channel (str, optional): _description_. Defaults to "i".
+
+        Returns:
+            _type_: _description_
+        """
+        charge=list()
+        for data in self.datas:
+            charge.append(data.integrate(t_start, t_end,y_channel))
+        return charge

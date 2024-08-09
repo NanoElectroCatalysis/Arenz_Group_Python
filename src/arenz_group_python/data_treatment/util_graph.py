@@ -42,9 +42,9 @@ def quantity_plot_fix(s:str):
             nyckel = nyckel + "$^{" + aa[1] + "}$"  
         s_out = s_out +" " + nyckel
     #print("AA", s_out.strip())
-    return s_out.strip()    
+    return s_out.strip()  
 
-    
+
 class plot_options:
     def __init__(self, kwargs):
         self.name = NEWPLOT
@@ -93,16 +93,16 @@ class plot_options:
     
     
     def get_legend(self):
-            return str(self.options['legend'])
+        return str(self.options['legend'])
     
-    @property 
+    @property
     def legend(self):
-        return self.get_legend()    
-    
+        return self.get_legend()
+
     @legend.setter
     def legend(self, value:str) -> str:
         self.options['legend'] = value
-        #return self.get_legend()    
+        #return self.get_legend()
     
     def get_x_smooth(self):
         return int(self.options['x_smooth'])

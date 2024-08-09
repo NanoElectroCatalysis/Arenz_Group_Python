@@ -6,11 +6,11 @@ from nptdms import TdmsFile
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-
+from scipy import integrate
 from . import util
 from .util_graph import plot_options
 from .ec_setup import EC_Setup
-
+from .util import Quantity_Value_Unit as Q
 
 class EC_Data(EC_Setup):
     """ Reads and stores data from a TDMS file in the format of EC4 DAQ.
@@ -179,7 +179,7 @@ class EC_Data(EC_Setup):
         if range["limit_max"] >0:
             index_max = self.index_at_time(range["limit_max"])
         
-        max_index = len(self.Time)-1
+        #max_index = len(self.Time)-1
         #print("index", index_min,index_max)
         try:
             x_data, options.x_label, options.x_unit = self.get_channel(x_channel)
@@ -211,12 +211,29 @@ class EC_Data(EC_Setup):
                     plot[index].plot(self.rawdata[ch_name].time_track(),self.rawdata[ch_name].data)
                     yunit = self.rawdata[ch_name].properties["unit_string"]
                     plot[index].set_ylabel(f'{ch_name} / {yunit}')
-                    plot[index].set_xlabel(f'Time / s')
+                    plot[index].set_xlabel('Time / s')
                 finally:
                     index +=1                    
         
         return
-                
+    
+    def integrate(self,t_start,t_end,y_channel:str="i"):
+        """_summary_
+
+        Args:
+            t_start (_type_): _description_
+            t_end (_type_): _description_
+            y_channel (str, optional): _description_. Defaults to "i".
+
+        Returns:
+            _type_: _description_
+        """
+        idxmin=self.index_at_time(t_start)
+        idxmax=self.index_at_time(t_end)+1
+        y,unit,quantity = self.get_channel(y_channel)[idxmin:idxmax]
+        array_Q = integrate.cumulative_simpson(y, x=self.Time[idxmin:idxmax], initial=0)
+        Charge = Q(array_Q[idxmax]-array_Q[idxmin],unit,quantity)*Q(1,"s","t")
+        return Charge        
             
             
     

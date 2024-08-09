@@ -42,21 +42,22 @@ def open_dict_from_file(file_path:Path):
             if a == "":
                 break
             else:
+                k = string_to_dict(a, k)
                 #print(a)
-                vals = a.split("=",1)
-                if len(vals)>=2:
-                    key= str(vals[0]).strip().strip().replace("'","").replace('"',"").strip()
-                    v=vals[1].strip()
-                    try:
-                        k[key]=int(v)
-                    except ValueError:
-                        try:
-                            k[key]=float(v)
-                        except ValueError:
-                            try:
-                                k[key]=Q(v)
-                            except:    
-                                k[key] = vals[1].strip()
+            #    vals = a.split("=",1)
+            #    if len(vals)>=2:
+            #        key= str(vals[0]).strip().strip().replace("'","").replace('"',"").strip()
+            #        v=vals[1].strip()
+            #        try:
+            #            k[key]=int(v)
+            #        except ValueError:
+            #            try:
+            #                k[key]=float(v)
+             #           except ValueError:
+              #              try:
+               #                 k[key]=Q(v)
+                ##            except:    
+                #                k[key] = vals[1].strip()
                     #k[key] = vals[1].strip()    
         file.close
     return k
@@ -65,6 +66,46 @@ def open_dict_from_file(file_path:Path):
 ###########################################################################################
 
 
+def string_to_dict(s:str, k: dict):
+    vals = s.split("=",1)
+    if len(vals)>=2:
+        key= str(vals[0]).strip().strip().replace("'","").replace('"',"").strip()
+        v=vals[1].strip()
+        try:
+            k[key]=int(v)
+        except ValueError:
+            try:
+                k[key]=float(v)
+            except ValueError:
+                try:
+                    k[key]=Q(v)
+                except:    
+                    k[key] = vals[1].strip()
+        #k[key] = vals[1].strip()    
+    return k
+
+
+def open_dict_from_tablefile(file_path:Path):
+    """_summary_
+
+    Args:
+        file_path (Path): _description_
+
+    Returns:
+        DataFrame: _description_
+    """
+    df = pd.read_csv(file_path)
+    for col in df.columns:
+    #print(df[col].dtypes)
+        for i in range(df.index.max()):
+            if df[col].dtypes == object:
+                o = df.iloc[i][col]
+                try:
+                    #print(df[col].dtypes,o,"fdsfsa",Q(o), "YES")
+                    df.iloc[i][col]=Q(o)
+                except:
+                    print(df[col].dtypes,o,"", "no")
+    return df
 
 def save_dict_to_tableFile(file_path:Path, sample_name:str, properties:dict, delimiter:str=DELIMITER):
     """Saves key values into a csv. The function add a row, or replace an existing row based on the 

@@ -8,7 +8,7 @@ Module for creating projects\n
 
 from .file_dict import save_dict_to_file, open_dict_from_file, save_dict_to_tableFile
 
-__all__ = ["save_dict_to_file","open_dict_from_file", save_dict_to_tableFile]
+__all__ = ["save_dict_to_file","open_dict_from_file", "save_dict_to_tableFile"]
 
 
 #Import the submodules
