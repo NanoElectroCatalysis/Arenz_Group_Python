@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 
 
@@ -32,6 +32,7 @@ license = {file = "LICENSE"}
 keywords = ['python', 'arenz group', 'tdms']
 classifiers = [
   "Development Status :: 4 - Beta",
+  "Operating System :: OS Independent",
   "Programming Language :: Python"
 ]
 

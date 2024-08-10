@@ -86,12 +86,21 @@ class EC_Data(EC_Setup):
         self._area_unit = unit
 
     def __str__(self):
+        """_summary_
+
+        Returns:
+            _type_: _description_
+        """
         return f"{self.setup_data.name}"
 
 
     def get_channel(self,datachannel:str) -> tuple[list,str,str] :
         """
         Get the channel of the EC4 DAQ file.
+        
+        Returns:
+            tuple: [channel, quantity-name, unit name]
+        
         
         - Time
         - E,U , E-IZ,E-IR
@@ -102,8 +111,8 @@ class EC_Data(EC_Setup):
         match datachannel:
             case "Time":
                 return self.Time,"t","s"
-            case "E":
-                return self.E, "E", "V"
+           # case "E":
+            #    return self.E, "E", "V"
             case "U":
                 return self.U,"U", "V"
             case "i":
@@ -131,7 +140,13 @@ class EC_Data(EC_Setup):
             case "E-IR":
                 return self.E - self.i*self.Z_E,"E-IR", "V"
             case _:
-                raise NameError("The channel name is not supported")
+                #if datachannel in self.rawdata.channels():
+                try:
+                    unit = self.rawdata[datachannel].properties.get("unit_string","")
+                    quantity = self.rawdata[datachannel].properties.get("Quantity","")
+                    return self.rawdata[datachannel].data,str(quantity) ,str(unit)
+                except KeyError:
+                    raise NameError("The channel name is not supported")
                 #return np.array([2]), "No channel", "No channel"
 
     def cosVal(self,phase: float):
@@ -230,7 +245,7 @@ class EC_Data(EC_Setup):
         """
         idxmin=self.index_at_time(t_start)
         idxmax=self.index_at_time(t_end)+1
-        y,unit,quantity = self.get_channel(y_channel)
+        y,quantity,unit = self.get_channel(y_channel)
         array_Q = integrate.cumulative_simpson(y[idxmin:idxmax], x=self.Time[idxmin:idxmax], initial=0)
         Charge = Q(array_Q[len(array_Q)-1]-array_Q[0],unit,quantity)*Q(1,"s","t")
         return Charge        
