@@ -15,10 +15,10 @@ from .util import Quantity_Value_Unit as Q
 class EC_Data(EC_Setup):
     """ Reads and stores data from a TDMS file in the format of EC4 DAQ.
 
-    When creating an opject the file path must be given.
      
     """
     def __init__(self, path = ""):
+        
         super().__init__()
         #self._area=1
         #self._area_unit="cm^2"

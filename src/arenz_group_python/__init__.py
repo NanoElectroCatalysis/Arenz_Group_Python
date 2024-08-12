@@ -6,6 +6,9 @@
 import os
 from .data_treatment import *
 from .project.util_paths import Project_Paths
+from .file.file_dict import save_dict_to_file, load_dict_from_file, save_dict_to_tableFile
+from .data_treatment import EC_Data,EC_Datas,CV_Data,CV_Datas,AutoClaveSynthesis
+
 
 #from .ec_data import * 
 
@@ -16,7 +19,10 @@ from .project.util_paths import Project_Paths
 
 __version__ = "0.0.100"
 
-__all__ = ["ec_data","EC_Data","CV_Data","CV_Datas","save_key_values","Project_Paths","AutoClaveSynthesis"]
+__all__ = ["Project_Paths",
+            "ec_data","EC_Data","EC_Datas","CV_Data","CV_Datas","AutoClaveSynthesis", 
+            "save_dict_to_file","load_dict_from_file", "save_dict_to_tableFile"
+           ]
 
 
 # public interface

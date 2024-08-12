@@ -20,7 +20,7 @@ def save_dict_to_file(file_path:Path, kw: dict):
         file.close
     return 
 
-def open_dict_from_file(file_path:Path):
+def load_dict_from_file(file_path:Path):
     """Reads a dict from file.
     I.e. the assumption is that each line looks like:
         my_int = 5\n
@@ -42,23 +42,7 @@ def open_dict_from_file(file_path:Path):
             if a == "":
                 break
             else:
-                k = string_to_dict(a, k)
-                #print(a)
-            #    vals = a.split("=",1)
-            #    if len(vals)>=2:
-            #        key= str(vals[0]).strip().strip().replace("'","").replace('"',"").strip()
-            #        v=vals[1].strip()
-            #        try:
-            #            k[key]=int(v)
-            #        except ValueError:
-            #            try:
-            #                k[key]=float(v)
-             #           except ValueError:
-              #              try:
-               #                 k[key]=Q(v)
-                ##            except:    
-                #                k[key] = vals[1].strip()
-                    #k[key] = vals[1].strip()    
+                k = string_to_dict(a, k)   
         file.close
     return k
 

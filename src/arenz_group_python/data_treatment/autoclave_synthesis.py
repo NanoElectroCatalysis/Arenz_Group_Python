@@ -180,7 +180,7 @@ class AutoClaveSynthesis:
 
         self.plot("Time_in_min", "T_Reactor_in_C", plot = ax_temp, y_smooth=options["temp_smooth"], y_median=options["temp_median"], style="g-")
         self.plot("Time_in_min", "P_Reactor_in_bar", plot = ax_pres,y_smooth=options["pressure_smooth"], y_median=options["pressure_median"], style="b-")
-        self.plot("Time_in_min", "T_Reactor_in_C", y_smooth=options["temp_smooth"], y_median=options["temp_median"], style="g-")
+        #self.plot("Time_in_min", "T_Reactor_in_C", y_smooth=options["temp_smooth"], y_median=options["temp_median"], style="g-")
 
         
         #ax_temp.plot(smoothed_time, smoothed_temp, 'g-', label='Temperature [°C]')
@@ -229,8 +229,8 @@ class AutoClaveSynthesis:
         tb.append(['Time to Set Temperature', f"{time_set_temp:3.2e}", time_unit])
         tb.append(['Heating Rate', round(((set_temperature - smoothed_temp_R[0]) / time_set_temp), 2), T_unit + "/" + time_unit])
         tb.append(['Max Overpressure', round(max_overpressure,1) , p_unit])
-        tb.append(['Time to Max Overpressure', round(self.Time[Overpressure.argmax()], 2),time_unit] )
-        tb.append(['Pressure Increase Rate', round((max_overpressure - Overpressure[0]) / round(self.Time[Overpressure.argmax()], 2), 2), p_unit + "/"+time_unit])
+        tb.append(['Time to Max Overpressure', round(Time[Overpressure.argmax()], 2),time_unit] )
+        tb.append(['Pressure Increase Rate', round((max_overpressure - Overpressure[0]) / round(Time[Overpressure.argmax()], 2), 2), p_unit + "/"+time_unit])
         tb.append(["Rotation Rate", rotation, "rpm" ])
         tb.append(["Time of Synthesis ", max_time, time_unit])
         #tb.append([])

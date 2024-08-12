@@ -18,10 +18,7 @@ class Project_Paths:
 
         - "Project_Paths().data_rawdata" to go get rawdata directory
 
-        - "Project_Paths().data_path" to go get current working directory
-
-        - "Project_Paths().data_path" to go get current working directory
-
+        - "Project_Paths().data_path" to go get the treated data directory
 
     - create_project_structure( Path) to create a project folder tree. Note, it uses the executing notebook as root dir if no path is given
     
@@ -116,6 +113,11 @@ class Project_Paths:
     ##################################################################################################
     @property 
     def data_path(self)  -> Path:
+        """return to data path"""
+        return self._treated_data_path()
+    
+    @property 
+    def treateddata_path(self)  -> Path:
         """return to data path"""
         return self._treated_data_path()
     

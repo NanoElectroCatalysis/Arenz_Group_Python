@@ -1,7 +1,5 @@
-"""_summary_
-Module for creating projects\n
-. 
-
+""" ## Create Project Structure
+Module for creating default folder structure of a project.
 """
 
 from .util_paths import Project_Paths 
