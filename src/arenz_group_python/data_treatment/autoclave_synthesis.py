@@ -112,7 +112,6 @@ class AutoClaveSynthesis:
             "temp_smooth": 10,
             "temp_median" : 7,
             "temp_channel": "T_Reactor_in_C",
-            "pressure_smooth" : 0
             }
         options.update(kwargs)
         #options=plot_options(kwargs)
