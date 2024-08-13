@@ -105,6 +105,11 @@ class AutoClaveSynthesis:
         return options.exe()
     #####################################################################################################################
     def AC_synthesis(self, **kwargs):
+        """_summary_
+
+        Return :
+            dict: extracted values
+        """
         options = {
             'time_smooth': 0,
             'pressure_smooth': 0,
@@ -155,24 +160,7 @@ class AutoClaveSynthesis:
         fig, axs = plt.subplots(1, 2, figsize=(12, 6))
         fig.suptitle(self.name, fontsize = 20)
 
-        temp_smooth = int(options["temp_smooth"])
-        if temp_smooth > 0:
-            smoothed_temp = savgol_filter(smoothed_temp_R, min(temp_smooth, len(smoothed_temp_R) // 2 * 2 + 1), 1)
-        else:
-            smoothed_temp = smoothed_temp_R
-
-        pressure_smooth = int(options["pressure_smooth"])
-        if pressure_smooth > 0:
-            smoothed_pressure = savgol_filter(Overpressure, min(pressure_smooth, len(self.Overpressure) // 2 * 2 + 1), 1)
-        else:
-            smoothed_pressure = Overpressure
-
-        time_smooth = int(options["time_smooth"])
-        if time_smooth > 0:
-            smoothed_time = savgol_filter(Time, min(time_smooth, len(self.Time) // 2 * 2 + 1), 1)
-        else:
-            smoothed_time = self.Time
-            
+              
         #Make plot
         ax_temp = axs[0]
         ax_pres = ax_temp.twinx()
@@ -231,7 +219,7 @@ class AutoClaveSynthesis:
         tb.append(['Time to Max Overpressure', round(Time[Overpressure.argmax()], 2),time_unit] )
         tb.append(['Pressure Increase Rate', round((max_overpressure - Overpressure[0]) / round(Time[Overpressure.argmax()], 2), 2), p_unit + "/"+time_unit])
         tb.append(["Rotation Rate", rotation, "rpm" ])
-        tb.append(["Time of Synthesis ", max_time, time_unit])
+        tb.append(["Duration", max_time, time_unit])
         #tb.append([])
         #tb.append([])
         #    {'Heating Rate', round(((set_temperature - smoothed_temp_R[0]) / time_set_temp), 2), T_unit + "/" + time_unit},
@@ -269,3 +257,12 @@ class AutoClaveSynthesis:
 
         plt.tight_layout(rect=[0, 0, 1, 0.95])
         plt.show()
+        
+        out = dict()
+        for row in tb:
+            
+            key = row[0].replace(" ","_") 
+            value =str(row[1]) +str(" ")+ str(row[2])
+            out[key] = value
+        return out
+        
