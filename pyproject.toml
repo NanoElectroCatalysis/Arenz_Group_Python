@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "Arenz_Group_Python"
-version = "0.1.21"
+version = "0.2.0"
 dependencies = [ "nptdms", "matplotlib", "pathlib", "scipy", "numpy", "pandas", "EC4py",]
 requires-python = ">=3.12"
 description = "a pip-installable package with function for Arenz Group"
