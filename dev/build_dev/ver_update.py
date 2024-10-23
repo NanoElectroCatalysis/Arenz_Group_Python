@@ -47,7 +47,7 @@ def version_update_PackageFile(project_path:Path, project_version:str):
     with open(Package_Path, "r") as f:
         data = f.read()
         #print(data)
-        data=re.sub('__version__ = \"[0-9.]+\"',"__version__= \"" + project_version+"\"", data)
+        data=re.sub('__version__ = \"[0-9.]+\"',"__version__ = \"" + project_version+"\"", data)
         #print(data)
         f.close()
     with open(Package_Path, 'w') as f:

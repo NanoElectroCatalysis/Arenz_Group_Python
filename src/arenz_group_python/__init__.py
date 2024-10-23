@@ -15,13 +15,17 @@ from .data_treatment import AutoClaveSynthesis
 #print("loading arenz_group_python")
 #print(__path__)
 
-__version__= "0.3.6"
+__version__ = "0.3.8"
 
 __all__ = ["Project_Paths","pDATA_RAW", "pDATA_TREATED",
             #"ec_data","EC_Data","EC_Datas","CV_Data","CV_Datas",
             "AutoClaveSynthesis", 
-            "save_dict_to_file","load_dict_from_file", "save_dict_to_tableFile"
+            "save_dict_to_file", "load_dict_from_file", "save_dict_to_tableFile"
            ]
 
-
-
+def create_project_structure(Path):
+    """The fx creates a standard folder structure for projects.
+    Args
+    project_path : Path
+    Path to the base folder of the project."""
+    return Project_Paths().create_project_structure(Path)
