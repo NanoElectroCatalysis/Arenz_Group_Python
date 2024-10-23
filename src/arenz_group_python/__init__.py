@@ -4,7 +4,7 @@
 #from any import EC_Data
 
 
-from .project.util_paths import Project_Paths
+from .project.util_paths import Project_Paths, pDATA_RAW, pDATA_TREATED
 from .file.file_dict import save_dict_to_file, load_dict_from_file, save_dict_to_tableFile
 from .data_treatment import AutoClaveSynthesis
 #from .data_treatment import EC_Data,EC_Datas,CV_Data,CV_Datas,AutoClaveSynthesis
@@ -17,9 +17,9 @@ from .data_treatment import AutoClaveSynthesis
 #print("loading arenz_group_python")
 #print(__path__)
 
-__version__ = "0.0.100"
+__version__ = "0.0.101"
 
-__all__ = ["Project_Paths",
+__all__ = ["Project_Paths","pDATA_RAW", "pDATA_TREATED",
             #"ec_data","EC_Data","EC_Datas","CV_Data","CV_Datas",
             "AutoClaveSynthesis", 
             "save_dict_to_file","load_dict_from_file", "save_dict_to_tableFile"

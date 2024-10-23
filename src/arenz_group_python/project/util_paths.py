@@ -18,7 +18,7 @@ class Project_Paths:
 
         - "Project_Paths().data_rawdata" to go get rawdata directory
 
-        - "Project_Paths().data_path" to go get the treated data directory
+        - "Project_Paths().treateddata_path" to go get the treated data directory
 
     - create_project_structure( Path) to create a project folder tree. Note, it uses the executing notebook as root dir if no path is given
     
@@ -107,7 +107,7 @@ class Project_Paths:
     ####################################################################################################
     @property 
     def rawdata_path(self)  -> Path:
-        """return to raw data path"""
+        """return: the path to the folder for the raw data"""
         return self._rawdata_path()
     
     ##################################################################################################
@@ -118,7 +118,7 @@ class Project_Paths:
     
     @property 
     def treateddata_path(self)  -> Path:
-        """return to data path"""
+        """return the path to the folder for the treated data"""
         return self._treated_data_path()
     
     ##################################################################################################
@@ -257,3 +257,14 @@ def _to_Path(path_to_caller):
     else:
         p = Path(path_to_caller)
     return p
+
+
+
+
+
+pDATA_RAW = Project_Paths()._rawdata_path()
+"""Pathlib Path to the project's "raw_data" folder.
+"""
+pDATA_TREATED = Project_Paths()._treated_data_path()
+"""Pathlib Path to the project's "treated_data" folder.
+"""
