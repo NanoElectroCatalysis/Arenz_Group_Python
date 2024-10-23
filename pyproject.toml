@@ -22,6 +22,7 @@ email = "gustav.wiberg@unibe.ch"
 [project.license]
 file = "LICENSE"
 
+
 [project.urls]
 Homepage = "https://github.com/NanoElectroCatalysis/Arenz_Group_Python"
 Documentation = "https://nanoelectrocatalysis.github.io/Arenz_Group_Python"
