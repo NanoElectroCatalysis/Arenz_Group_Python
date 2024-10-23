@@ -84,10 +84,11 @@ class Project_Paths:
         """
         try:
             k = self._find_dir(path_to_caller, str(PROJECT_FOLDERS.treated_data))
+            return k 
         except NotADirectoryError as err:
             print(err)
         
-        return k 
+        
 
     #################################################################################################
     def callers(self) -> str:

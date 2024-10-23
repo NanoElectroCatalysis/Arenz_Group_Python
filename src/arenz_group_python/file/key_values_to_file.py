@@ -19,8 +19,6 @@ def save_key_values(file_path:Path, sample_name:str, properties:list, delimiter:
         sample_name (str): Name of sample, will be the first column of the row.
         properties (list): List of values to be stored on the same row
 
-    Returns:
-        _type_: _description_
     """
     if file_path == "":
         print( "empty path ")
