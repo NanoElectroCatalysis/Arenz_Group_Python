@@ -46,7 +46,7 @@ class Project_Paths:
                     path_to_dir = a
                     break
         if path_to_dir == Path():
-            raise NotADirectoryError(f'\"{dir_name}\" could not be found as a branch of the folder tree form the notebook.\nPlease use standard project structure.')
+            raise NotADirectoryError(f'\"{dir_name}\" could not be found as a branch of the folder tree form the notebook.\nPlease use standard project structure.\nProject_Paths().create_project_structure()\nfrom the root of the project.')
         return path_to_dir      
 
     ######################################################################################
