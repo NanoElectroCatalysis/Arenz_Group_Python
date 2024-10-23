@@ -1,6 +1,7 @@
 import toml
 import json
 from pathlib import Path
+import re
 
 def version_updated():
     
@@ -33,3 +34,24 @@ def version_updated():
     data["project"]["version"]=project_version
     with open(pyproject, 'w') as f:
         toml.dump(data, f)
+    
+    version_update_PackageFile(pa, project_version)
+        
+
+
+
+def version_update_PackageFile(project_path:Path, project_version:str):
+    
+    Package_Path = project_path / "src" /"arenz_group_python"/"__init__.py"
+    data = None
+    with open(Package_Path, "r") as f:
+        data = f.read()
+        #print(data)
+        data=re.sub('__version__ = \"[0-9.]+\"',"__version__= \"" + project_version+"\"", data)
+        #print(data)
+        f.close()
+    with open(Package_Path, 'w') as f:
+        if(data!="" or data is not None):
+            f.write(data)
+            print("package file was updated")
+        f.close

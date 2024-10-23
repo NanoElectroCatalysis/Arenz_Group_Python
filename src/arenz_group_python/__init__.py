@@ -1,7 +1,5 @@
-# Leave it empty. This is just a special file that tells pip that your main module is in this folder. 
-# No need to add anything here. Feel free to delete this line when you make your own package.
-
-#from any import EC_Data
+# Docs:
+# https://nanoelectrocatalysis.github.io/Arenz_Group_Python/
 
 
 from .project.util_paths import Project_Paths, pDATA_RAW, pDATA_TREATED
@@ -17,21 +15,13 @@ from .data_treatment import AutoClaveSynthesis
 #print("loading arenz_group_python")
 #print(__path__)
 
-__version__ = "0.3.1"
+__version__= "0.3.6"
 
 __all__ = ["Project_Paths","pDATA_RAW", "pDATA_TREATED",
             #"ec_data","EC_Data","EC_Datas","CV_Data","CV_Datas",
             "AutoClaveSynthesis", 
             "save_dict_to_file","load_dict_from_file", "save_dict_to_tableFile"
            ]
-
-
-# public interface
-
-#def rowdata():
-#    """Try to apply the pattern at the start of the string, returning
-#    a Match object, or None if no match was found."""
-#    return Project_Paths().rawdata_path
 
 
 
