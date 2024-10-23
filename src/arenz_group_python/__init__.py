@@ -17,7 +17,7 @@ from .data_treatment import AutoClaveSynthesis
 #print("loading arenz_group_python")
 #print(__path__)
 
-__version__ = "0.0.101"
+__version__ = "0.3.1"
 
 __all__ = ["Project_Paths","pDATA_RAW", "pDATA_TREATED",
             #"ec_data","EC_Data","EC_Datas","CV_Data","CV_Datas",
