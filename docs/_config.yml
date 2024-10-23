@@ -6,11 +6,11 @@ destination: ./_site
 url: https://NanoElectroCatalysis.github.io
 
 # Site settings
-title: EC4py Package
+title: Arenz Group Python Package
 author:
   name: Gustav Wiberg
   email:  
-description: "Great site about Jekyll on GH-Pages."
+description: "Package documentation of examples."
 
 # Build settings
 #remote_theme: jekyll/minima
