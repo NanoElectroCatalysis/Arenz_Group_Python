@@ -1,15 +1,22 @@
-Python
 
+# Install and Update
+### Install: 
+'''python
+ %pip install arenz_group_python
+'''
+### Update
+'''python
+ %pip install arenz_group_python -U
+'''
 
-# Install 
->   %pip install arenz_group_python
 
 # Create a standard project with folders
 ```python
-> from arenz_group_python import Project_Paths as pp
-> pp().create_project_structure()
+from arenz_group_python import Project_Paths as pp
+pp().create_project_structure()
 ```
-# Project Path constants:
+
+# Project Path constants
 There are two path constants: pDATA_RAW, pDATA_TREATED
 These constants return a PathLib to the raw data folder and the treated data folder.
 ```python
