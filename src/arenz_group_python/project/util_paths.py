@@ -66,10 +66,11 @@ class Project_Paths:
             p = Path.cwd()
         try:
             k = self._find_dir(p, str(PROJECT_FOLDERS.rawdata))
+            return k 
         except NotADirectoryError as err:
             print(err)
         
-        return k 
+        
         #return Path(".") 
     
     ###############################################################################################
