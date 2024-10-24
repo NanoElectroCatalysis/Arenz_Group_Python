@@ -6,6 +6,7 @@ Python libs for NanoElectroCatalysis.
  - Easy transfer of data from server to local folder for work-up
  - Load and save key-values-pairs
  - Load and save key-values-pairs into tables.
+ - Path constants for easy access to data folders.
 
 
 
@@ -34,8 +35,9 @@ Restart the kernal.
 ## Create the basic project folder structure.
 
 ```python
-from arenz_group_python import create_project_structure
-create_project_structure()
+from arenz_group_python import Project_Paths 
+pp = Project_Paths()
+pp.create_project_structure()
 ```
 
 ## Import raw data files.
@@ -49,19 +51,8 @@ pp = Project_Paths()
 project_name = 'projectname'
 user_initials = '' #This is optional, but it can speed up things
 path_to_server = 'X:/EXP_DB'
-pp.copyDirs(path_to_server, user_initials , project_name )
+pp.copyDirs(project_name, user_initials , path_to_server)
 ```
 
-## Load values from file
-```python
-from arenz_group_python import load_dict_from_file
-load_dict_from_file
-
-```
-
-## Save values in a dict to table file(cvs)
-```
-from arenz_group_python import save_dict_to_tableFile
- 
-save_dict_to_tableFile(file_path, sample_name, properties)
-```
+## Examples
+See documentation.

@@ -41,5 +41,5 @@ see example [example/ex_file_dict.md]
     project_name = 'projectname'
     user_initials = '' #This is optional, but it can speed up things
     path_to_server = 'X:/EXP_DB'
-    pp.copyDirs(path_to_server, user_initials , project_name )
+    pp.copyDirs(project_name, user_initials, path_to_server )
 ```
