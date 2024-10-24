@@ -27,12 +27,13 @@ Restart the kernal.
 ```python
 from arenz_group_python import create_project_structure
 create_project_structure()
-'''
+```
 
 ## Import raw data files.
 Make sure that all the folders you want to import as a file called:
 <IDENTIFYIER>.tag 
 where <IDENTIFYIER> can be a project name, example: "project.tag"
+
 ```python
 from arenz_group_python import Project_Paths
 pp = Project_Paths()
