@@ -1,13 +1,13 @@
 
 # Install and Update
 ### Install: 
-'''python
+```python
  %pip install arenz_group_python
-'''
+```
 ### Update
-'''python
+```python
  %pip install arenz_group_python -U
-'''
+```
 
 
 # Create a standard project with folders
