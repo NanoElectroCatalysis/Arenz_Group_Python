@@ -26,9 +26,9 @@ These constants return a PathLib to the raw data folder and the treated data fol
 ```
 
 
-# Save key values to a table
+# Save key values(dict) to a table-file(cvs)
 ```python
-    from arenz_group_python import save_key_values
+    from arenz_group_python import save_dict_to_tableFile
     # The target file is assumed to be in the treated data folder.
     Sample_Name = "sample 7"
     FileNameForKeyValues="keyValues.csv"
