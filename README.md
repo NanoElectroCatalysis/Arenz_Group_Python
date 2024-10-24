@@ -52,6 +52,6 @@ load_dict_from_file
 ## Save values in a dict to table file(cvs)
 '''
 from arenz_group_python import save_dict_to_tableFile
-
+ 
 save_dict_to_tableFile(file_path, sample_name, properties)
 '''
