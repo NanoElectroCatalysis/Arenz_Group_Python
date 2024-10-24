@@ -285,7 +285,8 @@ def make_Project_Update_All_Modules_file(main_dir:Path):
             "cell_type": "markdown",
             "metadata": {},
             "source": [
-                "# Update all modules\n"
+                "# Update all modules",
+                ""
             ]
         },
         {
@@ -294,8 +295,9 @@ def make_Project_Update_All_Modules_file(main_dir:Path):
             "metadata": {},
             "outputs": [],
             "source": [
-                "%pip install -r requirements.txt\n",
-                "%pip freeze > requirements.txt"
+                "%pip install -r requirements.txt",
+                "%pip freeze > requirements.txt",
+                ""
             ]
         }
     ],
