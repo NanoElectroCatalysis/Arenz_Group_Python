@@ -1,4 +1,7 @@
-
+---
+title: Arenz Group Python Package
+nav_order: 1
+---
 # Install and Update
 ### Install: 
 ```python
