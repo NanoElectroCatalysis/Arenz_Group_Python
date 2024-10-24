@@ -9,7 +9,7 @@ parent: Examples
 ```python 
 from arenz_group_python import save_dict_to_file,load_dict_from_file
 ```
-### Load key values(dicts) from the same file. 
+### Save key values(dicts) to a single file. 
 ``` 
 file_path= "My_Dict_File.txt"
 keyValues= {
@@ -46,6 +46,7 @@ sample1_keyValues= {
 save_dict_to_tableFile(table_file_path, sample1_name, sample1_keyValues )
 ```
 A file with the name "table_file_path" should now be found.
+
 ### Save the dict of the second sample
 
 ```python
@@ -59,6 +60,7 @@ save_dict_to_tableFile(table_file_path, sample2_name, sample2_keyValues )
 
 ```
 If the same sample name is already in the file, the data will updated.
+
 ```python
 sample2_name = "MySample_2"
 sample2_keyValues= {
