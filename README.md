@@ -1,5 +1,14 @@
 # Arenz_Group_Python
-Python libs for Arenz Group
+Python libs for NanoElectroCatalysis.
+
+## The aim
+ - Create a standard project folder structure.
+ - Easy transfer of data from server to local folder for work-up
+ - Load and save key-values-pairs
+ - Load and save key-values-pairs into tables.
+
+
+
 
 ## Documentation
 

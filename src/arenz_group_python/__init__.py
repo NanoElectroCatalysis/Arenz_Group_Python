@@ -8,7 +8,7 @@
 
 
 from .project.util_paths import Project_Paths, pDATA_RAW, pDATA_TREATED
-from .file.file_dict import save_dict_to_file, load_dict_from_file, save_dict_to_tableFile,open_dict_from_tablefile
+from .file.file_dict import save_dict_to_file, load_dict_from_file, save_dict_to_tableFile, open_dict_from_tablefile
 from .data_treatment import AutoClaveSynthesis
 #from .data_treatment import EC_Data,EC_Datas,CV_Data,CV_Datas,AutoClaveSynthesis
 

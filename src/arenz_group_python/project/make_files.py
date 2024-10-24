@@ -11,9 +11,11 @@ def make_project_files( main_dir: Path):
     print("\ncreating files:\n")
     #Create a .env file for python.
     make_env_file(main_dir)
-    
+    make_requirement_file(main_dir)
     make_script_file(main_dir)
-    
+    make_copy2server_file(main_dir)
+    make_Project_Update_All_Modules_file(main_dir)
+         
     def_files = [
         main_dir / PROJECT_FOLDERS.nb_models / "modelData.ipynb",
         main_dir / PROJECT_FOLDERS.scripts  / "my_Module.py"
@@ -101,72 +103,7 @@ def make_project_files( main_dir: Path):
     except FileExistsError:
         print(f"-\"{path.name}\" already exists")  
     
-    path = main_dir / PROJECT_FOLDERS.nb_exploration / "copy_data_from_server.ipynb"
-    try:
-        with open(path,"x") as f:
-            f.write('''{
-    "cells": [
-    {
-    "cell_type": "markdown",
-    "metadata": {},
-    "source": [
-        "# Copy data from teh server",
-        "use this notebook to copy data from the server.",
-        "",
-        "Tag the folder you want to by first creating a file with the name:",
-        "",
-        "{Project Name}.tag",
-        "",
-        "ex: my_first_project.tag",
-        " ",
-        "",
-        ""
-        ]
-    },
-    {
-    "cell_type": "code",
-    "execution_count": null,
-    "metadata": {},
-    "outputs": [],
-    "source": [
-        "from arenz_group_python import Project_Paths",
-        ""
-    ]
-    },
-    {
-    "cell_type": "code",
-    "execution_count": null,
-    "metadata": {},
-    "outputs": [],
-    "source": [
-        "pp = Project_Paths()",
-        "project_name = \'projectname\'",
-        "user_initials = \'\' #This is optional, but it can speed up things", 
-        "path_to_server = \'X:/EXP_DB\'",
-        "pp.copyDirs(path_to_server, user_initials , project_name )",
-        ""
-    ]
-    }
-    ],
-    "metadata": {
-    "kernelspec": {
-    "display_name": "Python 3",
-    "language": "python",
-    "name": "python3"
-    },
-    "language_info": {
-    "name": "python",
-    "version": "3.11.5"
-    }
-    },
-    "nbformat": 4,
-    "nbformat_minor": 2
-    }''')
-            f.close()
-        print(f"+\"{path.name}\" was created")
-    except FileExistsError:
-        print(f"-\"{path.name}\" already exists")   
-
+    
 ###################################################################################################
 
 
@@ -247,3 +184,137 @@ def make_project_files_data( main_dir: Path):
     except FileExistsError :
         print(f"-\"{path.name}\" already exists")
 ###########################################################################################
+
+def make_requirement_file(main_dir: Path):
+    try: 
+        from pip._internal.operations import freeze
+    except ImportError: # pip < 10.0
+        from pip.operations import freeze
+
+    pkgs = freeze.freeze()
+    path = main_dir / "requirements.txt"
+    
+    
+    
+    with open(path,"wt") as f:
+        for pkg in pkgs:
+            f.write(pkg+"\n")
+        f.close()
+    print(f"+\"{path.name}\" was created or updated")
+    return
+
+############################################################################################
+def make_copy2server_file(main_dir:Path):
+    path = main_dir / PROJECT_FOLDERS.nb_exploration / "copy_data_from_server.ipynb"
+    try:
+        with open(path,"x") as f:
+            f.write('''{
+    "cells": [
+    {
+    "cell_type": "markdown",
+    "metadata": {},
+    "source": [
+        "# Copy data from teh server",
+        "use this notebook to copy data from the server.",
+        "",
+        "Tag the folder you want to by first creating a file with the name:",
+        "",
+        "{Project Name}.tag",
+        "",
+        "ex: my_first_project.tag",
+        " ",
+        "",
+        ""
+        ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+        "from arenz_group_python import Project_Paths",
+        ""
+    ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+        "pp = Project_Paths()",
+        "project_name = \'projectname\'",
+        "user_initials = \'\' #This is optional, but it can speed up things", 
+        "path_to_server = \'X:/EXP_DB\'",
+        "pp.copyDirs(project_name, user_initials , path_to_server )",
+        ""
+    ]
+    }
+    ],
+    "metadata": {
+    "kernelspec": {
+    "display_name": "Python 3",
+    "language": "python",
+    "name": "python3"
+    },
+    "language_info": {
+    "name": "python",
+    "version": "3.11.5"
+    }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 2
+    }''')
+            f.close()
+        print(f"+\"{path.name}\" was created")
+    except FileExistsError:
+        print(f"-\"{path.name}\" already exists")   
+    return
+
+
+#######################################
+############################################################################################
+def make_Project_Update_All_Modules_file(main_dir:Path):
+    path = main_dir / "Project_Update_All_Modules.ipynb"
+    try:
+        with open(path,"x") as f:
+            f.write('''{
+    "cells": [
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "# Update all modules\n"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": null,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "%pip install -r requirements.txt\n",
+                "%pip freeze > requirements.txt"
+            ]
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "name": "python",
+            "version": "3.13.0"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 2
+    }''')
+            f.close()
+        print(f"+\"{path.name}\" was created")
+    except FileExistsError:
+        print(f"-\"{path.name}\" already exists")   
+    return

@@ -155,14 +155,15 @@ class Project_Paths:
         
         return find_dirs_with_tags( server_dir, dirID , fileID )
     
-    def copyDirs(self, server_dir: Path, dirID: str , fileID:str ):
+    def copyDirs(self, fileID:str , dirID: str = "" ,server_dir: Path = Path("X:/exp_db") ):
         """Copy all files from each folder and subfolder containing a file with the ending .tag
         to the raw data folder while keeping the folder structure.
         
         Args:
-            server_dir (Path): path to server data base
-            dirID (str): string to select only certain folders containing the string. Makes the crawling faster.
             fileID (str): project name, i.e name of tag-file.
+            dirID (str): string to select only certain folders containing the string. Makes the crawling faster.
+            server_dir (Path): path to server data base
+            
 
         Returns:
             str: absolute path to the directory with a matching tag.
