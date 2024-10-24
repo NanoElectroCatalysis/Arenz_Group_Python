@@ -46,7 +46,7 @@ class Project_Paths:
                     path_to_dir = a
                     break
         if path_to_dir == Path():
-            raise NotADirectoryError(f'\"{dir_name}\" could not be found as a branch of the folder tree form the notebook.\nPlease use standard project structure.\nProject_Paths().create_project_structure()\nfrom the root of the project.')
+            raise NotADirectoryError(f'\"{dir_name}\" could not be found as a branch of the folder tree form the notebook.\nPlease use standard project structure.\nProject_Paths().create_project_structure()\nfrom the root of the project.\n')
         return path_to_dir      
 
     ######################################################################################
@@ -130,19 +130,27 @@ class Project_Paths:
         Args:
             project_path (Path): Path to the base folder of the project. 
         """
+        pp= Path(project_path)
+        try:
+            if not pp.exists():
+                raise FileNotFoundError
+        except FileNotFoundError:
+            print("The path to the project is not correct, folder does not exist.")
+            return
+        
         for folderPath in PROJECT_FOLDERS:
             try:
-                newFolder =  project_path / folderPath
+                newFolder =  pp / folderPath
                 newFolder.mkdir()
             except FileExistsError:
                 print(f"-\"{folderPath}\" exists already as a folder")
             except FileNotFoundError:
-                print("The path to the project is not correct")
+                print("The path to the project is not correct.")
                 return
         
-        make_project_files( project_path)
-        make_project_files_data(project_path) 
-        
+        make_project_files( pp)
+        make_project_files_data(pp) 
+    ###############################################################    
     def find_dirs_with_tags(self, server_dir: Path, dirID: str , fileID:str ): 
         
         return find_dirs_with_tags( server_dir, dirID , fileID )

@@ -15,8 +15,8 @@ def make_project_files( main_dir: Path):
     make_script_file(main_dir)
     
     def_files = [
-        PROJECT_FOLDERS.nb_models + "/modelData.ipynb",
-        PROJECT_FOLDERS.scripts +"/my_Module.py"
+        main_dir / PROJECT_FOLDERS.nb_models / "modelData.ipynb",
+        main_dir / PROJECT_FOLDERS.scripts  / "my_Module.py"
     ]
     for file in def_files:
         try:
@@ -139,8 +139,6 @@ def make_project_files( main_dir: Path):
     "metadata": {},
     "outputs": [],
     "source": [
-        "from arenz_group_python import Project_Paths",
-        "",
         "pp = Project_Paths()",
         "project_name = \'projectname\'",
         "user_initials = \'\' #This is optional, but it can speed up things", 

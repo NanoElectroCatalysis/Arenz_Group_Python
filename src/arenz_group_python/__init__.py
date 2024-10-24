@@ -1,3 +1,8 @@
+"""arenz_group_python module
+
+- create_project_structure (Path to project)
+
+"""
 # Docs:
 # https://nanoelectrocatalysis.github.io/Arenz_Group_Python/
 
@@ -20,7 +25,8 @@ __version__ = "0.3.8"
 __all__ = ["Project_Paths","pDATA_RAW", "pDATA_TREATED",
             #"ec_data","EC_Data","EC_Datas","CV_Data","CV_Datas",
             "AutoClaveSynthesis", 
-            "save_dict_to_file", "load_dict_from_file", "save_dict_to_tableFile"
+            "save_dict_to_file", "load_dict_from_file", "save_dict_to_tableFile",
+           "create_project_structure"
            ]
 
 def create_project_structure(Path):
