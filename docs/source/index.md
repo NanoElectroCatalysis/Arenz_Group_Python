@@ -28,7 +28,7 @@ These constants return a PathLib to the raw data folder and the treated data fol
 
 # Save key values(dict) to a table-file(cvs)
 
-see example [ex_file_dict.md]
+see example [example/ex_file_dict.md]
 
 # Copy Raw data from the server into the raw data folder.
 

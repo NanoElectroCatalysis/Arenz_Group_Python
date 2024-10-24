@@ -1,7 +1,10 @@
+---
+title: Save and load key values(dict)
+parent: Examples
+---
+# Save and load key values(dict)
 
-
-
-# Save and load key values(dict) from a single sample into a file. 
+## Save and load key values(dict) from a single sample into a file. 
 
 ´´´python 
 from arenz_group_python import save_dict_to_file,load_dict_from_file
@@ -19,7 +22,8 @@ save_dict_to_file(file_path,keyValues)
 Loaded_KeyValues = load_dict_from_file(file_path)
 print(Loaded_KeyValues)
 ´´´
-# Save and load key values(dicts) from a multiple samples into a file. 
+## Save and load key values(dicts) from a multiple samples into a file. 
+
 ```python 
 from arenz_group_python import save_dict_to_tableFile,open_dict_from_tablefile
 ```
