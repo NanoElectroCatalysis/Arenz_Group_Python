@@ -26,6 +26,7 @@ These constants return a PathLib to the raw data folder and the treated data fol
 ```
 
 
+<<<<<<< Updated upstream
 # Save key values(dict) to a table-file(cvs)
 ```python
     from arenz_group_python import save_dict_to_tableFile
@@ -35,6 +36,11 @@ These constants return a PathLib to the raw data folder and the treated data fol
     KeyValues= [4,2,5,4,5]
     save_key_values(FileNameForKeyValues, Sample_Name, KeyValues) 
 ```
+=======
+# Save key values to a table
+
+see example [ex_file_dict.md]
+>>>>>>> Stashed changes
 
 # Copy Raw data from the server into the raw data folder.
 

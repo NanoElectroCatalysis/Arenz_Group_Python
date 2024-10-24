@@ -70,13 +70,13 @@ def string_to_dict(s:str, k: dict):
 
 
 def open_dict_from_tablefile(file_path:Path):
-    """_summary_
+    """Opens a tablefile and returns a datafram.
 
     Args:
-        file_path (Path): _description_
+        file_path (Path)
 
     Returns:
-        DataFrame: _description_
+        DataFrame: numpy data frame where each keyvalue is the column name.
     """
     df = pd.read_csv(file_path)
     for col in df.columns:
@@ -96,10 +96,10 @@ def save_dict_to_tableFile(file_path:Path, sample_name:str, properties:dict, del
     sample name. The first column will always be called "name". The following columns will have the name of the key of the dict.
 
     Args:
-        file_path (Path): _description_
-        sample_name (str): _description_
-        properties (dict): _description_
-        delimiter (str, optional): _description_. Defaults to DELIMITER.
+        file_path (Path): Path to file
+        sample_name (str): unique sample name. If name exist already, the raw will be overwritten.
+        properties (dict): the dict to be saved.
+        delimiter (str, optional): Defaults to DELIMITER.
     """
     file_path = Path(file_path)
     unique_key="name"
