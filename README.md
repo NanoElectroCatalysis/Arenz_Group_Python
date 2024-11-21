@@ -27,18 +27,20 @@ In order to install this package use the following line in a jupyter notebook:
 In order to upgrade this package use the following line in a jupyter notebook: 
 
 ```python
-%pip install arenz_group_python -U
+%pip install arenz_group_python --upgrade
 ```
 
 Restart the kernal.
 
 ## Create the basic project folder structure.
 
+Create a jupyter notebook in the root folder of the project and run:
 ```python
-from arenz_group_python import Project_Paths 
-pp = Project_Paths()
-pp.create_project_structure()
+from arenz_group_python import *
+create_project_structure(".")
 ```
+This will create a standard folder structure and some standard files.
+
 
 ## Import raw data files.
 Make sure that all the folders you want to import as a file called:
