@@ -127,8 +127,10 @@ def download_experiment_dataFiles(experimentID, path_to_dir):
             return
         else:
             print(f'\t\tFound {len(exp.uploads)} uploads')
+            index = 0
             for upload in uploadsApi.read_uploads('experiments', exp.id):
-                print("\t\t", upload.id, upload.real_name, upload.comment)
+                index = index+1
+                print("\t\t", index,"\t", upload.id, upload.real_name, upload.comment)
                 #get and save file
                 path_to_file = path_to_dir / upload.real_name
                 with open(path_to_file, 'wb') as file:
@@ -138,7 +140,12 @@ def download_experiment_dataFiles(experimentID, path_to_dir):
         print('Directory not defined')
         return    
     
-    
+
+def download_experiment(experimentID,path_to_parent):
+    dir = create_experiment_directory(experimentID,path_to_parent )
+    download_experiment_pdf(experimentID,dir)
+    download_experiment_json(experimentID,dir)
+    download_experiment_dataFiles(experimentID,dir)    
     
 def create_structure_and_download_experiments(experimentID):
     experiment_structure = get_struct(experimentID, Project_Paths().rawdata_path)
@@ -146,11 +153,8 @@ def create_structure_and_download_experiments(experimentID):
     for i,obj in enumerate(experiment_structure):
         path=Path(obj.path) / fix_title(obj.title)
         relpath = path.relative_to(Project_Paths().rawdata_path.parent.parent)
-        print(f"----{i+1}/{len(experiment_structure)}------------------", obj.ID, f"<Project>\{relpath}")
-        dir = create_experiment_directory(obj.ID, obj.path)
-        download_experiment_pdf(obj.ID,dir)
-        download_experiment_json(obj.ID,dir)
-        download_experiment_dataFiles(obj.ID,dir)
+        print(f"----{i+1}/{len(experiment_structure)}------------------ID=", obj.ID, f"\t<Project>\{relpath}")
+        download_experiment(obj.ID,obj.path)
 
 
 
