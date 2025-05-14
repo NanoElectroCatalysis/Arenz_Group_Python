@@ -2,7 +2,7 @@ from pathlib import Path
 
 from .default_paths import PROJECT_FOLDERS
 
-
+from .make_file_eLabFTW import make_copyFromELABFTW_file
 
 
                     
@@ -14,6 +14,7 @@ def make_project_files( main_dir: Path):
     make_requirement_file(main_dir)
     make_script_file(main_dir)
     make_copy2server_file(main_dir)
+    make_copyFromELABFTW_file(main_dir)
     make_Project_Update_All_Modules_file(main_dir)
          
     def_files = [
@@ -129,7 +130,12 @@ def make_env_file( main_dir: Path):
                 f"WORKSPACE_FOLDER={str(main_dir)}\n",
                 "PYTHONPATH=${WORKSPACE_FOLDER}"+ f"/{PROJECT_FOLDERS.scripts};\n",
                 "# so it is best make the path absolute.  ';'\n",
-                "# Add more path and separate them by ';'\n",
+                "\n",
+                "# elabFTW api keys  ';'\n",
+                "# Create your own API key in eLabFTW and save it here.\n",
+                "elab_API_KEY=""\n",
+                "# URL to the elabFTW server api ';'\n",
+                "elab_API_HOST=https://elabftw.dcbp.unibe.ch/api/v2\n",
                 ]
     try:
         with open(path,"x") as f:
