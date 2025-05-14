@@ -169,3 +169,4 @@ cython_debug/
 /TEMP_Project
 /notebooks_exploration_cleaning
 /notebooks_models
+demi.api
