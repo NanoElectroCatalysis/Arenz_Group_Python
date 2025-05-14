@@ -8,17 +8,22 @@ EXPERIMENTS_API = elabapi_python.ExperimentsApi()
 api_client = elabapi_python.ApiClient()
 
 API_KEY_NAME = 'elab_API_KEY'
+API_HOST_URL = 'https://elabftw.dcbp.unibe.ch/api/v2'
 
 def fix_title(title):
     
     return str(title).replace(":", "-").replace("\\", "-").replace("/", "-").replace(" ", "_")
 
+def get_experiments_api():
+    return EXPERIMENTS_API
 
 def connect_to_database(verify_ssl = False):
     
     API_KEY = os.getenv('elab_API_KEY')
-    API_HOST_URL = os.getenv('elab_API_HOST')
-    
+    global API_HOST_URL
+    url = os.getenv('elab_API_HOST')
+    if url is not None:
+        API_HOST_URL = url
     if API_KEY is None:
         raise ValueError("'elab_API_KEY' environment variable not set in '.env'.")
     if API_HOST_URL is None:
@@ -46,9 +51,28 @@ def connect_to_database(verify_ssl = False):
 
     #### SCRIPT START ##################
 
+    info_client = elabapi_python.InfoApi(api_client)
+    api_response = info_client.get_info()
+    if api_response is not None:
+        print("Connected to DB.")
     # Load the experiments api
-    global EXPERIMENTS_API 
-    EXPERIMENTS_API = elabapi_python.ExperimentsApi(api_client)
+        global EXPERIMENTS_API 
+        EXPERIMENTS_API = elabapi_python.ExperimentsApi(api_client)
+        #print(EXPERIMENTS_API.api_client.configuration.host)
+    
+    
+def api_read_experiments(*args, **kwargs):
+    """_summary_
+        
+        :param str q: Search for a term in title, body or elabid. 
+    Returns:
+        list: experiments
+    """
+    
+    return EXPERIMENTS_API.read_experiments(**kwargs)
+
+def api_get_experiment(ID,**kwargs):
+    return EXPERIMENTS_API.get_experiment(ID,**kwargs)
 
 class entry:
     def __init__(self, ID, path, title, uploads): 
@@ -58,7 +82,7 @@ class entry:
         self.uploads = len(uploads)
      
 def get_struct(ID,parentpath=Project_Paths().rawdata_path):
-    exp = EXPERIMENTS_API.get_experiment(ID)
+    exp = api_get_experiment(ID)
     #entries.append(entry(exp.id, parentpath / exp.title, exp.title, exp.uploads))
     title =fix_title(exp.title)
     entries = [entry(exp.id, parentpath, title, exp.uploads)]
@@ -69,7 +93,7 @@ def get_struct(ID,parentpath=Project_Paths().rawdata_path):
     
             
 def create_experiment_directory(experimentID, path_to_parentdir):
-    exp = EXPERIMENTS_API.get_experiment(experimentID)
+    exp = api_get_experiment(experimentID)
     path_to_dir = Path(path_to_parentdir) / fix_title(exp.title)
     if not path_to_dir.exists():
         os.makedirs(path_to_dir)
@@ -78,7 +102,7 @@ def create_experiment_directory(experimentID, path_to_parentdir):
 
 def download_experiment_info(experimentID, fileEnding="json",path_to_dir=Path.cwd()):
     with warnings.catch_warnings(action="ignore"):
-        exp = EXPERIMENTS_API.get_experiment(experimentID)
+        exp = api_get_experiment(experimentID)
         title = fix_title(exp.title)
         
         filename = f'{title}.{fileEnding}'
@@ -107,7 +131,7 @@ def download_experiment_json(experimentID, path_to_dir=Path.cwd()):
         
 ###################################################################################################
 def download_experiment_dataFiles(experimentID, path_to_dir):
-    exp = EXPERIMENTS_API.get_experiment(experimentID)
+    exp = api_get_experiment(experimentID)
     
     if path_to_dir:
         path_to_dir = Path(path_to_dir)
@@ -119,7 +143,7 @@ def download_experiment_dataFiles(experimentID, path_to_dir):
         uploadsApi = elabapi_python.UploadsApi(api_client)
 
         # get experiment with ID 256
-        exp = EXPERIMENTS_API.get_experiment(experimentID)
+        exp = api_get_experiment(experimentID)
         # upload the file 'README.md' present in the current folder
         # display id, name and comment of the uploaded files
         if len(exp.uploads) == 0:
@@ -141,7 +165,7 @@ def download_experiment_dataFiles(experimentID, path_to_dir):
         return    
     
 
-def download_experiment(experimentID,path_to_parent):
+def download_experiment_single(experimentID,path_to_parent):
     dir = create_experiment_directory(experimentID,path_to_parent )
     download_experiment_pdf(experimentID,dir)
     download_experiment_json(experimentID,dir)
@@ -154,7 +178,7 @@ def create_structure_and_download_experiments(experimentID):
         path=Path(obj.path) / fix_title(obj.title)
         relpath = path.relative_to(Project_Paths().rawdata_path.parent.parent)
         print(f"----{i+1}/{len(experiment_structure)}------------------ID=", obj.ID, f"\t<Project>\{relpath}")
-        download_experiment(obj.ID,obj.path)
+        download_experiment_single(obj.ID,obj.path)
 
 
 
