@@ -8,6 +8,8 @@ import unittest   # The test framework
 
 cwd = Path().cwd()
 temp_dir = cwd /"TEMP_Project"
+if not temp_dir.exists():
+    temp_dir.mkdir()
 os.chdir(temp_dir)
 
 print("Current Work Dir:\n\t",temp_dir)
@@ -35,12 +37,7 @@ class test_file_dict(unittest.TestCase):
     def test_SaveLoad_File(self):
         
         print("CWD:\t",temp_dir, temp_dir.exists())
-
-        try:
-            temp_dir.mkdir()
-        except:
-            pass
-        
+    
         file_path= temp_dir / "My_Dict_File.txt"
 
         
@@ -54,11 +51,6 @@ class test_file_dict(unittest.TestCase):
         
         
         print("CWD:\t",temp_dir, temp_dir.exists())
-
-        try:
-            temp_dir.mkdir()
-        except:
-            pass
         
         TB_file_path= temp_dir / "My_TB_File.txt"
         print("==Add sample 1")
