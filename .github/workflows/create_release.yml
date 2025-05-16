@@ -1,7 +1,9 @@
-name: Publish Python 🐍 distribution 📦 to PyPI and TestPyPI
+name: Create Relesae upon push
 
 on:
-  push
+  push:
+      branches:
+      - main
 
 jobs:
   github-release:
