@@ -13,9 +13,10 @@ def make_copyFromELABFTW_file(main_dir:Path):
     "cell_type": "markdown",
     "metadata": {},
     "source": [
-        "# Download data from eLabFTW",
+        "## Download data from eLabFTW",
         "use this notebook to download data from eLabFTW.",
         "",
+        "Add all the samples codes below to make it easier to download all the data.",
         ""
         ]
     },
@@ -36,10 +37,45 @@ def make_copyFromELABFTW_file(main_dir:Path):
     "outputs": [],
     "source": [
         "# Connect to eLabFTW",
+        "Remember to set the environment variable ELABFTW_API_KEY to your API key in your .env-file.",
         "elabftw.connect()",
+        "",
+        ""
+    ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
         "# Download a specific experiment and all related experiments and save it to the rawdata folder",
         "# The ID of the experiment can be found in the eLabFTW web interface", 
-        "elabftw.download_experiment_tree(ID)",
+        "elabftw.download_experiment(ID)",
+        "#where ID is a number, e.g. 1234 or hte name of the experiment, e.g. 'SPR-GW005'.",
+        ""
+    ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+        "Dataset 2",
+        "elabftw.download_experiment_tree('SPR-GW006')",
+        "",
+        ""
+    ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+        "Dataset 3",
+        "elabftw.download_experiment_tree('SPR-GW007')",
         "",
         ""
     ]
