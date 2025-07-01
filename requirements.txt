@@ -3,5 +3,7 @@ numpy
 matplotlib
 scipy
 elabapi-python
-requests
-
+elabapi_python
+nptdms
+pathlib
+EC4py
