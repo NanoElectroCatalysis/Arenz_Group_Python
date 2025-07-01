@@ -23,7 +23,19 @@ def connect(verify_ssl: bool = True):
 def get_experiment_api():
     return ELAB.get_experiments_api()
 
-def download_experiment(ID_value:str|int, create_Tree = True):
+def get_item(ID_value:int):
+    """Get project ID
+
+    Args:
+        ID_value (int): item identifier
+
+    Returns:
+        tuplet: project
+    """
+    if  ELAB.isConnected():
+        return ELAB.api_get_item_by_elabid(ID_value)  # scope=3 for all projects
+
+def download_experiment(ID_value:str|int, create_Tree = True, DownLoad_Overwrite: bool = False):
     """Download all experimental information and saves it into data_raw folder.
         A tree of all linked experiments can also be created.
 
@@ -43,7 +55,7 @@ def download_experiment(ID_value:str|int, create_Tree = True):
             if create_Tree:
                 download_experiment_tree(ID)
             else:
-                ELAB.download_experiment_single(ID, Project_Paths().rawdata_path)
+                ELAB.download_experiment_single(ID, Project_Paths().rawdata_path, DownLoad_Overwrite)
                 return
     except  ValueError as e:
         print("Experiment not found.")
@@ -78,14 +90,14 @@ def read_experiments(**kwargs) -> list:
         return ELAB.api_read_experiments(**kwargs)
      
     
-def download_experiment_tree(ID):
+def download_experiment_tree(ID,DownLoad_Overwrite: bool = False):
     """
     Get the experiment with the given ID from the eLabFTW database and save it to the rawdata folder.
     
     Parameters
     ----------
     ID : str
-        The ID of the experiment to retrieve.
+        The ID of the experiment to retrieve. Use ID as an integer or a string (e.g., "ATS-JF060").
     
     Returns
     -------
@@ -93,7 +105,7 @@ def download_experiment_tree(ID):
     """
     #from .elabftw import create_structure_and_download_experiments
     try:
-        ELAB.create_structure_and_download_experiments(ID)
+        ELAB.create_structure_and_download_experiments(ID,DownLoad_Overwrite)
     except ApiException as e:
         if e.status == 404:
             print(f"Experiment with ID {ID} not found. error 404")
@@ -101,6 +113,30 @@ def download_experiment_tree(ID):
             print(f"The API key is not correct. Check your .env file for '{API_KEY_NAME}'-key . error 401")
         else:
             print(f"An error occurred: {e}")
+
+
+def list_item(ID_value:int):
+    """Download a project. Thereby, downloading all experimental information and saves it into data_raw folder.
+        A tree of all linked experiments can also be created.
+
+    Args:
+        ID_value (str, optional): experiment ID number as an interger, or as a string: ex. "ATS-JF060".
+        create_Tree (bool, optional): download all associated experiments too. Defaults to True.
+    """
+    #from .elabftw import download_experiment
+    ELAB.list_rel_experiment_to_item(ID_value)
+
+def download_experiment_rel_to_item(ID_value:int,DownLoad_Overwrite: bool = False):
+    """Download all experiments related to a project. Thereby, downloading all experimental information and saves it into data_raw folder.
+        A tree of all linked experiments can also be created.
+
+    Args:
+        ID_value (str, optional): experiment ID number as an interger, or as a string: ex. "ATS-JF060".
+        DownLoad_Overwrite (bool, optional): Files are only downloaded if not found on disk. Defaults to False.
+    """
+    #from .elabftw import download_experiment
+    ELAB.download_rel_experiment_to_item(ID_value, DownLoad_Overwrite)
+
             
 def get_experiment(ID_value,**kwargs):
     """Get experiment ID
