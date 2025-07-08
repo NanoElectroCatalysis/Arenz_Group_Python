@@ -16,6 +16,9 @@ def make_copyFromELABFTW_file(main_dir:Path):
         "# Download data from eLabFTW",
         "use this notebook to download data from eLabFTW.",
         "",
+        "## Documentation: ",
+        "You can find examples in the documentation of the Arenz Group Python package.",
+        "[https://nanoelectrocatalysis.github.io/Arenz_Group_Python/](https://nanoelectrocatalysis.github.io/Arenz_Group_Python/)",
         ""
         ]
     },
@@ -37,9 +40,43 @@ def make_copyFromELABFTW_file(main_dir:Path):
     "source": [
         "# Connect to eLabFTW",
         "elabftw.connect()",
-        "# Download a specific experiment and all related experiments and save it to the rawdata folder",
-        "# The ID of the experiment can be found in the eLabFTW web interface", 
-        "elabftw.download_experiment_tree(ID)",
+        "",
+        ""
+    ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+        "# Download a specific experiment and all related experiments and save it to the [rawdata folder](../data_raw/)",
+        "# The ID of the experiment can be found in the eLabFTW web interface or use the sample name", 
+        "elabftw.download_experiment(ID)",
+        "",
+        ""
+    ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+        "elabftw.download_experiment(ID)",
+        "",
+        ""
+    ]
+    },
+    {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+        "# Download all related experiments and save it to the [rawdata folder](../data_raw/)",
+        "# The ID of the project(item) can be found in the eLabFTW web interface.", 
+        "elabftw.download_experiment_rel_to_item(ID)",
         "",
         ""
     ]
