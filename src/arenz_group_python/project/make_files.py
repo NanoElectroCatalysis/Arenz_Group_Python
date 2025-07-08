@@ -13,7 +13,7 @@ def make_project_files( main_dir: Path):
     make_env_file(main_dir)
     make_requirement_file(main_dir)
     make_script_file(main_dir)
-    make_copy2server_file(main_dir)
+    # make_copy2server_file(main_dir) //obsolete, use the copy_from_server file instead.
     make_copyFromELABFTW_file(main_dir)
     make_Project_Update_All_Modules_file(main_dir)
          
