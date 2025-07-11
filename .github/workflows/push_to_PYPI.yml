@@ -52,7 +52,7 @@ jobs:
       env:
         OUTPUT1: ${{needs.build.outputs.output1}}
       run: |
-        echo "Package File ${{ OUTPUT1 }}"
+        echo "Package File $OUTPUT1"
         echo "version=$${{needs.build.outputs.output1}}"
         echo "version=$${{needs.build.outputs.output1}}"
   
