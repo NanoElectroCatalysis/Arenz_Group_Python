@@ -48,6 +48,6 @@ jobs:
     - uses: sravinet/toml-select@v1.0.1
       with:
         file: 'pyproject.toml'
-        field: 'version'
+        field: 'project.version'
       
 
