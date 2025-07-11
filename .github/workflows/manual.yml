@@ -33,11 +33,21 @@ jobs:
     - name: Send greeting
       run: echo "Hello ${{ inputs.name }}"
 
-    - name: JSON to variables
+    - name: Check version of package file
       uses: antifree/json-to-variables@v1.0.1
       with:
         filename: 'package.json'
         prefix: package
     - name: Show output
-      run: echo "The time was ${{ env.package_version }}, ${{ env.package_name }}"
+      run: echo "The version of the package file is ${{ env.package_version }}, ${{ env.package_name }}"
+    - name: Check version of package file
+      uses: antifree/json-to-variables@v1.0.1
+      with:
+        filename: 'package.json'
+        prefix: package
+    - uses: sravinet/toml-select@v1
+      with:
+        file: 'pyproject.toml'
+        field: 'version'
+      
 
