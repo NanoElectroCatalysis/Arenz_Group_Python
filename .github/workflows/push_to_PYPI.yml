@@ -3,13 +3,27 @@ name: Publish Python 🐍 distribution 📦 to PyPI and TestPyPI
 on: workflow_dispatch
 
 jobs:
+  #job1
   build:
     name: Build distribution 📦
     runs-on: ubuntu-latest
-
+    outputs:
+      output1: ${{ steps.step1.outputs.version }}
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python
+    - name: Check version of package file
+      uses: antifree/json-to-variables@v1.0.1
+      with:
+        filename: 'package.json'
+        prefix: package
+    - name: create summery
+      id: step1
+      run: |
+        echo "Package File ${{ env.package_version }}"
+        echo "version=${{ env.package_version }}" >> "$GITHUB_OUTPUT"
+        echo "### Versions :rocket:" >> $GITHUB_STEP_SUMMARY
+        echo "Package File ${{ env.package_version }}" >> $GITHUB_STEP_SUMMARY
+    - name: Set up Pythoni
       uses: actions/setup-python@v5
       with:
         python-version: "3.x"
@@ -25,7 +39,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: python-package-distributions
-        path: dist/
+
 
   publish-to-pypi:
     name: >-
@@ -54,6 +68,7 @@ jobs:
       Sign the Python 🐍 distribution 📦 with Sigstore
       and upload them to GitHub Release
     needs:
+    - build
     - publish-to-pypi
     runs-on: ubuntu-latest
 
@@ -75,10 +90,12 @@ jobs:
           ./dist/*.whl
     - name: Create GitHub Release
       env:
+        OUTPUT1: ${{needs.build.outputs.output1}}
         GITHUB_TOKEN: ${{ github.token }}
       run: >-
         gh release create
-        '${{ github.ref_name }}'
+        #'v${{ github.ref_name }}'
+        'v$OUTPUT1'
         --repo 't_${{ github.repository }}'
         --notes ""
     - name: Upload artifact signatures to GitHub Release
@@ -89,6 +106,7 @@ jobs:
       # sigstore-produced signatures and certificates.
       run: >-
         gh release upload
-        '${{ github.ref_name }}' dist/**
+        #'${{ github.ref_name }}' dist/**
+        'v$OUTPUT1' dist/**
         --repo '${{ github.repository }}'
 
