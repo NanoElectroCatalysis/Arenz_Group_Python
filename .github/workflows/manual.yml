@@ -45,8 +45,9 @@ jobs:
       with:
         filename: 'package.json'
         prefix: package
+    # read a toml file and print
     - uses: sravinet/toml-select@v1.0.1
-    - id: read_toml
+      id: read_toml
       with:
         file: 'pyproject.toml'
         field: 'project.version'
