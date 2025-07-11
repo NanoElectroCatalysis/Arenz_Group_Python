@@ -46,8 +46,11 @@ jobs:
         filename: 'package.json'
         prefix: package
     - uses: sravinet/toml-select@v1.0.1
+    - id: read_toml
       with:
         file: 'pyproject.toml'
         field: 'project.version'
+    - name: Show output
+      run: echo "The version of the package file is ${{steps.read_toml.outputs.value }}"
       
 
