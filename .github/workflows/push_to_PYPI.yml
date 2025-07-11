@@ -41,7 +41,22 @@ jobs:
         name: python-package-distributions
         path: dist/
 
-
+  variableTesting:
+    name: >-
+      Verstion Testing 📦 to PyPI
+    needs:
+    - build
+    runs-on: ubuntu-latest
+   
+    steps:
+    - name: check
+      env:
+        OUTPUT1: ${{needs.build.outputs.output1}}
+      run: |
+        echo "Package File ${{ OUTPUT1 }}"
+        echo "version=$${{needs.build.outputs.output1}}"
+        echo "version=$${{needs.build.outputs.output1}}"
+  
   publish-to-pypi:
     name: >-
       Publish Python 🐍 distribution 📦 to PyPI
