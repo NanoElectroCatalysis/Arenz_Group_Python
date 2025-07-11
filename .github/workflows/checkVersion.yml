@@ -70,7 +70,9 @@ jobs:
 
     - name: Fail PR if versions not matching
       if: ${{ env.package_version  !=  steps.read_toml.outputs.value }}
-      run: exit 1
+      run: |
+        echo "::error The versions in pyproject and package.json are not the same."
+        exit 1
     
 
 
