@@ -52,6 +52,19 @@ jobs:
         file: 'pyproject.toml'
         field: 'project.version'
     - name: Show output
-      run: echo "The version of the TOML file is ${{steps.read_toml.outputs.value }}\nThe version of the package file is ${{ env.package_version }}"
-      
+      run: |
+        echo "::group::Package File ${{ env.package_version }}"
+        echo "The version of the package file is ${{ env.package_version }}"
+        echo "::endgroup::"
+        echo "::group::Pyproject.TOML File"
+        echo "The version of the TOML file is ${{steps.read_toml.outputs.value }}"
+        echo "::endgroup::"    
+
+    - name: Fail PR if versions not matching
+      if: ${{ env.package_version  !=  steps.read_toml.outputs.value }}
+      run: exit 1
+    
+    - name: create summery
+      run: |
+        echo "### End of check! :rocket:" >> $GITHUB_STEP_SUMMARY
 
