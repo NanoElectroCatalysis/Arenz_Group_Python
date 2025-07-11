@@ -52,6 +52,6 @@ jobs:
         file: 'pyproject.toml'
         field: 'project.version'
     - name: Show output
-      run: echo "The version of the package file is ${{steps.read_toml.outputs.value }}"
+      run: echo "The version of the TOML file is ${{steps.read_toml.outputs.value }}\nThe version of the package file is ${{ env.package_version }}"
       
 
