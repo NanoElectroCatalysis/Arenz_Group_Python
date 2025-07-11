@@ -37,7 +37,7 @@ jobs:
       uses: antifree/json-to-variables@v1.0.1
       with:
         filename: 'package.json'
-        #prefix: test
+        prefix: package
     - name: Show output
-      run: echo "The time was ${{ env.version }}, ${{ env.name }}"
+      run: echo "The time was ${{ env.package_version }}, ${{ env.package_name }}"
 
