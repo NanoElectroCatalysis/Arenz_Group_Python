@@ -107,8 +107,8 @@ jobs:
       env:      
         OUTPUT1: ${{needs.build.outputs.output1}}
       run: |
-        echo: "Version $OUTPUT1"
-        echo: "Version ${OUTPUT1}"
+        echo "Version $OUTPUT1"
+        echo "Version ${OUTPUT1}"
     - name: Create GitHub Release
       env:
         OUTPUT1: ${{needs.build.outputs.output1}}
