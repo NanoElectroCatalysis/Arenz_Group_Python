@@ -1,2 +1,3 @@
-exclude dev
-exclude data_raw
+prune dev
+prune data_raw
+exclude *.tdms
