@@ -84,6 +84,7 @@ jobs:
       and upload them to GitHub Release
     needs:
     - build
+    - variableTesting
     #- publish-to-pypi
     runs-on: ubuntu-latest
 
