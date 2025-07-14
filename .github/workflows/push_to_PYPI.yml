@@ -112,6 +112,14 @@ jobs:
         echo "rel_tag=v$OUTPUT1" >> $GITHUB_ENV
     - name: Check tag version is correctly 
       run: echo $rel_tag
+    - name: Create GitHub Release1
+      env:
+        #tag: ${{needs.build.outputs.output1}}
+        GITHUB_TOKEN: ${{ github.token }}
+       #'v${{ github.ref_name }}'
+      run: |
+        echo $rel_tag
+        gh release create ${rel_tag} --repo '${{ github.repository }}' --title='${rel_tag}' --notes ""
     - name: Create GitHub Release
       env:
         #tag: ${{needs.build.outputs.output1}}
