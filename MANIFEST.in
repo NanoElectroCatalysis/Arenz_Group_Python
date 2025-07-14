@@ -1,2 +1,2 @@
 exclude dev
-exclude data/private/file.env
+exclude data_raw
