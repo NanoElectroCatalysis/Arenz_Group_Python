@@ -119,9 +119,9 @@ jobs:
        #'v${{ github.ref_name }}'
       run: >-
         gh release create
-        '$rel_tag' 
+        '${rel_tag}' 
         --repo '${{ github.repository }}'
-        --title='$rel_tag'
+        --title='${rel_tag}'
         --notes ""
     - name: Upload artifact signatures to GitHub Release
       env:
