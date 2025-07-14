@@ -123,17 +123,6 @@ jobs:
         echo $rel_title
         echo ${{ env.rel_title }}
         gh release create ${{ env.rel_tag }} --repo '${{ github.repository }}' --title '${{ env.rel_title }}' --notes ""
-    - name: Create GitHub Release 2
-      env:
-        #tag: ${{needs.build.outputs.output1}}
-        GITHUB_TOKEN: ${{ github.token }}
-       #'v${{ github.ref_name }}'
-      run: >-
-        gh release create
-        ${rel_tag} 
-        --repo '${{ github.repository }}'
-        --title=${rel_title}
-        --notes ""
     - name: Upload artifact signatures to GitHub Release
       env:
         GITHUB_TOKEN: ${{ github.token }}
@@ -144,6 +133,6 @@ jobs:
       #'${{ github.ref_name }}' dist/**
       run: >-
         gh release upload
-        '${rel_tag}' dist/**
+        '${{ env.rel_tag }}' dist/**
         --repo '${{ github.repository }}'
 
