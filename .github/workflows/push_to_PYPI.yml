@@ -113,7 +113,7 @@ jobs:
         echo "rel_title=release v$OUTPUT1" >> $GITHUB_ENV
     - name: Check tag version is correctly 
       run: echo $rel_tag
-    - name: Create GitHub Release1
+    - name: Create GitHub Release
       env:
         #tag: ${{needs.build.outputs.output1}}
         GITHUB_TOKEN: ${{ github.token }}
@@ -122,8 +122,8 @@ jobs:
         echo $rel_tag
         echo $rel_title
         echo ${{ env.rel_title }}
-        gh release create ${rel_tag} --repo '${{ github.repository }}' --notes ""
-    - name: Create GitHub Release
+        gh release create ${rel_tag} --repo '${{ github.repository }}' --title ${{ env.rel_title }} --notes ""
+    - name: Create GitHub Release 2
       env:
         #tag: ${{needs.build.outputs.output1}}
         GITHUB_TOKEN: ${{ github.token }}
