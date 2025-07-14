@@ -120,7 +120,9 @@ jobs:
        #'v${{ github.ref_name }}'
       run: |
         echo $rel_tag
-        gh release create ${rel_tag} --repo '${{ github.repository }}' --title=${rel_title} --notes ""
+        echo $rel_title
+        echo ${rel_title}
+        gh release create ${rel_tag} --repo '${{ github.repository }}' --title ${rel_title} --notes ""
     - name: Create GitHub Release
       env:
         #tag: ${{needs.build.outputs.output1}}
