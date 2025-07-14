@@ -110,6 +110,7 @@ jobs:
       run: |
         echo "Version $OUTPUT1"
         echo "rel_tag=v$OUTPUT1" >> $GITHUB_ENV
+        echo "rel_title=release v$OUTPUT1" >> $GITHUB_ENV
     - name: Check tag version is correctly 
       run: echo $rel_tag
     - name: Create GitHub Release1
@@ -119,7 +120,7 @@ jobs:
        #'v${{ github.ref_name }}'
       run: |
         echo $rel_tag
-        gh release create ${rel_tag} --repo '${{ github.repository }}' --title='${rel_tag}' --notes ""
+        gh release create ${rel_tag} --repo '${{ github.repository }}' --title=${rel_title} --notes ""
     - name: Create GitHub Release
       env:
         #tag: ${{needs.build.outputs.output1}}
@@ -129,7 +130,7 @@ jobs:
         gh release create
         ${rel_tag} 
         --repo '${{ github.repository }}'
-        --title=${rel_tag}
+        --title=${rel_title}
         --notes ""
     - name: Upload artifact signatures to GitHub Release
       env:
