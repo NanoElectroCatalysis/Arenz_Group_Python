@@ -108,26 +108,30 @@ jobs:
         OUTPUT1: ${{needs.build.outputs.output1}}
       run: |
         echo "Version $OUTPUT1"
-        echo "Version ${OUTPUT1}"
+        echo "rel_tag=v$OUTPUT1" >> $GITHUB_ENV
+    - name: Check tag version is correctly 
+      run: echo $rel_tag
     - name: Create GitHub Release
       env:
-        OUTPUT1: ${{needs.build.outputs.output1}}
+        #tag: ${{needs.build.outputs.output1}}
         GITHUB_TOKEN: ${{ github.token }}
       run: >-
         gh release create
         #'v${{ github.ref_name }}'
-        'v$OUTPUT1'
-        --repo 't_${{ github.repository }}'
+        '$rel_tag' 
+        --repo '${{ github.repository }}'
+        --title="${tag#v}
         --notes ""
     - name: Upload artifact signatures to GitHub Release
       env:
         GITHUB_TOKEN: ${{ github.token }}
+        #tag: ${{needs.build.outputs.output1}}
       # Upload to GitHub Release using the `gh` CLI.
       # `dist/` contains the built packages, and the
       # sigstore-produced signatures and certificates.
       run: >-
         gh release upload
         #'${{ github.ref_name }}' dist/**
-        'v$OUTPUT1' dist/**
+        '${rel_tag}' dist/**
         --repo '${{ github.repository }}'
 
