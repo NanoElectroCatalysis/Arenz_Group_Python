@@ -121,8 +121,8 @@ jobs:
       run: |
         echo $rel_tag
         echo $rel_title
-        echo ${rel_title}
-        gh release create ${rel_tag} --repo '${{ github.repository }}' --title ${rel_title} --notes ""
+        echo ${{ env.rel_title }}
+        gh release create ${rel_tag} --repo '${{ github.repository }}' --notes ""
     - name: Create GitHub Release
       env:
         #tag: ${{needs.build.outputs.output1}}
