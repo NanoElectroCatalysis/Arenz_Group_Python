@@ -120,7 +120,7 @@ jobs:
         #'v${{ github.ref_name }}'
         '$rel_tag' 
         --repo '${{ github.repository }}'
-        --title="${tag#v}
+        --title='$rel_tag'
         --notes ""
     - name: Upload artifact signatures to GitHub Release
       env:
